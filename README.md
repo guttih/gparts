@@ -6,7 +6,7 @@ This application will be about storing information about parts and how to use th
 1.0.0
 
 ### Usage
-
+The project [page](http:www.guttih.com:9999/projects/gparts)
 
 ### Installation
 
