@@ -1,6 +1,6 @@
 # Node.js GParts
 
-This is a user login and registration app using Node.js, Express, Passport and Mongoose. It is part of the YouTube series [here](https://www.youtube.com/watch?v=Z1ktxiqyiLA)
+This application will be about storing information about parts and how to use them.
 
 ### Version
 1.0.0
