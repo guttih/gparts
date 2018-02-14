@@ -14,17 +14,15 @@ Declare array of [Objects](https://stackoverflow.com/questions/19695058/how-to-d
  - Supplier
  - Manufacturer
  - Model
- - Attachments[]
+ - Type
+ - Urls[{Name: String, Url: String}]
+ - AttachmentIds: [Schema.Types.ObjectId]
 
 ##### Attachment
 - ID
 - Name: String
 - file: { data: Buffer, contentType: String }
 
-##### Url
-- ID
-- Name: String
-- Url: String
 ##### Type
 - ID
 - Name
@@ -35,9 +33,13 @@ Declare array of [Objects](https://stackoverflow.com/questions/19695058/how-to-d
 
 ##### Supplier
 - ID
-- Company
 - Name
-- WebPage
-- Notes
+- Description
+- Url
+##### Manufacturer
+- ID
+- Name
+- Description
+- Url
 
 
