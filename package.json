@@ -12,8 +12,9 @@
   "dependencies": {
     "bcryptjs": "*",
     "body-parser": "*",
-    "connect-flash": "*",
+    "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.1",
+    "default-network": "^0.2.0",
     "express": "*",
     "express-handlebars": "*",
     "express-messages": "*",
@@ -23,7 +24,8 @@
     "mongoose": "*",
     "passport": "*",
     "passport-http": "*",
-    "passport-local": "*"
+    "passport-local": "*",
+    "request": "^2.83.0"
   },
   "devDependencies": {},
   "repository": {

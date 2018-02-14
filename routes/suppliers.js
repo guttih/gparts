@@ -3,7 +3,7 @@ var router = express.Router();
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
-var Part = require('../models/part');
+var Supplier = require('../models/supplier');
 
 
 var request = require('request');
@@ -18,20 +18,16 @@ router.get('/register', function(req, res){
 	res.render('register');
 });
 
-router.get('/', lib.authenticateUrl, function(req, res){
-	res.render('index');
-});
-
 // Login
 router.get('/login', function(req, res){
 	res.render('login');
 });
 
-// Register Part
+// Register Supplier
 router.post('/register', function(req, res){
 	var name = req.body.name;
 	var email = req.body.email;
-	var partname = req.body.partname;
+	var suppliername = req.body.suppliername;
 	var password = req.body.password;
 	var password2 = req.body.password2;
 
@@ -39,7 +35,7 @@ router.post('/register', function(req, res){
 	req.checkBody('name', 'Name is required').notEmpty();
 	req.checkBody('email', 'Email is required').notEmpty();
 	req.checkBody('email', 'Email is not valid').isEmail();
-	req.checkBody('partname', 'Partname is required').notEmpty();
+	req.checkBody('suppliername', 'Suppliername is required').notEmpty();
 	req.checkBody('password', 'Password is required').notEmpty();
 	req.checkBody('password2', 'Passwords do not match').equals(req.body.password);
 
@@ -50,34 +46,34 @@ router.post('/register', function(req, res){
 			errors:errors
 		});
 	} else {
-		var newPart = new Part({
+		var newSupplier = new Supplier({
 			name: name,
 			email:email,
-			partname: partname,
+			suppliername: suppliername,
 			password: password
 		});
 
-		Part.createPart(newPart, function(err, part){
+		Supplier.createSupplier(newSupplier, function(err, supplier){
 			if(err) throw err;
-			console.log(part);
+			console.log(supplier);
 		});
 
 		req.flash('success_msg', 'You are registered and can now login');
 
-		res.redirect('/parts/login');
+		res.redirect('/suppliers/login');
 	}
 });
 
-//todo: part change profile
-router.post('/register/:partID', lib.authenticateAdminRequest, function(req, res){
-	//part modify
-	var id = req.params.partID;
+//todo: supplier change profile
+router.post('/register/:supplierID', lib.authenticateAdminRequest, function(req, res){
+	//supplier modify
+	var id = req.params.supplierID;
 	var password = req.body.password;
 
 	req.checkBody('name', 'Name is required').notEmpty();
 	req.checkBody('email', 'Email is required').notEmpty();
 	req.checkBody('email', 'Email is not valid').isEmail();
-	req.checkBody('partname', 'Partname is required').notEmpty();
+	req.checkBody('suppliername', 'Suppliername is required').notEmpty();
 	req.checkBody('level', 'level is required').notEmpty();
 	if (password !== undefined && password.length > 0 ){
 		req.checkBody('password', 'Password is required').notEmpty();
@@ -86,37 +82,37 @@ router.post('/register/:partID', lib.authenticateAdminRequest, function(req, res
 	var errors = req.validationErrors();
 
 	if(errors){
-		//todo: part must type all already typed values again, fix that
-		res.render('register-part',{errors:errors	});
+		//todo: supplier must type all already typed values again, fix that
+		res.render('register-supplier',{errors:errors	});
 	} else {
 		var values = {
 				name     : req.body.name,
 				email    : req.body.email,
-				partname : req.body.partname,
+				suppliername : req.body.suppliername,
 				level : req.body.level
 			};
 		
 		if (password !== undefined && password.length > 0 ){
 			values['password'] = req.body.password;
 		}
-		Part.modify(id, values, function(err, result){
+		Supplier.modify(id, values, function(err, result){
 			if(err || result === null || result.ok !== 1) {
 					req.flash('error',	' unable to update' );
 			} else{
 					if (result.nModified === 0){
-						req.flash('success_msg',	'Part is unchanged!' );
+						req.flash('success_msg',	'Supplier is unchanged!' );
 					} else {
-						req.flash('success_msg',	'Part updated!' );
+						req.flash('success_msg',	'Supplier updated!' );
 					}
 			}
-			res.redirect('/parts/register/'+id);
+			res.redirect('/suppliers/register/'+id);
 		});
 			
 	}
 });
 
 router.post('/login',
-  passport.authenticate('local', {successRedirect:'/', failureRedirect:'/parts/login',failureFlash: true}),
+  passport.authenticate('local', {successRedirect:'/', failureRedirect:'/suppliers/login',failureFlash: true}),
   function(req, res) {
     res.redirect('/');
   });
@@ -126,7 +122,7 @@ router.get('/logout', function(req, res){
 
 	req.flash('success_msg', 'You are logged out');
 
-	res.redirect('/parts/login');
+	res.redirect('/suppliers/login');
 });
 
 module.exports = router;

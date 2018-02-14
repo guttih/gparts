@@ -15,6 +15,12 @@ var UserSchema = mongoose.Schema({
 	},
 	name: {
 		type: String
+	},
+	//level 0 = normal user
+	//level 1 = power user
+	//level 2 = admin (who can change user values such as change their user level)
+	level: {
+		type: Number
 	}
 });
 

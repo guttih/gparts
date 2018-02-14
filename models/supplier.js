@@ -6,32 +6,30 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 
-var PartSchema = mongoose.Schema({
+var SupplierSchema = mongoose.Schema({
 	name       : { type: String, index:true },
 	description: { type: String },	
-	helpUrls   : [{ type: String }],
-	partType   : Number,
-	firstPurchased  : Date     
+	url        : [{ type: String }]
 }); 
 
-var Part = module.exports = mongoose.model('Part', PartSchema);
+var Supplier = module.exports = mongoose.model('Supplier', SupplierSchema);
 
 
 module.exports.delete = function (id, callback){
 	
-	Part.findByIdAndRemove(id, callback);
+	Supplier.findByIdAndRemove(id, callback);
 };
 
 module.exports.modify = function (id, newValues, callback){
 	//$set
 	var val = {$set: newValues};
-	Part.update({_id: id}, val, callback);
+	Supplier.update({_id: id}, val, callback);
 };
 
-module.exports.createPart = function(newPart,  callback){
-        newPart.save(callback);
+module.exports.createSupplier = function(newSupplier,  callback){
+        newSupplier.save(callback);
 };
 module.exports.getById = function(id, callback){
-	Part.findById(id, callback);
+	Supplier.findById(id, callback);
 };
 

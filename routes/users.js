@@ -5,6 +5,14 @@ var LocalStrategy = require('passport-local').Strategy;
 
 var User = require('../models/user');
 
+
+var request = require('request');
+var lib = require('../utils/glib');
+
+
+var config = lib.getConfig();
+
+
 // Register
 router.get('/register', function(req, res){
 	res.render('register');
@@ -53,6 +61,53 @@ router.post('/register', function(req, res){
 		req.flash('success_msg', 'You are registered and can now login');
 
 		res.redirect('/users/login');
+	}
+});
+
+//todo: user change profile
+router.post('/register/:userID', lib.authenticateAdminRequest, function(req, res){
+	//user modify
+	var id = req.params.userID;
+	var password = req.body.password;
+
+	req.checkBody('name', 'Name is required').notEmpty();
+	req.checkBody('email', 'Email is required').notEmpty();
+	req.checkBody('email', 'Email is not valid').isEmail();
+	req.checkBody('username', 'Username is required').notEmpty();
+	req.checkBody('level', 'level is required').notEmpty();
+	if (password !== undefined && password.length > 0 ){
+		req.checkBody('password', 'Password is required').notEmpty();
+		req.checkBody('password2', 'Passwords do not match').equals(req.body.password);
+	}
+	var errors = req.validationErrors();
+
+	if(errors){
+		//todo: user must type all already typed values again, fix that
+		res.render('register-user',{errors:errors	});
+	} else {
+		var values = {
+				name     : req.body.name,
+				email    : req.body.email,
+				username : req.body.username,
+				level : req.body.level
+			};
+		
+		if (password !== undefined && password.length > 0 ){
+			values['password'] = req.body.password;
+		}
+		User.modify(id, values, function(err, result){
+			if(err || result === null || result.ok !== 1) {
+					req.flash('error',	' unable to update' );
+			} else{
+					if (result.nModified === 0){
+						req.flash('success_msg',	'User is unchanged!' );
+					} else {
+						req.flash('success_msg',	'User updated!' );
+					}
+			}
+			res.redirect('/users/register/'+id);
+		});
+			
 	}
 });
 
