@@ -7,14 +7,16 @@ Declare array of [Objects](https://stackoverflow.com/questions/19695058/how-to-d
 ##### Part
  - ID
  - Name
- - Image
  - Description
  - Category
+ - Model
+ - Count
+ - -------------------
+ - Image
+ - Type
  - Location
  - Supplier
  - Manufacturer
- - Model
- - Type
  - Urls[{Name: String, Url: String}]
  - AttachmentIds: [Schema.Types.ObjectId]
 
