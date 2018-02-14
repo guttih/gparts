@@ -5,14 +5,24 @@
 ##### Part
  - ID
  - Name
+ - Image
  - Description
  - Category
  - Location
  - Supplier
  - Manufacturer
  - Model
- - Attachments
+ - Attachments[]
 
+##### Attachment
+- ID
+- Name: String
+- file: { data: Buffer, contentType: String }
+
+##### Url
+- ID
+- Name: String
+- Url: String
 ##### Type
 - ID
 - Name
