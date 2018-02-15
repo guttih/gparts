@@ -20,9 +20,13 @@ Declare array of [Objects](https://stackoverflow.com/questions/19695058/how-to-d
  - Urls[{Name: String, Url: String}]
  - AttachmentIds: [Schema.Types.ObjectId]
 
-##### Attachment
+How to [save a file](https://gist.github.com/aheckmann/2408370) to mongoose.
+Or do I save a path to a file on the /public/files?  How do I know if the uploaded file is a file or að image?
+
+##### File
 - ID
 - Name: String
+- Description: String
 - file: { data: Buffer, contentType: String }
 
 ##### Type
