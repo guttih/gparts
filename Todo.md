@@ -23,6 +23,9 @@ Declare array of [Objects](https://stackoverflow.com/questions/19695058/how-to-d
 How to [save a file](https://gist.github.com/aheckmann/2408370) to mongoose.
 Or do I save a path to a file on the /public/files?  How do I know if the uploaded file is a file or að image?
 
+I will save the files to a special directory, this is better when sending the data to and from the client from the server.
+I will never have to think about sending big files.  Notes will handle that form me, I will only provide a link to the file.  the filename will be the ObjectId of the file object.  And when a user deletes the file object from mongoose, I will also delete the file object from the disk.
+
 ##### File
 - ID
 - Name: String
