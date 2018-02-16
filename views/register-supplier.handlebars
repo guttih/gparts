@@ -1,12 +1,14 @@
 
+
 {{#if item}} <!-- if you want to modify -->
-      <h2 class="page-header" align="right">Modify a Part</h2>
+      <h2 class="page-header" align="right">Modify a Supplier</h2>
 			<script type="text/javascript">
 			var item = {{{item}}};
 		</script>
 {{else}}
-      <h2 class="page-header" align="right">Register a new Part</h2>
+      <h2 class="page-header" align="right">Register a new Supplier</h2>
 {{/if}}
+
 {{#if errors}}
     <div class="error-container"> 
       {{#each errors}}
@@ -14,28 +16,27 @@
       {{/each}}
     </div>
 {{/if}}
-
-<form method="post" id="register-form" action ="/parts/register">
+<form method="post" id="register-form" action ="/suppliers/register">
     <div class="row row-padd">
 		<label>Name</label>
-			<p>Name of the part.</p>
+			<p>Name of the supplier.</p>
 		<input type="text"   id="name"     name="name" form="register-form" class="form-control" value="" placeholder="Type name">
 	</div>
 	
   <div class="form-horizontal">
     <label>Description</label>
-    <p>Describe the part what can be done with it and how to use it.</p>
+    <p>Here you can type more information about this supplier.</p>
     <div class="form-group">
       <div class="col-md-12">
-        <textarea id="description" name="description" form="register-form" class="form-control" rows="3" placeholder="Describe this part."></textarea>
+        <textarea id="description" name="description" form="register-form" class="form-control" rows="3" placeholder="Information about this supplier."></textarea>
       </div>
     </div>
   </div>
 
   <div class="row row-padd">
 		<label>Web page</label>
-			<p>Web page of the part.</p>
-		<input type="text"   id="url"     name="url" form="register-form" class="form-control" value="" placeholder="Type the parts web page ">
+			<p>Web page of the supplier.</p>
+		<input type="text"   id="url"     name="url" form="register-form" class="form-control" value="" placeholder="Type the suppliers web page ">
 	</div>
   
 
@@ -43,4 +44,4 @@
 </form>
 
 
-<script src="/js/register-part.js" type="text/javascript" charset="utf-8"></script>
+<script src="/js/register-supplier.js" type="text/javascript" charset="utf-8"></script>

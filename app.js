@@ -41,10 +41,14 @@ db.on('open', function () {
 
 
 // Routes
-var routes = require('./routes/index');
-var users  = require('./routes/users');
-var suppliers  = require('./routes/suppliers');
-var parts  = require('./routes/parts');
+var routes         = require('./routes/index');
+var users          = require('./routes/users');
+var suppliers      = require('./routes/suppliers');
+var parts          = require('./routes/parts');
+var manufacturers  = require('./routes/manufacturers');
+var locations      = require('./routes/locations');
+var types          = require('./routes/types');
+var files          = require('./routes/files');
 
 // Init App
 var app = express();
@@ -77,9 +81,7 @@ app.use(passport.session());
 
 app.use(expressValidator({
 	customValidators: {
-		isEqual: (value1, value2) => {
-		return value1 === value2
-		}
+		isEqual: (value1, value2) => { return value1 === value2 }
 	},
 	errorFormatter: function(param, msg, value) {
 		var namespace = param.split('.'), 
@@ -134,6 +136,11 @@ app.use('/', routes);
 app.use('/users', users);
 app.use('/suppliers', suppliers);
 app.use('/parts', parts);
+app.use('/manufacturers', manufacturers);
+app.use('/locations', locations);
+app.use('/types', types);
+app.use('/files', files);
+
 
 // Set Port
 app.set('port', (process.env.PORT || 6300));

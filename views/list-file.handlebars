@@ -1,0 +1,21 @@
+<div class="row">
+	<h3 class="page-header" align="right">Files</h3>
+</div>
+{{#if errors}}
+    <div class="error-container"> 
+		{{#each errors}}
+			<div class="alert alert-danger">{{msg}}</div>
+		{{/each}}
+    </div>
+{{/if}}
+<div class="row">
+	<p> </p>
+</div>
+<div class="row">
+	<div id = "list" class="file-list list-group">
+	<!-- listItems will be added here-->
+	</div>
+</div>
+
+<script src="/js/bootstrap.min.js"></script>	
+<script src="/js/list-files.js"></script>	

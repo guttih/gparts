@@ -14,91 +14,93 @@ var config = lib.getConfig();
 
 
 // Register
-router.get('/register', function(req, res){
-	res.render('register');
+router.get('/register', lib.authenticateAdminRequest, function(req, res){
+	res.render('register-part');
 });
 
-router.get('/', lib.authenticateUrl, function(req, res){
-	res.render('index');
-});
+// modify page
+router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
+	var id = req.params.ID;
+	if (id !== undefined){
+		Part.getById(id, function(err, part){
+				if(err || part === null) {
+					req.flash('error',	'Could not find part.' );
+					res.redirect('/result');
+				} else{
+					var obj = {id : id,
+						name: part.name,
+						description: part.description,
+						url: part.url,
+					};
+					var str = JSON.stringify(obj);
+					res.render('register-part', {item:str});
+				}
+			});
+		
+	}
 
-// Login
-router.get('/login', function(req, res){
-	res.render('login');
 });
 
 // Register Part
-router.post('/register', function(req, res){
-	var name = req.body.name;
-	var email = req.body.email;
-	var partname = req.body.partname;
-	var password = req.body.password;
-	var password2 = req.body.password2;
+router.post('/register', lib.authenticateAdminRequest, function(req, res){
 
 	// Validation
-	req.checkBody('name', 'Name is required').notEmpty();
-	req.checkBody('email', 'Email is required').notEmpty();
-	req.checkBody('email', 'Email is not valid').isEmail();
-	req.checkBody('partname', 'Partname is required').notEmpty();
-	req.checkBody('password', 'Password is required').notEmpty();
-	req.checkBody('password2', 'Passwords do not match').equals(req.body.password);
-
+	req.checkBody('name',       'Name is required'       ).notEmpty();
+	req.checkBody('location',   'Location is required'   ).notEmpty();
+	req.checkBody('type',       'Type is required'       ).notEmpty();
+	req.checkBody('stockCount', 'Stock count is required and must be a number!').notEmpty().isNumeric();
+	
+	
 	var errors = req.validationErrors();
 
 	if(errors){
-		res.render('register',{
+		res.render('register-part',{
 			errors:errors
 		});
 	} else {
 		var newPart = new Part({
-			name: name,
-			email:email,
-			partname: partname,
-			password: password
+			name           : req.body.name,
+			description    : req.body.description,
+			Category       : req.body.Category,
+			urls           : req.body.urls,
+			image          : req.body.image,
+			files          : req.body.files,
+			stockCount     : req.body.stockCount,
+			firstPurchased : req.body.firstPurchased,
+			lastUpdated    : req.body.lastUpdated,
+			type           : req.body.type,
+			location       : req.body.location,
+			manufacturer   : req.body.manufacturer,
+			supplier       : req.body.supplier
 		});
 
-		Part.createPart(newPart, function(err, part){
+		Part.create(newPart, function(err, part){
 			if(err) throw err;
 			console.log(part);
 		});
 
-		req.flash('success_msg', 'You are registered and can now login');
-
-		res.redirect('/parts/login');
+		req.flash('success_msg',	'You successfully created the \"' +  newPart._doc.name + '\" part.' );
+			res.redirect('/parts/list');
 	}
 });
 
-//todo: part change profile
-router.post('/register/:partID', lib.authenticateAdminRequest, function(req, res){
+router.post('/register/:ID', lib.authenticateAdminRequest, function(req, res){
 	//part modify
-	var id = req.params.partID;
-	var password = req.body.password;
+	var id = req.params.ID;
 
 	req.checkBody('name', 'Name is required').notEmpty();
-	req.checkBody('email', 'Email is required').notEmpty();
-	req.checkBody('email', 'Email is not valid').isEmail();
-	req.checkBody('partname', 'Partname is required').notEmpty();
-	req.checkBody('level', 'level is required').notEmpty();
-	if (password !== undefined && password.length > 0 ){
-		req.checkBody('password', 'Password is required').notEmpty();
-		req.checkBody('password2', 'Passwords do not match').equals(req.body.password);
-	}
 	var errors = req.validationErrors();
 
 	if(errors){
-		//todo: part must type all already typed values again, fix that
 		res.render('register-part',{errors:errors	});
 	} else {
 		var values = {
-				name     : req.body.name,
-				email    : req.body.email,
-				partname : req.body.partname,
-				level : req.body.level
+				name        : req.body.name,
+				description : req.body.description,
+				url         : req.body.url
 			};
 		
-		if (password !== undefined && password.length > 0 ){
-			values['password'] = req.body.password;
-		}
+		
 		Part.modify(id, values, function(err, result){
 			if(err || result === null || result.ok !== 1) {
 					req.flash('error',	' unable to update' );
@@ -115,18 +117,56 @@ router.post('/register/:partID', lib.authenticateAdminRequest, function(req, res
 	}
 });
 
-router.post('/login',
-  passport.authenticate('local', {successRedirect:'/', failureRedirect:'/parts/login',failureFlash: true}),
-  function(req, res) {
-    res.redirect('/');
-  });
 
-router.get('/logout', function(req, res){
-	req.logout();
 
-	req.flash('success_msg', 'You are logged out');
+router.get('/item/:ID', lib.authenticateRequest, function(req, res){
+	var id = req.params.ID;
+	if (id !== undefined){
+		Part.getById(id, function(err, part){
+				if(err || part === null) {
+					res.send('Error 404 : Not found! ');
+				} else{
+					res.json(part);
+				}
+			});
+	}
+});
 
-	res.redirect('/parts/login');
+
+//returns a part list page
+router.get('/list', lib.authenticateUrl, function(req, res){
+	res.render('list-part');
+});
+/*listing all parts and return them as a json array*/
+router.get('/part-list', lib.authenticateRequest, function(req, res){
+	Part.list(function(err, list){
+		
+		var arr = [];
+		var isOwner;
+		var item; 
+		for(var i = 0; i < list.length; i++){
+				item = list[i];
+
+				arr.push({	id         :item._id,
+							name       :item.name, 
+							description:item.description,
+							url        :item.url
+						});
+		}
+		res.json(arr);
+	});
+});
+
+router.delete('/:ID', lib.authenticateAdminRequest, function(req, res){
+	var id = req.params.ID;
+	Part.delete(id, function(err, result){
+		if(err !== null){
+			res.status(404).send('unable to delete part "' + id + '".');
+		} else {
+			res.status(200).send('Part deleted.');
+		}
+	});
+	
 });
 
 module.exports = router;

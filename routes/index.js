@@ -7,13 +7,31 @@ router.get('/', lib.authenticateUrl, function(req, res){
 	res.render('index');
 });
 
-function ensureAuthenticated(req, res, next){
-	if(req.isAuthenticated()){
-		return next();
-	} else {
-		//req.flash('error_msg','You are not logged in');
-		res.redirect('/users/login');
+
+router.get('/about', function(req, res){
+	res.render('about');
+});
+
+router.post('/settings', lib.authenticateCardOwnerRequest, function(req, res){
+	var allowUserRegistration = JSON.parse(req.body.allowUserRegistration);
+	//read the config file into a variable.
+	var str ='';
+	var changes = 0;
+	var config = lib.getConfig();
+	if (allowUserRegistration !== undefined){
+		console.log("Ok, let's add this value to the config file.");
+		config.allowUserRegistration = allowUserRegistration;
+		lib.setConfig(config);
+		changes++;
 	}
-}
+	if (changes > 0){
+		res.status(200).send('Settings changed.');
+	} else {
+	// if all variables where missing return error
+	//if was able to save return this
+		res.status(422).send('Settings unchanged, no variables to change found.');
+	}
+
+});
 
 module.exports = router;

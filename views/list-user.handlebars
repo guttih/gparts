@@ -1,0 +1,21 @@
+<div class="row">
+	<h3 class="page-header" align="right">Users</h3>
+</div>
+{{#if errors}}
+    <div class="error-container"> 
+		{{#each errors}}
+			<div class="alert alert-danger">{{msg}}</div>
+		{{/each}}
+    </div>
+{{/if}}
+<div class="row">
+	<p> </p>
+</div>
+<div class="row">
+	<div id = "user-list" class="user-list list-group">
+	<!-- listItems will be added here-->
+	</div>
+</div>
+
+<script src="/js/bootstrap.min.js"></script>	
+<script src="/js/list-users.js"></script>	

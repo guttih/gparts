@@ -1,8 +1,10 @@
-<h2 class="page-header">Register</h2>
+<h2 class="page-header" align="right">Register</h2>
 {{#if errors}}
-      {{#each errors}}
-        <div class="alert alert-danger">{{msg}}</div>
-      {{/each}}
+    <div class="error-container"> 
+        {{#each errors}}
+          <div class="alert alert-danger">{{msg}}</div>
+        {{/each}}
+    </div>
 {{/if}}
 <form method="post" action="/users/register">
    <div class="form-group">

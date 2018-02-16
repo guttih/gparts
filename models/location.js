@@ -3,35 +3,34 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 
-var SupplierSchema = mongoose.Schema({
+var LocationSchema = mongoose.Schema({
 	name       : { type: String, index:true },
-	description: { type: String },
-	url        : { type: String }
+	description: { type: String }
 }); 
 
-var Supplier = module.exports = mongoose.model('Supplier', SupplierSchema);
+var Location = module.exports = mongoose.model('Location', LocationSchema);
 
 
 module.exports.delete = function (id, callback){
 	
-	Supplier.findByIdAndRemove(id, callback);
+	Location.findByIdAndRemove(id, callback);
 };
 
 module.exports.modify = function (id, newValues, callback){
 	//$set
 	var val = {$set: newValues};
-	Supplier.update({_id: id}, val, callback);
+	Location.update({_id: id}, val, callback);
 };
 
-module.exports.create = function(newSupplier,  callback){
-        newSupplier.save(callback);
+module.exports.create = function(newLocation,  callback){
+        newLocation.save(callback);
 };
 module.exports.getById = function(id, callback){
-	Supplier.findById(id, callback);
+	Location.findById(id, callback);
 };
 
 //get all records
 module.exports.list = function (callback){
 	var query = {};
-	Supplier.find(query, callback);
+	Location.find(query, callback);
 };
