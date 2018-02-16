@@ -2,7 +2,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
-
+/*how to load an image example: https://gist.github.com/aheckmann/2408370*/
 var PartSchema = mongoose.Schema({
 	name           : { type: String, index:true },
 	description    : { type: String },	
