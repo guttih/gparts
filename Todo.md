@@ -26,6 +26,8 @@ Or do I save a path to a file on the /public/files?  How do I know if the upload
 I will save the files to a special directory, this is better when sending the data to and from the client from the server.
 I will never have to think about sending big files.  Notes will handle that form me, I will only provide a link to the file.  the filename will be the ObjectId of the file object.  And when a user deletes the file object from mongoose, I will also delete the file object from the disk.
 
+
+[This is what I want, I think](https://stackoverflow.com/questions/48732027/how-to-send-fields-and-files-in-the-same-form-submit-in-nodejs-multer)
 ##### File
 - ID
 - Name: String
