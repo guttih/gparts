@@ -299,6 +299,6 @@ button.btn-log-pins {
 	margin-top:20px;
 }
 
-/*log end*/
-
-
+#btnSave{
+	margin-left: 10px;
+}

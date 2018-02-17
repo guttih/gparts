@@ -233,6 +233,12 @@ module.exports.makeRequestPostOptions = function makeRequestOptions(url, formDat
 	return options;
 };
 
+//add current time to the request object
+module.exports.requestTime = function (req, res, next) {
+	req.requestTime = Date.now();
+	next();
+}
+
 
 module.exports.setConfig = function setConfig(conf){
 	var file = __dirname + '/../config.json';

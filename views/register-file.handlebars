@@ -14,11 +14,17 @@
       {{/each}}
     </div>
 {{/if}}
-<form method="post" id="register-form" action ="/files/register">
+<form method="post" id="register-form" 
+    action ="/files/register"
+{{#unless item}}
+    enctype="multipart/form-data"
+{{/unless}}
+>
+  	<input type="hidden"   id="originalFilename" name="originalFilename" value="">
     <div class="row row-padd">
 		<label>Name</label>
 			<p>Name of the file.</p>
-		<input type="text"   id="name"     name="name" form="register-form" class="form-control" value="" placeholder="Type name">
+		<input type="text"   id="name"     name="name" class="form-control" value="" placeholder="Type name">
 	</div>
 	
   <div class="form-horizontal">
@@ -26,20 +32,30 @@
     <p>Describe where this file is and how to find it. You could also say what kind of parts are kept at this file.</p>
     <div class="form-group">
       <div class="col-md-12">
-        <textarea id="description" name="description" form="register-form" class="form-control" rows="3" placeholder="Describe this file."></textarea>
+        <textarea id="description" name="description" class="form-control" rows="3" placeholder="Describe this file."></textarea>
       </div>
     </div>
   </div>
-
+{{#unless item}}
   <div class="row row-padd">
-		<label>Web page</label>
-			<p>Web page of the file.</p>
-		<input type="text"   id="url"     name="url" form="register-form" class="form-control" value="" placeholder="Type the files web page ">
+		<label>File</label>
+			<p>The file to upload</p>
+            <input  type="file" 
+                    name="file" 
+                    id="file" 
+                    class="btn-file" 
+                    placeholder="Select the file you want to upload"
+                    required
+            />
 	</div>
-  
+   {{/unless}}
+</form>
 
   <button id="btnSave" type="button" class="btn btn-success pull-right">Save</button>
-</form>
+{{#if item}}  
+  <button id="btnDelete" type="button" class="btn btn-danger pull-right">Delete</button>
+{{/if}}
+
 
 
 <script src="/js/register-file.js" type="text/javascript" charset="utf-8"></script>

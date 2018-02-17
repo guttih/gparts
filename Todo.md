@@ -28,6 +28,9 @@ I will never have to think about sending big files.  Notes will handle that form
 
 
 [This is what I want, I think](https://stackoverflow.com/questions/48732027/how-to-send-fields-and-files-in-the-same-form-submit-in-nodejs-multer)
+
+[Middlewere tutorial](https://expressjs.com/en/guide/using-middleware.html)
+
 ##### File
 - ID
 - Name: String

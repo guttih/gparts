@@ -53,7 +53,7 @@ router.post('/register', lib.authenticateAdminRequest, function(req, res){
 	var errors = req.validationErrors();
 
 	if(errors){
-		res.render('register',{
+		res.render('register-manufacturer',{
 			errors:errors
 		});
 	} else {

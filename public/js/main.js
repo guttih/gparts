@@ -245,7 +245,7 @@ function setSelectAccessBackgroundClick(){
 
 
 /*routeText is the element type to be deleted 'cards', 'controls' or 'devices'*/
-function deleteItem(routeText, id){
+function deleteItem(routeText, id, deleteSuccessCallback){
 	var singular;
 	singular = routeText.substring(0, routeText.length-1);
 	//showModal('Delete item',	'Are you sure you want to delete this '+ routeText +'?');
@@ -259,11 +259,13 @@ function deleteItem(routeText, id){
 				url: url,
 				type: 'DELETE',
 				success: function(data) {
-					console.log("delete responce.");
-					console.log(data);
-					console.log('todo: onDeleted remove this item from the dom list' );
-					
-					$('#listItem'+ id).remove();
+					console.log("delete success.");
+					if (deleteSuccessCallback !== undefined){
+						deleteSuccessCallback();
+					} else{
+						console.log(data);
+						$('#listItem'+ id).remove();
+					}
 				},
 				error: function (res){
 					console.log(res);
@@ -275,11 +277,11 @@ function deleteItem(routeText, id){
 		});
 		
 }
-function showModalError(title, responce){
+function showModalError(title, response){
 
 	showModal(title, 
-			'Error ' + responce.status + ' : ' + responce.statusText + 
-			'\n\n<p class="error-response-text">' + responce.responseText + '</p>');
+			'Error ' + response.status + ' : ' + response.statusText + 
+			'\n\n<p class="error-response-text">' + response.responseText + '</p>');
 }
 function showModalErrorText(title, errorMessage){
 
@@ -297,27 +299,52 @@ function showModal(title, message){
 	else {
 		$(".modal-body").text(message);
 	}
+	$('#myModal .btn-default').show();
 	$('#btn-confirm').hide(); 
 	$('#myModal').modal('show');
 	
 }
 
 
-function showModalConfirm(title, message, confirmButtonText, callback){
+function showModalConfirm(title, message, confirmButtonText, confirmCallback){
 	$(".modal-title").text(title);
 	$(".modal-body").text(message); 
-	if (callback === undefined){
+	if (confirmCallback === undefined){
 		//no button text provided
 		$('#btn-confirm').text("Confirm");
-		callback = confirmButtonText; /**/
+		confirmCallback = confirmButtonText; /**/
 
 	} else {
 		$('#btn-confirm').text(confirmButtonText);
 	}
+	$('#btn-confirm').removeClass('btn-success').addClass('btn-danger');
 	$('#btn-confirm').on('click', function(e) {
-		callback();
+		confirmCallback();
 		$('#myModal').modal('hide');
 	});
+	$('#myModal .btn-default').show();
+	$('#btn-confirm').show();
+	$('#myModal').modal('show');
+}
+
+function showModalOk(title, message, confirmButtonText, okCallback) {
+	$(".modal-title").text(title);
+	$(".modal-body").text(message); 
+	if (okCallback === undefined) {
+		//no button text provided
+		$('#btn-confirm').text("OK");
+		okCallback = confirmButtonText; /**/
+
+	} else {
+		$('#btn-confirm').text(confirmButtonText);
+	}
+	$('#btn-confirm').removeClass('btn-danger').addClass('btn-success');
+	
+	$('#btn-confirm').on('click', function(e) {
+		okCallback();
+		$('#myModal').modal('hide');
+	});
+	$('#myModal .btn-default').hide();
 	$('#btn-confirm').show();
 	$('#myModal').modal('show');
 }
