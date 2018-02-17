@@ -1,4 +1,5 @@
-const fileStorageFolder = './public/files';
+const storageFolderFile = './public/files';
+const storageFolderImage = './public/files/images';
 
 var express = require('express');
 var router = express.Router();
@@ -16,36 +17,59 @@ const fs = require('fs');
 var multer  = require('multer');
 var storageFile = multer.diskStorage({
 	destination: function (req, file, cb) {
-	  cb(null, fileStorageFolder)
+	  cb(null, storageFolderFile)
 	},
 	filename: function (req, file, cb) {
 		var name        = req.body.name;
 		var description = req.body.description;
-		var filename    = file.originalname;
+		var filename    = storageFolderFile + '/' + file.originalname;
 		
 		var newFile = new File({
 			name: name,
 			description:description,
-			originalFilename: filename
+			fileName: filename
 		});
 
 		File.create(newFile, function(err, file){
 		
 			if(err) throw err;
 			
-			var newFileName = file.id + File.getFileExtensions(file, true);
+			var fileNameOnDisk = File.getFileNameOnDisk(file);
 			req.body.fileObjectId = file.id;
-			cb(null, newFileName);
+			cb(null, fileNameOnDisk);
+		}); 
+	}
+  });
+
+  var storageImage = multer.diskStorage({
+	destination: function (req, file, cb) {
+	  cb(null, storageFolderImage)
+	},
+	filename: function (req, file, cb) {
+		var name        = req.body.name;
+		var description = req.body.description;
+		var filename    = storageFolderImage + '/' + file.originalname;
+		
+		var newFile = new File({
+			name: name,
+			description:description,
+			fileName: filename
+		});
+
+		File.create(newFile, function(err, file){
+		
+			if(err) throw err;
+			
+			var fileNameOnDisk = File.getFileNameOnDisk(file);
+			req.body.fileObjectId = file.id;
+			cb(null, fileNameOnDisk);
 		}); 
 	}
   });
 
 
-/*var upload = multer({ 
-	dest: '/public/files/', 
-	limits: { fileSize: 3000000 }
- });*/
- var upload = multer({ storage: storageFile }).single('file');
+ var uploadFile  = multer({ storage: storageFile,   limits: { fileSize: 3000000 } }).single('file');
+ var uploadImage = multer({ storage: storageImage , limits: { fileSize: 3000000 } }).single('image');
 
 var config = lib.getConfig();
 
@@ -76,42 +100,12 @@ router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
 	}
 
 });
-/*var createFileObject = function(req, res, next) {
-	var name        = req.body.name;
-	var description = req.body.description;
-	var originalFilename = req.body.originalFilename;
-	//var type         = req.body.type;
-
-	// Validation
-	var x = req.param('name');
-	console.log("to name of the form is : ", x);
-	req.checkBody('name', 'Name is required').notEmpty();
-
-	var errors = req.validationErrors();
-
-	if(errors){
-		res.render('register-file',{ errors:errors 	});
-	} else {
-		var newFile = new File({
-			name: name,
-			description:description,
-			originalFilename: originalFilename
-		});
-
-		File.create(newFile, function(err, file){
-			if(err) throw err;
-			res.render('register-file',{ errors:errors 	});
-			req.fileObjectId = file.id;
-			next();
-		});
-	}
-};*/
 
 	router.post('/register', lib.authenticateAdminRequest, function (req, res, next) {
 		// req.file is the `avatar` file
 		// req.body will hold the text fields, if there were any
 		
-			upload(req, res, function (err) {
+			uploadFile(req, res, function (err) {
 				if (err) {
 				// An error occurred when uploading
 				console.log(err);
@@ -217,8 +211,7 @@ router.delete('/:ID', lib.authenticateAdminRequest, function(req, res){
 				req.flash('error',	'Could not find file.' );
 				res.render('list-file');
 			} else {
-				var fileName = File.getFileNameOnDisk(file);
-				fileName = fileStorageFolder + '/' + fileName;
+				var fileName = File.getFullFileNameOnDisk(file);
 				File.delete(id, function(err, result){
 					if(err !== null){
 						res.status(404).send('unable to delete file "' + id + '".');

@@ -9,8 +9,8 @@ function setFormValues(item){
 		if (item.description !== undefined){
 			$("#description").val( item.description );
 		}
-		if (item.originalFilename !== undefined){
-			$("#originalFilename").val( item.originalFilename );
+		if (item.fileName !== undefined){
+			$("#fileName").val( item.fileName );
 		}
 		var action = document.getElementById('register-form').action;
 		
