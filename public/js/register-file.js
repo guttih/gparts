@@ -47,10 +47,10 @@ function setFormValues(item){
 		if (item.fileName !== undefined){
 			$("#fileName").val( item.fileName );
 		}
-		if (item.imageSrc !== undefined){
+		if (item.src !== undefined){
 			var $elm = $('#image-container');
 			$elm.css('display', 'unset');
-			$elm.find('img').attr('src', item.imageSrc);
+			$elm.find('img').attr('src', item.src);
 		}
 		
 		var action = document.getElementById('register-form').action;

@@ -94,7 +94,8 @@ router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
 					var obj = {id : id,
 						name: file.name,
 						description: file.description,
-						fileName: file.fileName
+						fileName: file.fileName,
+						src: File.getFullFileNameOnDisk(file).replace('./public', '')
 					};
 					var str = JSON.stringify(obj);
 					res.render('register-file', {item:str});
@@ -116,7 +117,7 @@ router.get('/register/image/:ID', lib.authenticatePowerUrl, function(req, res){
 						name: file.name,
 						description: file.description,
 						fileName: file.fileName,
-						imageSrc: File.getFullFileNameOnDisk(file).replace('./public', '')
+						src: File.getFullFileNameOnDisk(file).replace('./public', '')
 					};
 					var str = JSON.stringify(obj);
 					res.render('register-image', {item:str});
@@ -152,6 +153,34 @@ router.post('/register', lib.authenticateAdminRequest, function (req, res, next)
 			});
 		
 });
+
+router.post('/register/image', lib.authenticateAdminRequest, function (req, res, next) {
+	// req.file is the `avatar` file
+	// req.body will hold the text fields, if there were any
+	
+		uploadImage(req, res, function (err) {
+			if (err) {
+			// An error occurred when uploading
+			console.log(err);
+			return
+			}
+			var name  = req.body.name;
+			var id    = req.body.fileObjectId;
+		
+			req.checkBody('fileObjectId', 'A image to upload, must be selected.').notEmpty();
+			req.checkBody('name', 'Name is required').notEmpty();
+			var errors = req.validationErrors();
+			
+			if(errors){
+				res.render('register-image',{ errors:errors 	});
+			} else {
+				req.flash('success_msg',	'File uploaded and created!' );
+				res.redirect('/files/register/image/'+id);
+			}
+		});
+	
+});
+
 router.post('/register/image/:ID', lib.authenticateAdminRequest, function(req, res){
 	//file modify
 	var id = req.params.ID;

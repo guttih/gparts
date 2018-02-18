@@ -459,6 +459,7 @@ function initRegister(){
 	}
 	$('#btnSave').click(function() {
 		if (validateFormValues() === true) {
+			var action = document.getElementById('register-form').action; 
 			document.getElementById('register-form').submit();
 		}
 	});
