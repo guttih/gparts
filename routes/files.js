@@ -78,6 +78,9 @@ var config = lib.getConfig();
 router.get('/register', lib.authenticateAdminRequest, function(req, res){
 	res.render('register-file');
 });
+router.get('/register/image', lib.authenticateAdminRequest, function(req, res){
+	res.render('register-image');
+});
 
 // modify page
 router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
@@ -91,7 +94,7 @@ router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
 					var obj = {id : id,
 						name: file.name,
 						description: file.description,
-						url: file.url,
+						fileName: file.fileName
 					};
 					var str = JSON.stringify(obj);
 					res.render('register-file', {item:str});
@@ -101,7 +104,29 @@ router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
 
 });
 
-	router.post('/register', lib.authenticateAdminRequest, function (req, res, next) {
+router.get('/register/image/:ID', lib.authenticatePowerUrl, function(req, res){
+	var id = req.params.ID;
+	if (id !== undefined){
+		File.getById(id, function(err, file){
+				if(err || file === null) {
+					req.flash('error',	'Could not find file.' );
+					res.render('register-file');
+				} else{
+					var obj = {id : id,
+						name: file.name,
+						description: file.description,
+						fileName: file.fileName,
+						imageSrc: File.getFullFileNameOnDisk(file).replace('./public', '')
+					};
+					var str = JSON.stringify(obj);
+					res.render('register-image', {item:str});
+				}
+		});
+	}
+
+});
+
+router.post('/register', lib.authenticateAdminRequest, function (req, res, next) {
 		// req.file is the `avatar` file
 		// req.body will hold the text fields, if there were any
 		
@@ -127,6 +152,37 @@ router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
 			});
 		
 });
+router.post('/register/image/:ID', lib.authenticateAdminRequest, function(req, res){
+	//file modify
+	var id = req.params.ID;
+
+	req.checkBody('name', 'Name is required').notEmpty();
+	var errors = req.validationErrors();
+
+	if(errors){
+		res.render('register-file',{errors:errors	});
+	} else {
+		var values = {
+				name        : req.body.name,
+				description : req.body.description
+			};
+		
+		
+		File.modify(id, values, function(err, result){
+			if(err || result === null || result.ok !== 1) {
+					req.flash('error',	' unable to update' );
+			} else{
+					if (result.nModified === 0){
+						req.flash('success_msg',	'File is unchanged!' );
+					} else {
+						req.flash('success_msg',	'File updated!' );
+					}
+			}
+			res.redirect('/files/register/image/'+id);
+		});
+			
+	}
+});
 
 router.post('/register/:ID', lib.authenticateAdminRequest, function(req, res){
 	//file modify
@@ -137,6 +193,38 @@ router.post('/register/:ID', lib.authenticateAdminRequest, function(req, res){
 
 	if(errors){
 		res.render('register-file',{errors:errors	});
+	} else {
+		var values = {
+				name        : req.body.name,
+				description : req.body.description
+			};
+		
+		
+		File.modify(id, values, function(err, result){
+			if(err || result === null || result.ok !== 1) {
+					req.flash('error',	' unable to update' );
+			} else{
+					if (result.nModified === 0){
+						req.flash('success_msg',	'File is unchanged!' );
+					} else {
+						req.flash('success_msg',	'File updated!' );
+					}
+			}
+			res.redirect('/files/register/'+id);
+		});
+			
+	}
+});
+
+router.post('/register/image/:ID', lib.authenticateAdminRequest, function(req, res){
+	//file modify
+	var id = req.params.ID;
+
+	req.checkBody('name', 'Name is required').notEmpty();
+	var errors = req.validationErrors();
+
+	if(errors){
+		res.render('register-image',{errors:errors	});
 	} else {
 		var values = {
 				name        : req.body.name,

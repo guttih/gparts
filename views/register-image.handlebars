@@ -1,10 +1,10 @@
 {{#if item}} <!-- if you want to modify -->
-      <h2 class="page-header" align="right">Modify file properties</h2>
+      <h2 class="page-header" align="right">Modify image properties</h2>
 			<script type="text/javascript">
 			var item = {{{item}}};
 		</script>
 {{else}}
-      <h2 class="page-header" align="right">Register a new file</h2>
+      <h2 class="page-header" align="right">Register a new image</h2>
 {{/if}}
 
 {{#if errors}}
@@ -15,7 +15,7 @@
     </div>
 {{/if}}
 <form method="post" id="register-form" 
-    action ="/files/register"
+    action ="/files/register/image"
 {{#unless item}}
     enctype="multipart/form-data"
 {{/unless}}
@@ -39,19 +39,35 @@
   <div class="row row-padd">
 		<label>File</label>
 {{#if item}}
-<p>Uploaded file and original fileName.</p>
-  <input type="text" id="fileName" name="fileName" class="form-control fileName" value="" readonly />
+    <p>Uploaded file and original fileName.</p>
+    <input type="text" id="fileName" name="fileName" class="form-control fileName" value="" readonly />
 {{else}}
-			<p>The file to upload</p>
-            <input  type="file" 
-                    name="file" 
-                    id="file" 
+    <div class="input-group col-xs-9 col-sm-10 col-md-10 col-lg-10 col-xl-11">
+        <label class="input-group-btn">
+            <span class="btn btn-primary">
+                Browse… 
+                <input  type="file" 
+                    accept="image/*"
+                    name="image" 
+                    id="image" 
                     class="btn-file" 
-                    placeholder="Select the file you want to upload"
-                    required
-            />
+                    placeholder="Select the image you want to upload"
+                    onChange="validateImage(this);"
+                    required 
+                    style="display: none;"/>
+            </span>
+        </label>
+        <input type="text" id="fileName" class="form-control" readonly="">
+    </div>
+
+
+
+
 {{/if}}
-	</div>
+    <div class="pull-right" id="image-container">
+        <img src="#" style="max-width:100px;max-height:100px" />
+    </div>
+</div>
    
 </form>
 
@@ -59,7 +75,5 @@
 {{#if item}}  
   <button id="btnDelete" type="button" class="btn btn-danger pull-right">Delete</button>
 {{/if}}
-
-
 
 <script src="/js/register-file.js" type="text/javascript" charset="utf-8"></script>

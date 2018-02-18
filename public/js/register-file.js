@@ -1,3 +1,38 @@
+
+
+function validateImage(input) {
+	var URL = window.URL || window.webkitURL;
+	if (!input || input === undefined || input.files === undefined) {
+		//there is no file input field we are in edit mode
+		return true;
+	}
+    var file = input.files[0];
+	var enableButton = false;
+    /*if (file && file.type !== undefined && file.type.length > 0) {
+		var arr = ['image/jpeg', 'image/svg+xml', 'image/png', 'image/gif', 'image/bmp', 'image/webp'];
+		enableButton = (arr.indexOf(file.type) > -1);
+	}*/
+	if (file && file.name){
+		$('#fileName').val(file.name);
+	}
+	enableButton = (file && file.type !== undefined && file.type.indexOf('image') === 0);
+	
+	if (enableButton) {
+		var reader = new FileReader();
+            reader.onload = function (e) {
+				var $elm = $('#image-container');
+				$elm.css('display', 'unset');
+				$elm.find('img').attr('src', e.target.result);
+			}
+			reader.readAsDataURL(input.files[0]);
+	} else {
+		$('#image-container').css('display', 'none');
+	}
+	$('#btnSave').prop("disabled", !enableButton);
+
+	return enableButton;
+}
+
 function setFormValues(item){
 
 	if (typeof item !== 'undefined' && item !== 'undefined') {
@@ -12,6 +47,12 @@ function setFormValues(item){
 		if (item.fileName !== undefined){
 			$("#fileName").val( item.fileName );
 		}
+		if (item.imageSrc !== undefined){
+			var $elm = $('#image-container');
+			$elm.css('display', 'unset');
+			$elm.find('img').attr('src', item.imageSrc);
+		}
+		
 		var action = document.getElementById('register-form').action;
 		
 		if (item.id !== undefined) {
@@ -39,25 +80,25 @@ function validateFormValues(){
 		showModalErrorText('Name is missing', 'You must provide a name.');
 		return false;
 	}
-	return true;
+	return validateImage(document.getElementById('image'));;
 }
 
 
 $( document ).ready(function() {
 	console.log( "ready!" );
+	$('#image-container').css('display', 'none');
 	initRegister();
-
-	var $elm = $("#file");
+	
+	var $elm = $("#file,#image");
 	console.log('registering on change');
 	$elm.change(function () {
 		var name = $("#name").val();
 		console.log('changed');
 		var selectedFile = jQuery(this).val();
 		if (name === undefined || name.length < 1 && selectedFile !== undefined && selectedFile.length > 0) {
-			selectedFile = selectedFile.replace(/^.*[\\\/]/, '')
+			selectedFile = selectedFile.replace(/^.*[\\\/]/, '');
 			$("#name").val( selectedFile );
 		}
-
-	
 	});
+	
 });
