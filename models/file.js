@@ -35,6 +35,13 @@ module.exports.list = function (callback){
 	File.find(query, callback);
 };
 
+//get all records that start with the pathToSearchFor
+module.exports.listByPath = function (pathToSearchFor, callback){
+	var rgx = new RegExp("^"+pathToSearchFor)
+	var query = {fileName:rgx};
+	File.find(query, callback);
+};
+
 
 /*
 
@@ -112,11 +119,12 @@ module.exports.getFileNameOnDisk = function (FileObject){
 	return FileObject.id + File.getFileExtensions(FileObject, true);
 };
 
-//get the filename on disk which includes the Id + the file extension
+//get the file path on disk
 module.exports.getFilePathOnDisk = function (FileObject){
 	return _getFilePath(FileObject.fileName);
 };
 
+//get the file path and filename on disk which includes the Id + the file extension
 module.exports.getFullFileNameOnDisk = function (FileObject) {
 	var ret = _getFilePath(FileObject.fileName, true) + module.exports.getFileNameOnDisk(FileObject);
 	return ret;

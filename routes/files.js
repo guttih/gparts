@@ -298,6 +298,10 @@ router.get('/item/:ID', lib.authenticateRequest, function(req, res){
 router.get('/list', lib.authenticateUrl, function(req, res){
 	res.render('list-file');
 });
+
+router.get('/list/image', lib.authenticateUrl, function(req, res){
+	res.render('list-image');
+});
 /*listing all parts and return them as a json array*/
 router.get('/file-list', lib.authenticateRequest, function(req, res){
 	File.list(function(err, list){
@@ -312,6 +316,25 @@ router.get('/file-list', lib.authenticateRequest, function(req, res){
 							name       :item.name, 
 							description:item.description,
 							url        :item.url
+						});
+		}
+		res.json(arr);
+	});
+});
+/*listing all parts which have the same path as storageFolderImage path and return them as a json array*/
+router.get('/image-list', lib.authenticateRequest, function(req, res){
+	File.listByPath(storageFolderImage, function(err, list){
+		
+		var arr = [];
+		var isOwner;
+		var item; 
+		for(var i = 0; i < list.length; i++){
+				item = list[i];
+
+				arr.push({	id         :item._id,
+							name       :item.name, 
+							description:item.description,
+							src: File.getFullFileNameOnDisk(item).replace('./public', '')
 						});
 		}
 		res.json(arr);

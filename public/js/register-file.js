@@ -47,10 +47,17 @@ function setFormValues(item){
 		if (item.fileName !== undefined){
 			$("#fileName").val( item.fileName );
 		}
-		if (item.src !== undefined){
+		if (item.src !== undefined) {
 			var $elm = $('#image-container');
-			$elm.css('display', 'unset');
-			$elm.find('img').attr('src', item.src);
+			if ($elm.length > 0){
+				$elm.css('display', 'unset');
+				$elm.find('img').attr('src', item.src);
+			}
+			
+			$( "#btnView" ).click(function() {
+				var win = window.open(item.src, '_blank');
+  				win.focus();
+			  });
 		}
 		
 		var action = document.getElementById('register-form').action;
@@ -60,10 +67,13 @@ function setFormValues(item){
 		}
 		document.getElementById('register-form').action = action;
 
-
+		var destHref = '/files/list';
+		if ($('#image-container').length > 0) {
+			destHref = '/files/list/image'; //we have an image.
+		}
 		$('#btnDelete').click(function() {
 			deleteItem('files',item.id, function() {
-						window.location.href ='/files/list';
+						window.location.href = destHref;
 				});
 				
 			});

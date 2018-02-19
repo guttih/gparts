@@ -174,8 +174,12 @@ function getWhenServerStarted(){
 
 
 /*routeText is the element type to be deleted 'cards', 'controls' or 'devices'*/
-function createListItem(id, name, description, routeText, bAddRunButton, bAddAccessButton, bAddEditButton, bAddDeleteButton){
+function createListItem(id, name, description, routeText, bAddRunButton, bAddAccessButton, bAddEditButton, bAddDeleteButton, imageSrc){
 	var url = SERVER+'/'+ routeText +'/register/'+ id;
+	
+	if (imageSrc!== undefined) {
+		url = SERVER+'/'+ routeText +'/register/image/'+ id;
+	}
 	var strElm = 
 '<div id="listItem'+ id +'" class="list-group-item clearfix">' +
 	'<p class="list-group-item-heading">' + name + '</p>' + 
@@ -195,7 +199,11 @@ function createListItem(id, name, description, routeText, bAddRunButton, bAddAcc
 	if (bAddDeleteButton){
 	 strElm +='<button onclick="deleteItem(\''+ routeText +'\', \''+id+'\');" class="btn btn-xs btn-danger"> <span class="glyphicon glyphicon-trash"></span> Delete </button>';
 	}
-	strElm +='</span>' +'</div>';
+	strElm +='</span>';
+	if (imageSrc) {
+		strElm +='<img class="pull-right" src="'+ imageSrc +'">';
+	}
+	strElm +='</div>';
 
 	return strElm; 
 }
