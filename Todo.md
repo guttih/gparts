@@ -1,7 +1,7 @@
 # What needs to be done
 
 ### the Database values
-Declare array of [Objects](https://stackoverflow.com/questions/19695058/how-to-define-object-in-array-in-mongoose-schema-correctly-with-2d-geo-index)
+Declare array of [Objects](https://stackoverflow.com/questions/19695058/how-to-define-object-in-array-in-mongoose-schema-correctly-with-2d-geo-index).
 
 [Schematypes](http://mongoosejs.com/docs/schematypes.html)
 ##### Part
