@@ -42,15 +42,24 @@ function listCommandsGetItemData($item){
 	str = str.replaceAll('--#--', '"');
 	return JSON.parse(str);
 }
-function listCommandsAddViewHandler(callback, selector){
+function _listCommandsAddHandler(callback, selector, command){
 	if (selector === undefined) {
 		selector = 'table.list-commands td.commands span';
 	}
-	$elm = $(selector+'.list-command-view');
+	$elm = $(selector+'.list-command-'+command);
 	$elm.on('click', function() {
 		var $item = $( this ).parent().parent().find('.item');
 		callback($item);
 	  });
+}
+function listCommandsAddViewHandler(callback, selector){
+	_listCommandsAddHandler(callback, selector, 'view');
+}
+function listCommandsAddEditHandler(callback, selector){
+	_listCommandsAddHandler(callback, selector, 'edit');
+}
+function listCommandsAddDeleteHandler(callback, selector){
+	_listCommandsAddHandler(callback, selector, 'delete');
 }
 
 $(function() {
@@ -59,7 +68,15 @@ $(function() {
 		listCommandsAddItem($('table.list-commands'), 'add me', {hello:"stuff", data:323});
 		listCommandsInitView();
 		listCommandsAddViewHandler(function($item){
-			console.log($item.text());
+			console.log('view '+ $item.text());
+			console.log(listCommandsGetItemData($item));
+		});
+		listCommandsAddEditHandler(function($item){
+			console.log('edit '+ $item.text());
+			console.log(listCommandsGetItemData($item));
+		});
+		listCommandsAddDeleteHandler(function($item){
+			console.log('delete '+ $item.text());
 			console.log(listCommandsGetItemData($item));
 		});
 		
