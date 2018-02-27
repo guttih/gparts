@@ -1,5 +1,5 @@
 
-var listCommands = {
+var rowButtons = {
 
 	_isEmpty: function _isEmpty(obj) {
 		for(var key in obj) {
@@ -36,7 +36,7 @@ var listCommands = {
 	},
 	_addHandler: function _addHandler(callback, selector, command){
 		if (selector === undefined) {
-			selector = 'table.list-commands td.commands span';
+			selector = 'table.row-buttons td.commands span';
 		}
 		$elm = $(selector + '.list-command-'+command);
 		$elm.on('click', function() {
@@ -45,26 +45,26 @@ var listCommands = {
 		  });
 	},
 	initItems: function create() {
-		var $table = $('table.list-commands');
+		var $table = $('table.row-buttons');
 		$table.find('tr').each(function( index ) {
 			$( this ).find('td').addClass('item');
 			if ($( this ).find('td.commands').length < 1 ){
 				$( this ).append('<td class="commands"></td>');
 			}
 		  });
-		$table = $('table.list-commands.view');
+		$table = $('table.row-buttons.view');
 		$table.find('tr').each(function( index ) {
 			if ($( this ).find('td.commands span.list-command-view').length < 1) {
 				$( this ).find('td.commands').append('<span class="list-command-view btn btn-default glyphicon glyphicon-eye-open"></span>');
 			}
 		});
-		$table = $('table.list-commands.edit');
+		$table = $('table.row-buttons.edit');
 		$table.find('tr').each(function( index ) {
 			if ($( this ).find('td.commands span.list-command-edit').length < 1) {
 				$( this ).find('td.commands').append('<span class="list-command-edit btn btn-default glyphicon glyphicon-pencil"></span>');
 			}
 		});
-		$table = $('table.list-commands.delete');
+		$table = $('table.row-buttons.delete');
 		$table.find('tr').each(function( index ) {
 			if ($( this ).find('td.commands span.list-command-delete').length < 1) {
 				$( this ).find('td.commands').append('<span class="list-command-delete btn btn-default glyphicon glyphicon-remove"></span>');
@@ -84,11 +84,11 @@ var listCommands = {
 		this._addButtons($elm);
 	},
 	addObjects: function addObjects($table, arrayOfObjects, sortByKey) {
-		if (!Array.isArray(arrayOfObjects)){ console.error('listCommands.addObjects not passed an array'); return;}
+		if (!Array.isArray(arrayOfObjects)){ console.error('rowButtons.addObjects not passed an array'); return;}
 		
 		var isObject = (typeof(arrayOfObjects[0]) === 'object'),
 			isString = (typeof(arrayOfObjects[0]) === 'string');
-		if (!isObject && !isString) { console.error('listCommands.addObjects not passed array of objects or strings'); return;}
+		if (!isObject && !isString) { console.error('rowButtons.addObjects not passed array of objects or strings'); return;}
 		if (isObject && sortByKey !== undefined && sortByKey.length > 0) {
 			arrayOfObjects.sort(function(first, second){
 				var a = first[sortByKey], b = second[sortByKey];
@@ -103,9 +103,9 @@ var listCommands = {
 				if ((arrayOfObjects[i].text !== undefined) ) {textToAdd = arrayOfObjects[i].text; }
 				if ((arrayOfObjects[i].name !== undefined) ) {textToAdd = arrayOfObjects[i].name; }
 	
-				listCommands.addItem($table, textToAdd, arrayOfObjects[i]);
+				rowButtons.addItem($table, textToAdd, arrayOfObjects[i]);
 			} else {
-				listCommands.addItem($table, arrayOfObjects[i]);
+				rowButtons.addItem($table, arrayOfObjects[i]);
 			}
 		}
 	},
@@ -132,7 +132,7 @@ var listCommands = {
 
 
 $(function() {
-	
+	/*
 		var arr = [];
 		for (var i = 11; i > 0; i--){
 			arr.push({
@@ -140,23 +140,23 @@ $(function() {
 				fileName:'slóð og nafn '+i});
 		}
 		var arrStr =  ['str3', 'str2', 'str1'];
-		listCommands.addObjects($('#files'), arrStr, true);
-		listCommands.addObjects($('#files'), arr, 'name');
-		listCommands.initItems();
-		listCommands.addItem($('#files'),'texti', {name:'nafni ', id:'idiið', description: 'lýsingin',fileName:'filenafnið '});
+		rowButtons.addObjects($('#files'), arrStr, true);
+		rowButtons.addObjects($('#files'), arr, 'name');
+		rowButtons.initItems();
+		rowButtons.addItem($('#files'),'texti', {name:'nafni ', id:'idiið', description: 'lýsingin',fileName:'filenafnið '});
 		
-		listCommands.addViewHandler(function($item) {
+		rowButtons.addViewHandler(function($item) {
 			console.log('view '+ $item.text());
-			console.log(listCommands.getItemData($item));
+			console.log(rowButtons.getItemData($item));
 		});
-		listCommands.addEditHandler(function($item){
+		rowButtons.addEditHandler(function($item){
 			console.log('edit '+ $item.text());
-			console.log(listCommands.getItemData($item));
+			console.log(rowButtons.getItemData($item));
 		});
-		listCommands.addDeleteHandler(function($item){
+		rowButtons.addDeleteHandler(function($item){
 			console.log('delete '+ $item.text());
-			console.log(listCommands.getItemData($item));
-			listCommands.deleteItem($item);
-		});
-		listCommands.initItems();
+			console.log(rowButtons.getItemData($item));
+			rowButtons.deleteItem($item);
+		});*/
+		rowButtons.initItems();
   });

@@ -32,6 +32,13 @@ function validateFormValues(){
 }
 
 $( document ).ready(function() {
+	rowButtons.initItems();
 	console.log( "ready!" );
 	initRegister();
+	rowButtons.addDeleteHandler(function($item){
+		console.log('delete '+ $item.text());
+		console.log(rowButtons.getItemData($item));
+		rowButtons.deleteItem($item);
+	});
+
 });

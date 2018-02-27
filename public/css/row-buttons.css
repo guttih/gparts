@@ -1,0 +1,46 @@
+table.row-buttons{
+	overflow-y:scroll;
+   height:91px;
+   display:block;
+   width:100%;
+}
+
+
+table.row-buttons .list-command-delete {
+	color:red;
+}
+table.row-buttons .list-command-view,table.row-buttons .list-command-edit,table.row-buttons .list-command-delete {
+	width:28px;
+	padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+	padding-left: 0px;
+	
+}
+table.row-buttons td.commands {
+	float:right;
+	white-space: nowrap;
+}
+table.row-buttons.view.edit.delete td.commands {
+	min-width: 84px;
+}
+table.row-buttons{
+	background:rgb(248, 248, 248);
+}
+table.row-buttons.view.edit td.commands, table.row-buttons.view.delete td.commands, table.row-buttons.edit.delete td.commands{
+	min-width: 56px;
+}
+table.row-buttons.view td.commands, table.row-buttons.edit td.commands, table.row-buttons.delete td.commands {
+	min-width: 28px;
+}
+table.row-buttons td.item {
+	width:98%;
+}
+table.row-buttons tr:hover { background:#f5f5f5}
+/*
+table.row-buttons tr:hover td.item { 
+	text-decoration:underline;
+}
+table.row-buttons tr:hover td.item:after { 
+	content:" -";
+}*/

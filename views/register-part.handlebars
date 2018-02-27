@@ -1,65 +1,83 @@
 
+<link rel="stylesheet" href="/css/row-buttons.css" />
+
 {{#if item}} <!-- if you want to modify -->
-      <h2 class="page-header" align="right">Modify a Part</h2>
-			<script type="text/javascript">
-			var item = {{{item}}};
-		</script>
+    <h2 class="page-header" align="right">Modify a Part</h2>
+            <script type="text/javascript">
+            var item = {{{item}}};
+        </script>
 {{else}}
-      <h2 class="page-header" align="right">Register a new Part</h2>
+    <h2 class="page-header" align="right">Register a new Part</h2>
 {{/if}}
 {{#if errors}}
     <div class="error-container"> 
-      {{#each errors}}
+    {{#each errors}}
         <div class="alert alert-danger">{{msg}}</div>
-      {{/each}}
+    {{/each}}
     </div>
 {{/if}}
 
 <form method="post" id="register-form" action ="/parts/register">
     <div class="row row-padd">
-		<label>Name</label>
-			<p>Name of the part.</p>
-		<input type="text"   id="name"     name="name" form="register-form" class="form-control" value="" placeholder="Type name">
-	</div>
-	
-  <div class="form-horizontal">
-    <label>Description</label>
-    <p>Describe the part what can be done with it and how to use it.</p>
-    <div class="form-group">
-      <div class="col-md-12">
-        <textarea id="description" name="description" form="register-form" class="form-control" rows="3" placeholder="Describe this part."></textarea>
-      </div>
+        <label>Name</label>
+            <p>Name of the part.</p>
+        <input type="text"   id="name"     name="name" form="register-form" class="form-control" value="" placeholder="Type name">
     </div>
-  </div>
-
-  <div class="row row-padd">
-		<label>Web page</label>
-			<p>Web page of the part.</p>
-		<input type="text"   id="url"     name="url" form="register-form" class="form-control" value="" placeholder="Type the parts web page ">
-	</div>
-  <div class="row">
     
-    <div class="col-sm-6 col-md-6 col-lg-6">
-      <label>Files</label>
-      <table id="files" class="list-commands view edit delete" style="height:200px">
-        
-        <tr><td>Option 1</td></tr>
-        <tr><td>Option 2</td></tr>
-   <!--     <tr><td>Option 3</td></tr>
-        <tr><td>Option 4</td></tr>
-        <tr><td>Option 5</td></tr>
-        <tr><td>Option 6</td></tr>
-        <tr><td>Option 7</td></tr>
-        <tr><td>Option 8</td></tr>
-        <tr><td>Option 9</td></tr>
-        <tr><td>Option 10</td></tr>
-    -->
-      </table>
+    <div class="form-horizontal">
+        <label>Description</label>
+        <p>Describe the part what can be done with it and how to use it.</p>
+        <div class="form-group">
+        <div class="col-md-12">
+            <textarea id="description" name="description" form="register-form" class="form-control" rows="3" placeholder="Describe this part."></textarea>
+        </div>
+        </div>
     </div>
-  </div>
 
-  <button id="btnSave" type="button" class="btn btn-success pull-right">Save</button>
+    <div class="row row-padd">
+            <label>Web page</label>
+                <p>Web page of the part.</p>
+            <input type="text"   id="url"     name="url" form="register-form" class="form-control" value="" placeholder="Type the parts web page ">
+        </div>
+    <div class="row">
+        
+        <div class="col-sm-6 col-md-5 col-lg-5">
+            <label>Files</label>
+            <table id="files" class="row-buttons view edit delete">
+                <tr><td>Option 1</td></tr>
+                <tr><td>Option 2</td></tr>
+                <tr><td>Option 3</td></tr>
+                <tr><td>Option 4</td></tr>
+                <tr><td>Option 5</td></tr>
+                <tr><td>Option 6</td></tr>
+                <tr><td>Option 7</td></tr>
+                <tr><td>Option 8</td></tr>
+                <tr><td>Option 9</td></tr>
+                <tr><td>Option 10</td></tr>
+            </table>
+        </div>
+        <div class="col-sm-6 col-md-5 col-lg-5 pull-right">
+            <label>Urls</label>
+            <table id="urls" class="row-buttons view edit delete">
+                <tr><td>Option 1</td></tr>
+                <tr><td>Option 2</td></tr>
+                <tr><td>Option 3</td></tr>
+                <tr><td>Option 4</td></tr>
+                <tr><td>Option 5</td></tr>
+                <tr><td>Option 6</td></tr>
+                <tr><td>Option 7</td></tr>
+                <tr><td>Option 8</td></tr>
+                <tr><td>Option 9</td></tr>
+                <tr><td>Option 10</td></tr>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12" style="margin-top:10px">
+        <button id="btnSave" type="button" class="btn btn-success pull-right">Save</button>
+        </div>
+    </div>
 </form>
 
-
+<script src="/js/row-buttons.js"></script>
 <script src="/js/register-part.js" type="text/javascript" charset="utf-8"></script>
