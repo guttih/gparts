@@ -29,9 +29,35 @@ function listCommandsAddItem($table, textToAdd, dataToSave) {
 	if (dataToSave !== undefined){
 		var str = JSON.stringify(dataToSave);
 		
-		$table.append('<tr><td data-save="' + str.replaceAll('"', '--#--') + '">'+textToAdd+'</td></tr>');
+		$table.append('<tr><td data-save="' + str.replaceAll('"', '#;#') + '">'+textToAdd+'</td></tr>');
 	} else {
 		$table.append('<tr><td>'+textToAdd+'</td></tr>');
+	}
+}
+function listCommandsAddObjects($table, arrayOfObjects, sortByKey) {
+	if (!Array.isArray(arrayOfObjects)){ console.error('listCommandsAddObjects not passed an array'); return;}
+	
+	var isObject = (typeof(arrayOfObjects[0]) === 'object'),
+		isString = (typeof(arrayOfObjects[0]) === 'string');
+	if (!isObject && !isString) { console.error('listCommandsAddObjects not passed array of objects or strings'); return;}
+	if (isObject && sortByKey !== undefined && sortByKey.length > 0) {
+		arrayOfObjects.sort(function(first, second){
+			var a = first[sortByKey], b = second[sortByKey];
+			return (a > b)? 1 : (a < b)? -1 : 0; 
+		});
+	} else if (isString && sortByKey !== undefined) {
+		arrayOfObjects.sort();
+	}
+	var textToAdd;
+	for(var i = 0; i < arrayOfObjects.length; i++){
+		if (isObject) {
+			if ((arrayOfObjects[i].text !== undefined) ) {textToAdd = arrayOfObjects[i].text; }
+			if ((arrayOfObjects[i].name !== undefined) ) {textToAdd = arrayOfObjects[i].name; }
+
+			listCommandsAddItem($table, textToAdd, arrayOfObjects[i]);
+		} else {
+			listCommandsAddItem($table, arrayOfObjects[i]);
+		}
 	}
 }
 function listCommandsGetItemData($item){
@@ -39,7 +65,7 @@ function listCommandsGetItemData($item){
 	if (str === undefined) {
 		return; 
 	}
-	str = str.replaceAll('--#--', '"');
+	str = str.replaceAll('#;#', '"');
 	return JSON.parse(str);
 }
 function _listCommandsAddHandler(callback, selector, command){
@@ -65,7 +91,15 @@ function listCommandsAddDeleteHandler(callback, selector){
 $(function() {
 	// Handler for .ready() called.
 	
-		listCommandsAddItem($('table.list-commands'), 'add me', {hello:"stuff", data:323});
+		var arr = [];
+		for (var i = 11; i > 0; i--){
+			arr.push({
+				name:'textastrengur númer '+i, id:'0000000000000000'+i, description: 'lýsing á innihaldi skráarinnar',
+				fileName:'slóð og nafn '+i});
+		}
+		var arrStr =  ['str3', 'str2', 'str1'];
+		listCommandsAddObjects($('table.list-commands'), arrStr, true);
+		listCommandsAddObjects($('table.list-commands'), arr, 'name');
 		listCommandsInitView();
 		listCommandsAddViewHandler(function($item){
 			console.log('view '+ $item.text());
