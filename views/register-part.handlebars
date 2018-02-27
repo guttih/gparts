@@ -19,26 +19,64 @@
 
 <form method="post" id="register-form" action ="/parts/register">
     <div class="row row-padd">
-        <label>Name</label>
-            <p>Name of the part.</p>
-        <input type="text"   id="name"     name="name" form="register-form" class="form-control" value="" placeholder="Type name">
-    </div>
-    
-    <div class="form-horizontal">
-        <label>Description</label>
-        <p>Describe the part what can be done with it and how to use it.</p>
-        <div class="form-group">
-        <div class="col-md-12">
-            <textarea id="description" name="description" form="register-form" class="form-control" rows="3" placeholder="Describe this part."></textarea>
+        <div class=" col-sm-2 col-md-2 col-lg-2 col-xl-1 " id="image-container" style="display: unset;">
+            <img src="/files/images/5a88ddd76cb88120dcd06f98.jpg" style="max-width:160px;max-height:160px">
         </div>
+        <div class="col-sm-12 col-md-10 col-lg-10 col-xl-11">
+            <label for="name">Part name</label>
+            <input type="text"   id="name"     name="name" form="register-form" class="form-control" value="" placeholder="Type name">
+            <div class="form-horizontal">
+                <label for="description">Description</label>
+                <div class="form-group">
+                <div class="col-md-12">
+                   <textarea id="description" name="description" form="register-form" class="form-control" rows="3" placeholder="Describe this part."></textarea>
+                </div>
+            </div>
+</div>
         </div>
     </div>
 
     <div class="row row-padd">
-            <label>Web page</label>
-                <p>Web page of the part.</p>
-            <input type="text"   id="url"     name="url" form="register-form" class="form-control" value="" placeholder="Type the parts web page ">
+        <div class=" col-sm-6 col-md-4 col-lg-4 col-xl-4">
+            <label for="type">Type</label>
+            <input type="text"   id="type" name="type" form="register-form" class="form-control" value="" placeholder="Select part type">
         </div>
+        <div class=" col-sm-6 col-md-4 col-lg-4 col-xl-4">
+            <label for="category">Category</label>
+            <input type="text"   id="category" name="s" form="register-form" class="form-control" value="" placeholder="Write Category of this part">
+        </div>
+        <div class=" col-sm-6 col-md-4 col-lg-4 col-xl-4">
+            <label for="location">Location</label>
+            <input type="text"   id="location" name="location" form="register-form" class="form-control" value="" placeholder="Where is this part">
+        </div>
+    </div>
+    <div class="row row-padd">
+        <div class=" col-sm-6 col-md-4 col-lg-4 col-xl-4">
+            <label for="first-acquired">Acquired</label>
+            <input type="date"   id="first-acquired" name="first-acquired" form="register-form" class="form-control" value="" placeholder="When did you get this part first">
+        </div>
+        <div class=" col-sm-6 col-md-4 col-lg-4 col-xl-4">
+            <label for="last-modified">Last modified</label>
+            <input type="date"   id="last-modified" name="last-modified" form="register-form" class="form-control" value="" placeholder="Write Category of this part">
+        </div>
+        <div class=" col-sm-6 col-md-4 col-lg-4 col-xl-4">
+            <label for="stock-count">Stock</label>
+            <input type="number"   id="stock-count" name="stock-count" form="register-form" 
+            class="form-control" value="" placeholder="How much is on stock"
+             min="0" step="1"
+            >
+        </div>
+    </div>
+    <div class="row row-padd">
+        <div class=" col-sm-6 col-md-6 col-lg-6 col-xl-6">
+            <label for="supplier">Supplier</label>
+            <input type="text"   id="supplier" name="supplier" form="register-form" class="form-control" value="" placeholder="Select supplier">
+        </div>
+        <div class=" col-sm-6 col-md-6 col-lg-6 col-xl-6">
+            <label for="manufacturer">Manufacturer</label>
+            <input type="text"   id="manufacturer" name="manufacturer" form="register-form" class="form-control" value="" placeholder="Select manufacturer">
+        </div>
+    </div>
     <div class="row">
         
         <div class="col-sm-6 col-md-5 col-lg-5">
