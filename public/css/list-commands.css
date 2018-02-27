@@ -1,0 +1,27 @@
+table.list-commands{
+	overflow-y:scroll;
+   height:100px;
+   display:block;
+   width:100%;
+}
+
+
+table.list-commands .list-command-delete {
+	color:red;
+}
+table.list-commands .list-command-view,table.list-commands .list-command-edit,table.list-commands .list-command-delete {
+	width:28px;
+	padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+	padding-left: 0px;
+	
+}
+table.list-commands td.commands {
+	min-width: 90px;
+	float:right;
+	white-space: nowrap;
+}
+table.list-commands td.item {
+	width:98%;
+}

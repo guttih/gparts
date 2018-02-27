@@ -5,6 +5,7 @@
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="/css/bootstrap.css" />
 	<link rel="stylesheet" href="/css/style.css" />
+	<link rel="stylesheet" href="/css/list-commands.css" />
 	<script src="/js/jquery-3.1.0.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=2" />
@@ -102,18 +103,42 @@
           <li class="menu-item dropdown dropdown-submenu"><a href="#">Types</a>
 						<ul class="dropdown-menu">
 							<li><a href="/types/register">Register a new type</a></li>
-              <li><a href="/types/list">List types</a></li>
-							
+              				<li><a href="/types/list">List types</a></li>
 						</ul>
 					</li>
 				</ul>
 			</li>
 			<li class="dropdown">
-				<a  data-toggle="dropdown" href="#">Types</a>
+				<a  data-toggle="dropdown" href="#">List</a>
 				<ul class="dropdown-menu">
-					<li><a href="/types/list">List types</a></li>					
+					<li><a href="/parts/list">Parts</a></li>
+					<li><a href="/types/list">Types</a></li>
+					<li><a href="/locations/list">Locations</a></li>
+					<li><a href="/suppliers/list">Suppliers</a></li>
+					<li><a href="/manufacturers/list">Manufacturers</a></li>
+					<li><a href="/files/list">Files</a></li>
+					<li><a href="/files/list/image">Images</a></li>
+				{{#if admin}}
+					<li><a href="/users/list">Users</a></li>
+				{{/if}}					
 				</ul>
 			</li>
+			<li class="dropdown">
+				<a  data-toggle="dropdown" href="#">Register</a>
+				<ul class="dropdown-menu">
+					<li><a href="/parts/register">Part</a></li>
+					<li><a href="/types/register">Type</a></li>
+					<li><a href="/locations/register">Location</a></li>
+					<li><a href="/suppliers/register">Supplier</a></li>
+					<li><a href="/manufacturers/register">Manufacturer</a></li>
+					<li><a href="/files/register">File</a></li>
+					<li><a href="/files/register/image">Image</a></li>
+				{{#if admin}}
+					<li><a href="/users/register">User</a></li>					
+				{{/if}}
+				</ul>
+			</li>
+			
 		{{/if}}
 		{{#if user}}
 			<li role="presentation">
@@ -198,6 +223,7 @@
 </div> <!-- /container -->
 <div id="config" data-settings='{"serverUrl":"http://www.guttih.com:3000"}' />
 <script src="/js/main.js"></script>
+<script src="/js/list-commands.js"></script>
 
 </body>
 </html>
