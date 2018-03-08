@@ -66,7 +66,7 @@ router.post('/register', lib.authenticateAdminRequest, function(req, res){
 			image          : req.body.image,
 			files          : req.body.files,
 			stockCount     : req.body.stockCount,
-			firstPurchased : req.body.firstPurchased,
+			firstAcquired : req.body.firstAcquired,
 			lastUpdated    : req.body.lastUpdated,
 			type           : req.body.type,
 			location       : req.body.location,

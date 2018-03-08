@@ -11,7 +11,7 @@ var PartSchema = mongoose.Schema({
 	image		   : ObjectId,
 	files		   : [{ObjectId}],
 	stockCount     : Number,
-	firstPurchased : Date,
+	firstAcquired : Date,
 	lastUpdated    : Date,
 	type           : ObjectId,
 	location       : ObjectId,
