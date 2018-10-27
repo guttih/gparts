@@ -17,7 +17,7 @@
     </div>
 {{/if}}
 
-<form method="post" id="register-form" action ="/parts/register">
+<form method="post" id="register-form" action ="/parts/register" class="part-form" >
     <div class="row row-padd">
         <div class=" col-sm-2 col-md-2 col-lg-2 col-xl-1 " id="image-container" style="display: unset;">
             <img src="/files/images/5a88ddd76cb88120dcd06f98.jpg" style="max-width:160px;max-height:160px">
@@ -36,22 +36,40 @@
         </div>
     </div>
 
-    <div class="row row-padd">
+    <div class="row row-padd part-values">
         <div class=" col-sm-6 col-md-4 col-lg-4 col-xl-4">
-            <div id ="div-type" class="form-group">
+            <div class="form-group">
                 <label>Type</label>
+                <div class="dropdown select-dropdown-actions pull-right">
+                        <button class="btn btn-default btn-xs  dropdown-toggle " type="button" data-toggle="dropdown"> 
+                        <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" onclick="refreshPartSelect(this); return false;">Refresh</a></li>
+                            <li><a href="#" onclick="registerPartSelect(this); return false;">New</a></li>
+                            <li><a href="#" onclick="editPartSelect(this); return false;">Edit</a></li>
+                        </ul>
+                </div>
                 <select id="type" name="type" class="form-control" form="user-form">
                     <option selected="selected" value="">No types registered</option>
                 </select>
             </div>
         </div>
-        <div class=" col-sm-6 col-md-4 col-lg-4 col-xl-4">
+        <div class="col-sm-6 col-md-4 col-lg-4 col-xl-4">
             <label for="category">Category</label>
             <input type="text"   id="category" name="s" form="register-form" class="form-control" value="" placeholder="Write Category of this part">
         </div>
         <div class=" col-sm-6 col-md-4 col-lg-4 col-xl-4">
             <div id ="div-location" class="form-group">
                 <label>Location</label>
+                <div class="dropdown select-dropdown-actions pull-right">
+                        <button class="btn btn-default btn-xs  dropdown-toggle " type="button" data-toggle="dropdown"> 
+                        <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" onclick="refreshPartSelect(this); return false;">Refresh</a></li>
+                            <li><a href="#" onclick="registerPartSelect(this); return false;">New</a></li>
+                            <li><a href="#" onclick="editPartSelect(this); return false;">Edit</a></li>
+                        </ul>
+                </div>
                 <select id="location" name="location" class="form-control" form="user-form">
                     <option selected="selected" value="">No location registered</option>
                 </select>
@@ -60,12 +78,12 @@
     </div>
     <div class="row row-padd">
         <div class=" col-sm-6 col-md-4 col-lg-4 col-xl-4">
-            <label for="first-acquired">Acquired</label>
+            <label for="first-acquired">Acquired date</label>
             <input type="date"   id="first-acquired" name="first-acquired" form="register-form" class="form-control" value="" placeholder="When did you get this part first">
         </div>
         <div class=" col-sm-6 col-md-4 col-lg-4 col-xl-4">
-            <label for="last-modified">Last modified</label>
-            <input type="date"   id="last-modified" name="last-modified" form="register-form" class="form-control" value="" placeholder="Write Category of this part">
+            <label for="last-modified">Last modified date</label>
+            <input readonly type="date"   id="last-modified" name="last-modified" form="register-form" class="form-control" value="" placeholder="Write Category of this part">
         </div>
         <div class=" col-sm-6 col-md-4 col-lg-4 col-xl-4">
             <label for="stock-count">Stock</label>
@@ -79,6 +97,15 @@
         <div class=" col-sm-6 col-md-6 col-lg-6 col-xl-6">
             <div id ="div-supplier" class="form-group">
                 <label>Supplier</label>
+                <div class="dropdown select-dropdown-actions pull-right">
+                        <button class="btn btn-default btn-xs  dropdown-toggle " type="button" data-toggle="dropdown"> 
+                        <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" onclick="refreshPartSelect(this); return false;">Refresh</a></li>
+                            <li><a href="#" onclick="registerPartSelect(this); return false;">New</a></li>
+                            <li><a href="#" onclick="editPartSelect(this); return false;">Edit</a></li>
+                        </ul>
+                </div>
                 <select id="supplier" name="supplier" class="form-control" form="user-form">
                     <option selected="selected" value="">No supplier registered</option>
                 </select>
@@ -87,6 +114,15 @@
         <div class=" col-sm-6 col-md-6 col-lg-6 col-xl-6">
             <div id ="div-manufacturer" class="form-group">
                 <label>Manufacturer</label>
+                <div class="dropdown select-dropdown-actions pull-right">
+                        <button class="btn btn-default btn-xs  dropdown-toggle " type="button" data-toggle="dropdown"> 
+                        <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" onclick="refreshPartSelect(this); return false;">Refresh</a></li>
+                            <li><a href="#" onclick="registerPartSelect(this); return false;">New</a></li>
+                            <li><a href="#" onclick="editPartSelect(this); return false;">Edit</a></li>
+                        </ul>
+                </div>
                 <select id="manufacturer" name="manufacturer" class="form-control" form="user-form">
                     <option selected="selected" value="">No manufacturer registered</option>
                 </select>

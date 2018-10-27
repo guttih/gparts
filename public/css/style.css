@@ -340,3 +340,16 @@ button.btn-log-pins {
     margin-top: -26px;
     margin-right: 15px;
 }
+
+.select-dropdown-actions .caret{
+	border-top:4px solid gray;
+}
+
+
+#register-form > .part-values > label {
+	border-top:50px !important;
+}
+
+form.part-form select,input  {
+	margin-bottom: 15px !important;
+}

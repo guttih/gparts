@@ -54,6 +54,11 @@ function setStartTime(date) {
 		$elm.text("Successfully connected to the device.").removeClass("alert-warning").addClass("alert-success");
 }
 
+function leadingZeros(num, size) {
+    var s = num+"";
+    while (s.length < size) s = "0" + s;
+    return s;
+}
 
 function logger(str){
 	console.log("Logger : "+ str);

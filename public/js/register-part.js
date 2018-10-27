@@ -28,19 +28,73 @@ function validateFormValues(){
 		showModalErrorText('Name is missing', 'You must provide a name.');
 		return false;
 	}
+
+	var prop = $('#first-acquired').val();
+	if (prop === undefined || prop.length < 1) {
+		showModalErrorText('first acquired date is missing', 'You must provide a date.');
+		return false;
+	}
+
+	setLastModifiedDate();
+
 	return true;
 }
 
 function setSelectOptionsFromArray(id, list){
 
-	var selector = "#"+id;
-	$(selector).find('option').remove();
+	var $elm = 	$("#"+id);
+	var selected = $elm.find('option:selected');
+	console.log(selected);
+	$elm.find('option').remove();
 	list.forEach(element => {
 		var opt = new Option(element.name, element.id);
 		opt.setAttribute("data-toggle", "tooltip");
 		opt.setAttribute("title", element.description);
-		$(selector).append(opt);
+		$elm.append(opt);
 	});
+}
+
+function partSelect(obj) {
+	//get parent element
+	var $elm = $(obj.parentNode.parentNode.parentNode.parentNode);
+	var select = $elm.find('select');
+	return select;
+}
+function refreshPartSelect(obj) {
+	var select = partSelect(obj);
+	//Get the selected item
+	var selectedOption = select.val();
+	var id = select.attr('id');
+	//refresh the select
+	getList( function(list) { 
+		setSelectOptionsFromArray(id,     list ); 
+		//Set the selected item again
+		select.val(selectedOption);
+		select.focus();
+	}, '/' + id + 's/' + id + '-list');
+}
+
+
+function registerPartSelect(obj) {
+	var select = partSelect(obj);
+	var id = select.attr('id');
+	var url = '/'+id+'s/register';
+	var win = window.open(url, '_blank');
+	win.focus();
+}
+function editPartSelect(obj) {
+	var select = partSelect(obj);
+	var id = select.attr('id');
+	var selectedOption = select.val();
+	var url = '/' + id + 's/register/' + selectedOption;
+	var win = window.open(url, '_blank');
+	win.focus();
+}
+
+function setLastModifiedDate(){
+	var now = new Date();
+	var str = now.getFullYear()+ '-' + leadingZeros(now.getMonth()+1 ,2) + '-' +leadingZeros(now.getDate(),2);
+	$('#last-modified').val(str);
 }
 
 function initParts() {
@@ -59,4 +113,6 @@ $( document ).ready(function() {
 		console.log(rowButtons.getItemData($item));
 		rowButtons.deleteItem($item);
 	});
+	setLastModifiedDate();
+
 });
