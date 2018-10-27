@@ -31,14 +31,32 @@ function validateFormValues(){
 	return true;
 }
 
+function setSelectOptionsFromArray(id, list){
+
+	var selector = "#"+id;
+	$(selector).find('option').remove();
+	list.forEach(element => {
+		var opt = new Option(element.name, element.id);
+		opt.setAttribute("data-toggle", "tooltip");
+		opt.setAttribute("title", element.description);
+		$(selector).append(opt);
+	});
+}
+
+function initParts() {
+	getList( function(list) { setSelectOptionsFromArray("type",         list ); }, '/types/type-list');
+	getList( function(list) { setSelectOptionsFromArray("location",     list ); }, '/locations/location-list');
+	getList( function(list) { setSelectOptionsFromArray("manufacturer", list ); }, '/manufacturers/manufacturer-list');
+	getList( function(list) { setSelectOptionsFromArray("supplier",     list ); }, '/suppliers/supplier-list');
+}
+
 $( document ).ready(function() {
 	rowButtons.initItems();
-	console.log( "ready!" );
 	initRegister();
+	initParts();
 	rowButtons.addDeleteHandler(function($item){
 		console.log('delete '+ $item.text());
 		console.log(rowButtons.getItemData($item));
 		rowButtons.deleteItem($item);
 	});
-
 });
