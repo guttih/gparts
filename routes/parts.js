@@ -45,11 +45,19 @@ router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
 router.post('/register', lib.authenticateAdminRequest, function(req, res){
 
 	// Validation
-	req.checkBody('name',       'Name is required'       ).notEmpty();
-	req.checkBody('location',   'Location is required'   ).notEmpty();
-	req.checkBody('type',       'Type is required'       ).notEmpty();
-	req.checkBody('stockCount','Stock count is required and must be a number!').notEmpty().isNumeric();
+	req.checkBody('name'         , 'Name is required'                             ).notEmpty();
+	req.checkBody('location'     , 'Location is required'                         ).notEmpty();
+	req.checkBody('type'         , 'Type is required'                             ).notEmpty();
+	req.checkBody('firstAcquired', 'Acquired date is required'                    ).notEmpty();
+	req.checkBody('lastModified' , 'Last modified date is required'               ).notEmpty();
+	req.checkBody('stockCount'   , 'Stock count is required and must be a number!').notEmpty().isNumeric();
 	
+	if (req.body.supplier === undefined || req.body.supplier.length < 1) {
+		req.body.supplier = null;
+	}
+	if (req.body.manufacturer === undefined || req.body.manufacturer.length < 1) {
+		req.body.manufacturer = null;
+	}
 	
 	var errors = req.validationErrors();
 

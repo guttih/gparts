@@ -51,7 +51,12 @@ function setFormValues(item){
 			var $elm = $('#image-container');
 			if ($elm.length > 0){
 				$elm.css('display', 'unset');
-				$elm.find('img').attr('src', item.src);
+				var $img = $elm.find('img');
+				$img.attr('src', item.src);
+				$img.wrap( '<a target="_blank" href="' + item.src + '"></a>' );
+
+				//Click image instead of clicking a button
+				$( "#btnView" ).hide();
 			}
 			
 			$( "#btnView" ).click(function() {

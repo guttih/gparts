@@ -26,14 +26,18 @@ function setSelectOptionsFromArray(id, list){
 	var selected = select.find('option:selected');
 	var required = select.attr('required') === 'required';
 	select.find('option').remove();
-	if (list.length == 0) {
-		var opt = new Option('No ' + id + ' registered', '');
-		if (required === true) { opt.setAttribute("title", 'you must add a new ' + id + ' to be able to add parts');
-		} else                 { opt.setAttribute("title", 'there are ' + id + 's registered') }
-		opt.setAttribute("data-toggle", "tooltip"); 
-		select.append(opt);
-		return;
+	
+	//add the first option
+	var opt = new Option('No ' + id + ' selected', '');
+	if (required === true) { 
+		opt.setAttribute("title", 'you must add a new ' + id + ' to be able to add parts');
+	} else { 
+		opt.setAttribute("title", 'you are not required to select a ' + id);
 	}
+	opt.setAttribute("data-toggle", "tooltip"); 
+	select.append(opt);
+
+	// add all options in the database
 	list.forEach(element => {
 		var opt = new Option(element.name, element.id);
 		opt.setAttribute("data-toggle", "tooltip");
@@ -60,7 +64,12 @@ function refreshPartSelect(obj) {
 		if (selectedOption === undefined || selectedOption === null || selectedOption === '') {
 			select.val($('#'+id+' option:first').val());
 		} else {
-			select.val(selectedOption);
+			var optionExists = (select.find('option[value="' + selectedOption + '"]').length > 0 );
+			if (optionExists === true) {
+				select.val(selectedOption);
+			} else {
+				select.val($('#'+id+' option:first').val());
+			}
 		}
 		select.focus();
 	}, '/' + id + 's/' + id + '-list');

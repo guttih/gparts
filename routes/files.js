@@ -160,9 +160,9 @@ router.post('/register/image', lib.authenticateAdminRequest, function (req, res,
 	
 		uploadImage(req, res, function (err) {
 			if (err) {
-			// An error occurred when uploading
-			console.log(err);
-			return
+				// An error occurred when uploading
+				console.log(err);
+				return;
 			}
 			var name  = req.body.name;
 			var id    = req.body.fileObjectId;

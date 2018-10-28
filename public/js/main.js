@@ -206,7 +206,7 @@ function createListItem(id, name, description, routeText, bAddRunButton, bAddAcc
 	}
 	strElm +='</span>';
 	if (imageSrc) {
-		strElm +='<img class="pull-right" src="'+ imageSrc +'">';
+		strElm +='<a target="_blank" href="'+ imageSrc +'"><img class="pull-right" src="'+ imageSrc +'"></a>';
 	}
 	strElm +='</div>';
 
