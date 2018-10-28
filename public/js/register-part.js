@@ -151,11 +151,6 @@ function validateFormValues(){
 		return false;
 	}
 
-	
-
-	
-
-
 	setLastModifiedDate();
 
 	return true;
@@ -166,6 +161,38 @@ function initParts() {
 	getList( function(list) { setSelectOptionsFromArray("location",     list ); }, '/locations/location-list');
 	getList( function(list) { setSelectOptionsFromArray("manufacturer", list ); }, '/manufacturers/manufacturer-list');
 	getList( function(list) { setSelectOptionsFromArray("supplier",     list ); }, '/suppliers/supplier-list');
+}
+
+
+function validateImage(input) {
+	var URL = window.URL || window.webkitURL;
+	if (!input || input === undefined || input.files === undefined) {
+		//there is no file input field we are in edit mode
+		return true;
+	}
+    var file = input.files[0];
+	var enableButton = false;
+
+	if (file && file.name){
+		$('#fileName').val(file.name);
+	}
+	enableButton = (file && file.type !== undefined && file.type.indexOf('image') === 0);
+	
+	if (enableButton) {
+		var reader = new FileReader();
+            reader.onload = function (e) {
+				var $elm = $('#image-container');
+				$elm.css('display', 'unset');
+				$elm.find('img').attr('src', e.target.result);
+				$('a.temp-image.text').css('opacity','0');
+			}
+			reader.readAsDataURL(input.files[0]);
+	} else {
+		$('#image-container').css('display', 'none');
+	}
+	$('#btnSave').prop("disabled", !enableButton);
+
+	return enableButton;
 }
 
 $( document ).ready(function() {
