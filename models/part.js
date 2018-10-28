@@ -4,19 +4,19 @@ var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 /*how to load an image example: https://gist.github.com/aheckmann/2408370*/
 var PartSchema = mongoose.Schema({
-	name           : { type: String, index:true },
-	description    : { type: String },	
-	Category       : { type: String },	
-	urls           : [{ type: String }],
-	image		   : ObjectId,
-	files		   : [{ObjectId}],
-	stockCount     : Number,
+	name         : { type: String, index:true },
+	description  : { type: String },	
+	Category     : { type: String },	
+	urls         : [{ type: String }],
+	image		 : ObjectId,
+	files		 : [{ObjectId}],
+	stockCount   : Number,
 	firstAcquired : Date,
-	lastUpdated    : Date,
-	type           : ObjectId,
-	location       : ObjectId,
-	manufacturer   : ObjectId,
-	supplier       : ObjectId
+	lastModified  : Date,
+	type          : ObjectId,
+	location      : ObjectId,
+	manufacturer  : ObjectId,
+	supplier      : ObjectId
 }); 
 
 var Part = module.exports = mongoose.model('Part', PartSchema);

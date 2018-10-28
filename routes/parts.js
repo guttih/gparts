@@ -48,7 +48,7 @@ router.post('/register', lib.authenticateAdminRequest, function(req, res){
 	req.checkBody('name',       'Name is required'       ).notEmpty();
 	req.checkBody('location',   'Location is required'   ).notEmpty();
 	req.checkBody('type',       'Type is required'       ).notEmpty();
-	req.checkBody('stockCount', 'Stock count is required and must be a number!').notEmpty().isNumeric();
+	req.checkBody('stockCount','Stock count is required and must be a number!').notEmpty().isNumeric();
 	
 	
 	var errors = req.validationErrors();
@@ -59,19 +59,19 @@ router.post('/register', lib.authenticateAdminRequest, function(req, res){
 		});
 	} else {
 		var newPart = new Part({
-			name           : req.body.name,
-			description    : req.body.description,
-			Category       : req.body.Category,
-			urls           : req.body.urls,
-			image          : req.body.image,
-			files          : req.body.files,
-			stockCount     : req.body.stockCount,
+			name          : req.body.name,
+			description   : req.body.description,
+			Category      : req.body.category,
+			urls          : req.body.urls,
+			image         : req.body.image,
+			files         : req.body.files,
+			stockCount    : req.body.stockCount,
 			firstAcquired : req.body.firstAcquired,
-			lastUpdated    : req.body.lastUpdated,
-			type           : req.body.type,
-			location       : req.body.location,
-			manufacturer   : req.body.manufacturer,
-			supplier       : req.body.supplier
+			lastModified  : req.body.lastModified,
+			type          : req.body.type,
+			location      : req.body.location,
+			manufacturer  : req.body.manufacturer,
+			supplier      : req.body.supplier
 		});
 
 		Part.create(newPart, function(err, part){
