@@ -161,6 +161,12 @@ function initParts() {
 	getList( function(list) { setSelectOptionsFromArray("location",     list ); }, '/locations/location-list');
 	getList( function(list) { setSelectOptionsFromArray("manufacturer", list ); }, '/manufacturers/manufacturer-list');
 	getList( function(list) { setSelectOptionsFromArray("supplier",     list ); }, '/suppliers/supplier-list');
+	if (typeof item === 'undefined' ||  item === 'undefined') {
+		// hide
+			$('.part-form .name-description').attr("class", ".name-description")
+			$('#image-container').hide();
+			$('.files-and-urls').addClass('hidden');
+	}
 }
 
 
