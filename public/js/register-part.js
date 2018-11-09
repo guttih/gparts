@@ -1,22 +1,27 @@
-function setFormValues(item){
+function setFormValues(item) {
 	if (typeof item !== 'undefined' && item !== 'undefined') {
 
-		if (item.name !== undefined){
-			$("#name").val( item.name );
+		Object.keys(item).forEach(function(key) {
+			var val = item[key];
+			if (val !== undefined && val !== null) {
+			if (key === 'firstAcquired'  || key === 'lastModified') {
+				val = val.substr(0,10);
+			}
+			$("#"+key).val( val );
+			console.log(key+':'+val);
+			}
+			
+		  });
+		if (item.setFormValuesCount === undefined && item.id !== undefined) {
+			item.setFormValuesCount = 1;
+			var action = document.getElementById('register-form').action;
+			document.getElementById('register-form').action = action+='/'+item.id;
+		} else {
+			item.setFormValuesCount++;
 		}
 		
-		if (item.description !== undefined){
-			$("#description").val( item.description );
-		}
-		if (item.url !== undefined){
-			$("#url").val( item.url );
-		}
-		var action = document.getElementById('register-form').action;
-		
-		if (item.id !== undefined) {
-			action+='/'+item.id;
-		}
-		document.getElementById('register-form').action = action;
+	} else {
+		setLastModifiedDate();
 	}
 }
 
@@ -44,6 +49,7 @@ function setSelectOptionsFromArray(id, list){
 		opt.setAttribute("title", element.description);
 		select.append(opt);
 	});
+	setFormValues(item);
 }
 
 function partSelect(obj) {
@@ -157,7 +163,12 @@ function validateFormValues(){
 }
 
 function initParts() {
-	getList( function(list) { setSelectOptionsFromArray("type",         list ); }, '/types/type-list');
+	getList( function(list) { 
+		
+		setSelectOptionsFromArray("type",  list ); 
+		
+	}, '/types/type-list');
+
 	getList( function(list) { setSelectOptionsFromArray("location",     list ); }, '/locations/location-list');
 	getList( function(list) { setSelectOptionsFromArray("manufacturer", list ); }, '/manufacturers/manufacturer-list');
 	getList( function(list) { setSelectOptionsFromArray("supplier",     list ); }, '/suppliers/supplier-list');
@@ -203,13 +214,13 @@ function validateImage(input) {
 
 $( document ).ready(function() {
 	rowButtons.initItems();
-	initRegister();
 	initParts();
 	rowButtons.addDeleteHandler(function($item){
 		console.log('delete '+ $item.text());
 		console.log(rowButtons.getItemData($item));
 		rowButtons.deleteItem($item);
 	});
-	setLastModifiedDate();
+	initRegister();
+	
 
 });

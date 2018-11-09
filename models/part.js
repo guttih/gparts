@@ -6,7 +6,7 @@ var ObjectId = Schema.ObjectId;
 var PartSchema = mongoose.Schema({
 	name         : { type: String, index:true },
 	description  : { type: String },	
-	Category     : { type: String },	
+	category     : { type: String },	
 	urls         : [{ type: String }],
 	image		 : ObjectId,
 	files		 : [{ObjectId}],

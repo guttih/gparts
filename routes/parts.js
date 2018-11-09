@@ -28,9 +28,19 @@ router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
 					res.redirect('/result');
 				} else{
 					var obj = {id : id,
-						name: part.name,
-						description: part.description,
-						url: part.url,
+						name         : part.name,
+						description  : part.description,
+						category     : part.category,
+						image		 : part.image,
+						stockCount   : part.stockCount,
+						firstAcquired: part.firstAcquired,
+						lastModified : part.lastModified,
+						type         : part.type,
+						location     : part.location,
+						manufacturer : part.manufacturer,
+						supplier     : part.supplier,
+						urls         : part.urls,
+						files		 : part.files
 					};
 					var str = JSON.stringify(obj);
 					res.render('register-part', {item:str});
@@ -69,7 +79,7 @@ router.post('/register', lib.authenticateAdminRequest, function(req, res){
 		var newPart = new Part({
 			name          : req.body.name,
 			description   : req.body.description,
-			Category      : req.body.category,
+			category      : req.body.category,
 			urls          : req.body.urls,
 			//image         : req.body.image,
 			//files         : req.body.files,
@@ -96,17 +106,42 @@ router.post('/register/:ID', lib.authenticateAdminRequest, function(req, res){
 	//part modify
 	var id = req.params.ID;
 
-	req.checkBody('name', 'Name is required').notEmpty();
+	req.checkBody('name'         , 'Name is required'                             ).notEmpty();
+	req.checkBody('location'     , 'Location is required'                         ).notEmpty();
+	req.checkBody('type'         , 'Type is required'                             ).notEmpty();
+	req.checkBody('firstAcquired', 'Acquired date is required'                    ).notEmpty();
+	req.checkBody('lastModified' , 'Last modified date is required'               ).notEmpty();
+	req.checkBody('stockCount'   , 'Stock count is required and must be a number!').notEmpty().isNumeric();
+	
+	if (req.body.supplier === undefined || req.body.supplier.length < 1) {
+		req.body.supplier = null;
+	}
+	if (req.body.manufacturer === undefined || req.body.manufacturer.length < 1) {
+		req.body.manufacturer = null;
+	}
+	
 	var errors = req.validationErrors();
 
 	if(errors){
-		res.render('register-part',{errors:errors	});
+		res.render('register-part',{
+			errors:errors
+		});
 	} else {
 		var values = {
-				name        : req.body.name,
-				description : req.body.description,
-				url         : req.body.url
-			};
+			name          : req.body.name,
+			description   : req.body.description,
+			category      : req.body.category,
+			urls          : req.body.urls,
+			//image         : req.body.image,
+			//files         : req.body.files,
+			stockCount    : req.body.stockCount,
+			firstAcquired : req.body.firstAcquired,
+			lastModified  : req.body.lastModified,
+			type          : req.body.type,
+			location      : req.body.location,
+			manufacturer  : req.body.manufacturer,
+			supplier      : req.body.supplier
+		};
 		
 		
 		Part.modify(id, values, function(err, result){
@@ -134,6 +169,7 @@ router.get('/item/:ID', lib.authenticateRequest, function(req, res){
 				if(err || part === null) {
 					res.send('Error 404 : Not found! ');
 				} else{
+					
 					res.json(part);
 				}
 			});
