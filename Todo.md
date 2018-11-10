@@ -18,6 +18,12 @@ image, files and urls are allowed to be added when part is in edit mode
    * how to search for and select a already stored file
    * how to search for and select a already stored image in the database
 
-
+### Delete button missing when
+ - Modify Part
+ - Modify Manufacturer
+ - Modify Supplier
+ - Modify Location
+ - Modify Type
+ - Modify user
    
 

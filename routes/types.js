@@ -59,14 +59,15 @@ router.post('/register', lib.authenticateAdminRequest, function(req, res){
 			name: name,
 			description:description
 		});
-
+		req.flash('success_msg',	'You successfully created the \"' +  newType._doc.name + '\" type.' );
 		Type.create(newType, function(err, type){
 			if(err) throw err;
 			console.log(type);
+			res.redirect('/types/register/' + type.id );
 		});
 
-		req.flash('success_msg',	'You successfully created the \"' +  newType._doc.name + '\" type.' );
-			res.redirect('/types/list');
+		
+			//res.redirect('/types/list');
 	}
 });
 

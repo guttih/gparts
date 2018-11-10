@@ -66,10 +66,11 @@ router.post('/register', lib.authenticateAdminRequest, function(req, res){
 		Manufacturer.create(newManufacturer, function(err, manufacturer){
 			if(err) throw err;
 			console.log(manufacturer);
+			req.flash('success_msg',	'You successfully created the \"' +  newManufacturer._doc.name + '\" manufacturer.' );
+			res.redirect('/manufacturers/register/'+manufacturer.id);
 		});
 
-		req.flash('success_msg',	'You successfully created the \"' +  newManufacturer._doc.name + '\" manufacturer.' );
-			res.redirect('/manufacturers/list');
+		
 	}
 });
 

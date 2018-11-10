@@ -59,14 +59,15 @@ router.post('/register', lib.authenticateAdminRequest, function(req, res){
 			name: name,
 			description:description
 		});
-
+		
 		Location.create(newLocation, function(err, location){
 			if(err) throw err;
-			console.log(location);
+			req.flash('success_msg',	'You successfully created the \"' +  newLocation._doc.name + '\" location.' );
+			res.redirect('/locations/register/' + location.id);
 		});
 
-		req.flash('success_msg',	'You successfully created the \"' +  newLocation._doc.name + '\" location.' );
-			res.redirect('/locations/list');
+		
+			
 	}
 });
 

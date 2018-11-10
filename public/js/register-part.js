@@ -1,4 +1,4 @@
-function setFormValues(item) {
+function setFormValues() {
 	if (typeof item !== 'undefined' && item !== 'undefined') {
 
 		Object.keys(item).forEach(function(key) {
@@ -49,7 +49,7 @@ function setSelectOptionsFromArray(id, list){
 		opt.setAttribute("title", element.description);
 		select.append(opt);
 	});
-	setFormValues(item);
+	setFormValues();
 }
 
 function partSelect(obj) {

@@ -94,11 +94,11 @@ router.post('/register', lib.authenticateAdminRequest, function(req, res){
 
 		Part.create(newPart, function(err, part){
 			if(err) throw err;
-			console.log(part);
+			req.flash('success_msg',	'You successfully created the \"' +  newPart._doc.name + '\" part.' );
+			res.redirect('/parts/register/'+part.id);
 		});
 
-		req.flash('success_msg',	'You successfully created the \"' +  newPart._doc.name + '\" part.' );
-			res.redirect('/parts/list');
+		
 	}
 });
 

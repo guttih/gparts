@@ -65,11 +65,11 @@ router.post('/register', lib.authenticateAdminRequest, function(req, res){
 
 		Supplier.create(newSupplier, function(err, supplier){
 			if(err) throw err;
-			console.log(supplier);
+			req.flash('success_msg',	'You successfully created the \"' +  newSupplier._doc.name + '\" supplier.' );
+			res.redirect('/suppliers/register/'+supplier.id);
 		});
 
-		req.flash('success_msg',	'You successfully created the \"' +  newSupplier._doc.name + '\" supplier.' );
-			res.redirect('/suppliers/list');
+		
 	}
 });
 
