@@ -139,6 +139,7 @@ router.post('/register', lib.authenticateAdminRequest, function (req, res, next)
 				}
 				var name  = req.body.name;
 				var id    = req.body.fileObjectId;
+				var ownerId = req.user._id;
 			
 				req.checkBody('fileObjectId', 'A file to upload, must be selected.').notEmpty();
 				req.checkBody('name', 'Name is required').notEmpty();
@@ -148,7 +149,11 @@ router.post('/register', lib.authenticateAdminRequest, function (req, res, next)
 					res.render('register-file',{ errors:errors 	});
 				} else {
 					req.flash('success_msg',	'File uploaded and created!' );
-					res.redirect('/files/register/'+id);
+					File.addOwner(id, ownerId, function(err, item){
+						res.redirect('/files/register/'+id);
+					});
+					
+					
 				}
 			});
 		
@@ -164,8 +169,9 @@ router.post('/register/image', lib.authenticateAdminRequest, function (req, res,
 				console.log(err);
 				return;
 			}
-			var name  = req.body.name;
-			var id    = req.body.fileObjectId;
+			var name    = req.body.name;
+			var id      = req.body.fileObjectId;
+			var ownerId = req.user._id;
 		
 			req.checkBody('fileObjectId', 'A image to upload, must be selected.').notEmpty();
 			req.checkBody('name', 'Name is required').notEmpty();
@@ -175,7 +181,11 @@ router.post('/register/image', lib.authenticateAdminRequest, function (req, res,
 				res.render('register-image',{ errors:errors 	});
 			} else {
 				req.flash('success_msg',	'File uploaded and created!' );
-				res.redirect('/files/register/image/'+id);
+				File.addOwner(id, ownerId, function(err, item){
+					res.redirect('/files/register/image/'+id);
+				});
+				
+				
 			}
 		});
 	
@@ -352,7 +362,7 @@ router.delete('/:ID', lib.authenticateAdminRequest, function(req, res){
 				res.render('list-file');
 			} else {
 				var fileName = File.getFullFileNameOnDisk(file);
-				File.delete(id, function(err, result){
+				File.deleteIfOwner(id, req.user._id, function(err, result){
 					if(err !== null){
 						res.status(404).send('unable to delete file "' + id + '".');
 					} else {

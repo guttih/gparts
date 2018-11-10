@@ -6,7 +6,13 @@ var ObjectId = Schema.ObjectId;
 var FileSchema = mongoose.Schema({
 	name       : { type: String, index:true },
 	description: String,
-	fileName   : String /*Will store the path on disk, the original file name and file extension*/
+	fileName   : String,      /* Will store the path on disk, the original file name and file extension*/
+
+	owners	   : [{ObjectId}] /* If added from route "/files/register" or "/files/register/image" 
+	                                 then ObjectId will be UserId
+                                 If added from /files/register/part or "/files/register/partimage" 
+								     then ObjectId will be partId */
+	
 }); 
 
 var File = module.exports = mongoose.model('File', FileSchema);
@@ -16,10 +22,75 @@ module.exports.delete = function (id, callback){
 	File.findByIdAndRemove(id, callback);
 };
 
+var findObjectIdInArray = function findObjectIdInArray(arrayOfObjectIds, stringId) {
+	if (arrayOfObjectIds === undefined || arrayOfObjectIds == null ) {
+		return -1;
+	}
+	for(var i = 0; i < arrayOfObjectIds.length; i++) {
+		if (arrayOfObjectIds[i].equals(stringId)) {
+			return i;
+		}
+	}
+
+	return -1;
+}
+module.exports.deleteIfOwner = function (id, ownerId, callback){
+	File.findById(id, function(err, item) {
+		var newArray = item.owners.slice();
+		var index = findObjectIdInArray(newArray, ownerId);
+		if (index > -1) {
+			if (newArray.length > 1) {
+				//there is another owner of this file so let's only remove ownerId
+				newArray.splice(index, 1);
+				//File.update({_id: id}, val, callback);
+				var values = {
+					owners        : newArray
+				};
+				File.modify(id, values, callback);
+			} else {
+				//this is the only owner, so we can delete this file
+				File.findByIdAndRemove(id, callback);
+			}
+		} else {
+			//this is not owner of this file so nothing is to be deleted.'
+			if (callback !== undefined) {
+				callback(null, {result: "This is not the owner of this file, nothing will be deleted"});
+			}
+		}
+
+	});
+	
+};
+
 module.exports.modify = function (id, newValues, callback){
 	//$set
 	var val = {$set: newValues};
 	File.update({_id: id}, val, callback);
+};
+
+// adds a ownerId to the owners array.  If it already exists, nothing is added
+module.exports.addOwner = function (id, ownerIdToAdd, callback){
+	//$set
+	File.findById(id, function(err, file) {
+		if(err || file === null) {
+			if (err === undefined) { err = {error:404, message: "'Error 404 : Not found! "}; }
+			if (callback !== undefined) {
+				callback(err);  
+			}
+			
+		} else {
+			// file is found
+			if (file.owners[ownerIdToAdd] === undefined)
+			{
+				file.owners.push(ownerIdToAdd);
+				File.modify(file.id, file, callback);
+			} else {
+				if (callback !== undefined) {
+					callback(err, file);  
+				}
+			}
+		}
+	});
 };
 
 module.exports.create = function(newFile,  callback){
@@ -41,6 +112,12 @@ module.exports.listByPath = function (pathToSearchFor, callback){
 	var query = {fileName:rgx};
 	File.find(query, callback);
 };
+
+module.exports.listByOwnerId = function (id, callback){
+	var query = {owners:{$elemMatch: { _id:id }}};
+	Device.find(query, callback);
+};
+
 
 
 /*
