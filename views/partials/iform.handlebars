@@ -1,0 +1,54 @@
+<h5 class="page-header" align="right" style="padding-top:18px;padding-bottom:15px">
+		Register a new image for selected part
+</h5>
+
+<form method="post" id="register-image" class="register-form" action ="/files/register/part/image"
+    enctype="multipart/form-data"
+>
+	<input type="hidden" id="imagePartId" name="partId" form="register-image" value="" >
+    <div class="row row-padd">
+		<label>Image name</label>
+			<p>Name of the image.</p>
+		<input type="text"   id="image-name"  name="name" class="form-control" form="register-image" value="" placeholder="Type image name">
+	</div>
+	
+  <div class="form-horizontal">
+    <label>Image description</label>
+    <p>Describe what this image is about,  if you think that is needed.  f.ex. What angle?  how wide is the part??</p>
+    <div class="form-group">
+      <div class="col-md-12">
+        <textarea id="image-description" name="description" class="form-control" form="register-image"
+		rows="3" placeholder="Describe the image."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="row row-padd">
+    <label>File</label>
+    <div class="input-group col-xs-9 col-sm-10 col-md-10 col-lg-10 col-xl-11 browse-file-btn">
+        <label class="input-group-btn">
+            <span class="btn btn-primary">
+                Browse… 
+                <input  type="file" 
+                    accept="image/*"
+                    name="image" 
+                    id="image" 
+                    class="btn-file" 
+                    placeholder="Select the image you want to upload"
+                    onChange="validatePartImage(this);"
+                    required 
+                    style="display: none;"/>
+            </span>
+        </label>
+        <input type="text" id="image-fileName" class="form-control" readonly="">
+    </div>
+
+    <div class="pull-right image-container" id="image-container">
+        <img src="#" style="max-width:100px;max-height:100px" />
+    </div>
+</div>
+   
+</form>
+
+  <button id="btnSavePartImage" type="button" class="btn btn-success pull-right">Save image</button>
+  <button id="btnCancelPartImage" type="button" class="btn btn-default pull-right cancel-button">Cancel</button>

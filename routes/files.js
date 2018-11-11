@@ -7,6 +7,7 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
 var File = require('../models/file');
+var Part = require('../models/part');
 
 
 var request = require('request');
@@ -140,6 +141,9 @@ router.post('/register', lib.authenticateAdminRequest, function (req, res, next)
 				var name  = req.body.name;
 				var id    = req.body.fileObjectId;
 				var ownerId = req.user._id;
+				if (req.body.partId !== undefined) {
+					ownerId = req.body.partId;
+				}
 			
 				req.checkBody('fileObjectId', 'A file to upload, must be selected.').notEmpty();
 				req.checkBody('name', 'Name is required').notEmpty();
@@ -172,6 +176,9 @@ router.post('/register/image', lib.authenticateAdminRequest, function (req, res,
 			var name    = req.body.name;
 			var id      = req.body.fileObjectId;
 			var ownerId = req.user._id;
+			if (req.body.partId !== undefined) {
+				ownerId = req.body.partId;
+			}
 		
 			req.checkBody('fileObjectId', 'A image to upload, must be selected.').notEmpty();
 			req.checkBody('name', 'Name is required').notEmpty();
@@ -183,6 +190,57 @@ router.post('/register/image', lib.authenticateAdminRequest, function (req, res,
 				req.flash('success_msg',	'File uploaded and created!' );
 				File.addOwner(id, ownerId, function(err, item){
 					res.redirect('/files/register/image/'+id);
+				});
+				
+				
+			}
+		});
+	
+});
+router.post('/register/part/image', lib.authenticateAdminRequest, function (req, res, next) {
+	// req.file is the `avatar` file
+	// req.body will hold the text fields, if there were any
+	
+		uploadImage(req, res, function (err) {
+			if (err) {
+				// An error occurred when uploading
+				console.log(err);
+				return;
+			}
+			var name    = req.body.name;
+			var id      = req.body.fileObjectId;
+			var ownerId = req.user._id;
+			if (req.body.partId !== undefined) {
+				ownerId = req.body.partId;
+			}
+		
+			req.checkBody('fileObjectId', 'A image to upload, must be selected.').notEmpty();
+			req.checkBody('name', 'Name is required').notEmpty();
+			var errors = req.validationErrors();
+			
+			if(errors){
+				res.render('register-image',{ errors:errors 	});
+			} else {
+				req.flash('success_msg',	'File uploaded and created!' );
+				File.addOwner(id, ownerId, function(err, item){
+					if (err !== null) 	{ 	res.statusCode = 404;
+											var obj = {text:'Error 404: Could not add owner!'};
+											return res.json(obj); 
+										  }
+					//Fyrst við ödduðum owner þá þurfum við að adda myndinni í partinn
+					if (ownerId !== req.user._id){
+						Part.modify(ownerId, {image:id},function(err, res) {
+							console.log('added image:' + id + ' to part ' + ownerId);
+						});
+					}
+					File.getById(id, function(err, item){
+						if (err !== null)	{ 	res.statusCode = 404;
+												var obj = {text:'Error 404: Image not found!'};
+												return res.json(obj); 
+											}
+						return res.json(item);
+					});
+					
 				});
 				
 				
@@ -353,19 +411,21 @@ router.get('/image-list', lib.authenticateRequest, function(req, res){
 
 router.delete('/:ID', lib.authenticateAdminRequest, function(req, res){
 	var id = req.params.ID;
-	
-
 	if (id !== undefined) {
 		File.getById(id, function(err, file) {
 			if(err || file === null) {
 				req.flash('error',	'Could not find file.' );
 				res.render('list-file');
-			} else {
-				var fileName = File.getFullFileNameOnDisk(file);
+			} else {			
 				File.deleteIfOwner(id, req.user._id, function(err, result){
-					if(err !== null){
-						res.status(404).send('unable to delete file "' + id + '".');
+					if(err !== null) {
+						if (err.status !== undefined && err.status === 409) {
+							res.status(200).send('Part no longer owner of this image.');
+						} else {
+							res.status(404).send('unable to delete file "' + id + '".');
+						}
 					} else {
+						var fileName = File.getFullFileNameOnDisk(file);
 						if (validator.fileExists(fileName)) {
 							//The file exists so lets delete it
 							fs.unlink(fileName, (err) => {
@@ -380,11 +440,43 @@ router.delete('/:ID', lib.authenticateAdminRequest, function(req, res){
 						}
 					}
 				});
-				
-				
-				
-
-
+			}
+		});
+	}
+	
+});
+router.delete('/part/:pardID/:ID', lib.authenticateAdminRequest, function(req, res){
+	var id = req.params.ID;
+	var partId = req.params.pardID;
+	if (id !== undefined) {
+		File.getById(id, function(err, file) {
+			if(err || file === null) {
+				req.flash('error',	'Could not find file.' );
+				res.render('list-file');
+			} else {
+				File.deleteIfOwner(id, partId, function(err, result) {
+					if(err !== null) {
+						if (err.status !== undefined && err.status === 409) {
+							res.status(200).send('Part no longer owner of this image.');
+						} else {
+							res.status(404).send('unable to delete file "' + id + '".');
+						}
+					} else {  //file was deleted, so let's remove it from disk
+						var fileName = File.getFullFileNameOnDisk(file);
+						if (validator.fileExists(fileName)) {
+							//The file exists so lets delete it
+							fs.unlink(fileName, (err) => {
+								if (err) {
+									res.status(404).send('unable to delete the file "' + fileName + '" from disk.');
+								} else {
+									res.status(200).send('File and file on disk deleted.');                               
+								}
+						});
+						} else {
+							res.status(200).send('File deleted.');
+						}
+					}
+				});
 			}
 		});
 	}

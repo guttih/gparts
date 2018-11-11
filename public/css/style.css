@@ -346,7 +346,7 @@ button.btn-log-pins {
 }
 
 
-#register-form > .part-values > label {
+.register-form > .part-values > label {
 	border-top:50px !important;
 }
 
@@ -354,10 +354,10 @@ form.part-form select,input  {
 	margin-bottom: 15px !important;
 }
 
-#register-form .browse-file-btn > label > span {
+.register-form .browse-file-btn > label > span  {
 	margin-top:-14px;
 }
-#register-form .browse-part-image-btn > label > span {
+.register-form .browse-part-image-btn > label > span {
 	margin-top:-14px;
 	position: absolute;
 	height:160px;
@@ -396,4 +396,8 @@ a.temp-image.text > p {
 
 .part-form .image-container {
 	margin-top:5px;
+}
+
+.cancel-button {
+	margin-right: 8px !important;
 }

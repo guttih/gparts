@@ -46,7 +46,12 @@ module.exports.deleteIfOwner = function (id, ownerId, callback){
 				var values = {
 					owners        : newArray
 				};
-				File.modify(id, values, callback);
+				File.modify(id, values, function(err, res) {
+					if (callback !== undefined) {
+						var err = {status: 409, message: "Another owner exists."};
+						callback(err, res);
+					}
+				});
 			} else {
 				//this is the only owner, so we can delete this file
 				File.findByIdAndRemove(id, callback);
@@ -54,7 +59,8 @@ module.exports.deleteIfOwner = function (id, ownerId, callback){
 		} else {
 			//this is not owner of this file so nothing is to be deleted.'
 			if (callback !== undefined) {
-				callback(null, {result: "This is not the owner of this file, nothing will be deleted"});
+				var err = {status: 409, message: "Not a owner."};
+				callback(err, {id:id, ownerId:ownerId });
 			}
 		}
 

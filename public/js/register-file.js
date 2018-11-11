@@ -95,7 +95,7 @@ function validateFormValues(){
 		showModalErrorText('Name is missing', 'You must provide a name.');
 		return false;
 	}
-	return validateImage(document.getElementById('image'));;
+	return validateImage(document.getElementById('image'));
 }
 
 

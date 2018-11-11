@@ -119,6 +119,9 @@ router.post('/register/:ID', lib.authenticateAdminRequest, function(req, res){
 	if (req.body.manufacturer === undefined || req.body.manufacturer.length < 1) {
 		req.body.manufacturer = null;
 	}
+	if (req.body.image === undefined || req.body.image.length < 1) {
+		req.body.image = null;
+	}
 	
 	var errors = req.validationErrors();
 
@@ -132,7 +135,7 @@ router.post('/register/:ID', lib.authenticateAdminRequest, function(req, res){
 			description   : req.body.description,
 			category      : req.body.category,
 			urls          : req.body.urls,
-			//image         : req.body.image,
+			image         : req.body.image,
 			//files         : req.body.files,
 			stockCount    : req.body.stockCount,
 			firstAcquired : req.body.firstAcquired,
