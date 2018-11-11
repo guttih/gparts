@@ -1,3 +1,4 @@
+var urls = [];
 function setFormValues(fetchPartImage) {
 	if (typeof item !== 'undefined' && item !== 'undefined') {
 
@@ -6,6 +7,8 @@ function setFormValues(fetchPartImage) {
 			if (val !== undefined && val !== null) {
 				if (key === 'firstAcquired'  || key === 'lastModified') {
 					val = val.substr(0,10);
+				} else if (key === 'urls') {
+					urls = JSON.parse(val);
 				}
 				
 				var $elm = $('#register-form [name="'+key+'"]');
@@ -234,7 +237,6 @@ function extractFileNameFromObject(data){
 }
 
 function showPartImage(data) {
-	console.log(data);
 	var fileName = '/files/images/' + extractFileNameFromObject(data);
 	$('#part-image-container img').attr('src', fileName);
 	
@@ -352,7 +354,6 @@ $( document ).ready(function() {
 	initRegister();
 
 	var $elm = $("#image");
-	console.log('registering on change');
 	$elm.change(function () {
 		var id = $(this)[0].id;
 		var name = $("#"+id+"-name").val();
@@ -398,4 +399,83 @@ $( document ).ready(function() {
 	//validate for the first time
 	validatePartImage(document.getElementById('image'));
 	setupImageFunctionsAndButtons();
+	setupFilesAndUrls();
 });
+
+function setupUrlCommands(){
+
+	// View button for url item
+	$('#urls td.commands .list-command-view.btn').unbind();
+	$('#urls td.commands .list-command-view.btn').bind('click tap',function(){
+		$elm = $(this).parent().parent();
+		//var elmData = $elm.data("elm");
+		var url = $elm.data("elm").url;
+		openUrlInNewTab(url);
+		
+	});
+
+	// Edit button for url item
+	$('#urls td.commands .list-command-edit.btn').unbind();
+	$('#urls td.commands .list-command-edit.btn').bind('click tap',function() {
+		$elm = $(this).parent().parent();
+		var index = new Number($elm.attr("data-index"));
+		var urlObject = urls[index];
+		showModalInputTwo("Adding a Url",  "Please provide the name", "Please provide the url",
+						   urlObject.name, urlObject.url,             "Add",
+							function(name, url) {
+													if (name.length > 0 && url.length > 0) {
+														if (url.indexOf('www.') === 0) {
+															url = 'http://' + url;
+														}
+														urls.splice(index, 1, {name:name, url:url});
+													}
+													urlsToView();
+							}
+		);
+		
+	});
+
+	// View button for url item
+	$('#urls td.commands .list-command-delete.btn').unbind();
+	$('#urls td.commands .list-command-delete.btn').bind('click tap',function() {
+		$elm = $(this).parent().parent();
+		var index = new Number($elm.attr("data-index"));
+		urls.splice(index, 1);
+		urlsToView();
+	});
+}
+
+function urlsToView() {
+	var $table = $('#urls');
+	$table.empty();
+	
+	urls.forEach(function(element, index) {
+		$table.append("<tr data-index='"+index+"' data-elm='"+JSON.stringify(element)+"'><td>"+element.name+"</td></tr>");
+	});
+	
+	rowButtons.initItems();
+	setupUrlCommands();
+	var strUrls = JSON.stringify(urls);
+	$('#register-form [name="urls"]').val(strUrls);
+}
+
+function setupFilesAndUrls() {
+	
+	$('.files-and-urls .urls .btn-add').bind('click tap',function() {
+		showModalInputTwo("Adding a Url", "Please provide the name", 
+											"Please provide the url",
+											"", 
+											"",
+											"Add",
+											function(name, url){
+			if (name.length > 0 && url.length > 0){
+				if (url.indexOf('www.') === 0) {
+					url = 'http://' + url;
+				}
+				urls.push({name:name, url:url});
+			}
+			urlsToView(urls);
+		});
+	});
+	urlsToView();
+}

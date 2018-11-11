@@ -22,6 +22,7 @@
 <div id="part-values">
     <form method="post" id="register-form" action ="/parts/register" class="part-form" >
     <input type="hidden" id="imageId" name="image" form="register-form" value="">
+    <input type="hidden" id="urlsId" name="urls" form="register-form" value="">
         <div class="row row-padd">
             <div class=" col-xs-5 col-sm-3 col-md-3 col-lg-3 col-xl-1 image-container" id="part-image-container">
                 <img src="/images/part-image.jpg" style="max-width:160px;max-height:160px;margin-top:20px;" class="center-block temp-image">
@@ -136,34 +137,20 @@
             </div>
         </div>
         <div class="row files-and-urls"> 
-            <div class="col-sm-6 col-md-5 col-lg-5">
+            <div class="col-sm-6 col-md-5 col-lg-5 files">
                 <label>Files</label>
+                <button type="button" class="btn btn-default btn-add pull-right">+</button>
                 <table id="files" class="row-buttons view edit delete">
                     <tr><td>Option 1</td></tr>
                     <tr><td>Option 2</td></tr>
-                    <tr><td>Option 3</td></tr>
-                    <tr><td>Option 4</td></tr>
-                    <tr><td>Option 5</td></tr>
-                    <tr><td>Option 6</td></tr>
-                    <tr><td>Option 7</td></tr>
-                    <tr><td>Option 8</td></tr>
-                    <tr><td>Option 9</td></tr>
-                    <tr><td>Option 10</td></tr>
                 </table>
             </div>
-            <div class="col-sm-6 col-md-5 col-lg-5 pull-right">
+            <div class="col-sm-6 col-md-5 col-lg-5 urls pull-right">
+                
                 <label>Urls</label>
+                <button type="button" class="btn btn-default btn-add pull-right">+</button>
                 <table id="urls" class="row-buttons view edit delete">
                     <tr><td>Option 1</td></tr>
-                    <tr><td>Option 2</td></tr>
-                    <tr><td>Option 3</td></tr>
-                    <tr><td>Option 4</td></tr>
-                    <tr><td>Option 5</td></tr>
-                    <tr><td>Option 6</td></tr>
-                    <tr><td>Option 7</td></tr>
-                    <tr><td>Option 8</td></tr>
-                    <tr><td>Option 9</td></tr>
-                    <tr><td>Option 10</td></tr>
                 </table>
             </div>
         </div>

@@ -407,7 +407,21 @@ a.temp-image.text > p {
     top: 84px;
 }
 
-#modal-input1 {
+.modal-dialog input {
 	width: 94%;
     margin-left: 3%;
+}
+
+.modal-dialog .modal-body2{
+	position: relative;
+    padding: 15px;
+}
+
+.files-and-urls .btn-add {
+	padding: 3px 3px;
+    padding-top: 3px;
+    padding-right: 8px;
+    padding-bottom: 3px;
+	padding-left: 8px;
+	margin-bottom:8px;
 }

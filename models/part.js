@@ -7,7 +7,7 @@ var PartSchema = mongoose.Schema({
 	name         : { type: String, index:true },
 	description  : { type: String },	
 	category     : { type: String },	
-	urls         : [{ type: String }],
+	urls         : { type: String },
 	image		 : ObjectId,
 	files		 : [{ObjectId}],
 	stockCount   : Number,

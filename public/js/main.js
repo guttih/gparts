@@ -349,7 +349,7 @@ function showModalConfirm(title, message, confirmButtonText, confirmCallback){
 //  showModalInput("test", "texti", "vista", function(value) {
 //		alert(value);
 //	});
-function showModalInput(title, message, confirmButtonText, confirmCallback){
+function showModalInput(title, message, defaultText1, confirmButtonText, confirmCallback){
 	$(".modal-title").text(title);
 	$(".modal-body").text(message); 
 	if (confirmCallback === undefined){
@@ -360,6 +360,7 @@ function showModalInput(title, message, confirmButtonText, confirmCallback){
 	} else {
 		$('#btn-confirm').text(confirmButtonText);
 	}
+	$('#modal-input1').val(defaultText1);
 	$('#btn-confirm').removeClass('btn-danger').addClass('btn-success');
 	$('#modal-input1').removeClass('hidden');
 	$('#btn-confirm').unbind();
@@ -369,6 +370,41 @@ function showModalInput(title, message, confirmButtonText, confirmCallback){
 		$('#myModal').modal('hide');
 		setTimeout(function(){
 			confirmCallback(value);
+		}, 100);
+	});
+	$('#myModal .btn-default').show();
+	$('#btn-confirm').show();
+	$('#myModal').modal('show');
+}
+
+function showModalInputTwo(title, message1, message2, defaultText1, defaultText2, confirmButtonText, confirmCallback){
+	$(".modal-title").text(title);
+	$(".modal-body").text(message1); 
+	$(".modal-body2").text(message2); 
+	if (confirmCallback === undefined){
+		//no button text provided
+		$('#btn-confirm').text("Confirm");
+		confirmCallback = confirmButtonText; /**/
+
+	} else {
+		$('#btn-confirm').text(confirmButtonText);
+	}
+	$('#modal-input1').val(defaultText1);
+	$('#modal-input2').val(defaultText2);
+	$('#btn-confirm' ).removeClass('btn-danger').addClass('btn-success');
+	$(".modal-body2" ).removeClass('hidden');
+	$('#modal-input1').removeClass('hidden');
+	$('#modal-input2').removeClass('hidden');
+	$('#btn-confirm' ).unbind();
+	$('#btn-confirm' ).on('click', function(e) {
+		var value1 = $('#modal-input1').val();
+		var value2 = $('#modal-input2').val();
+		$(".modal-body2" ).addClass('hidden');
+		$('#modal-input1').addClass('hidden');
+		$('#modal-input2').addClass('hidden');
+		$('#myModal').modal('hide');
+		setTimeout(function(){
+			confirmCallback(value1, value2);
 		}, 100);
 	});
 	$('#myModal .btn-default').show();
