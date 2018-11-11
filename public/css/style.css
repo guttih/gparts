@@ -406,3 +406,8 @@ a.temp-image.text > p {
 	position: absolute;
     top: 84px;
 }
+
+#modal-input1 {
+	width: 94%;
+    margin-left: 3%;
+}

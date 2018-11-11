@@ -289,6 +289,7 @@ function deleteItem(routeText, id, deleteSuccessCallback){
 		});
 		
 }
+
 function showModalError(title, response){
 
 	showModal(title, 
@@ -338,6 +339,37 @@ function showModalConfirm(title, message, confirmButtonText, confirmCallback){
 		}, 400);
 		
 		
+	});
+	$('#myModal .btn-default').show();
+	$('#btn-confirm').show();
+	$('#myModal').modal('show');
+}
+
+// 	--Ask for user input, Example
+//  showModalInput("test", "texti", "vista", function(value) {
+//		alert(value);
+//	});
+function showModalInput(title, message, confirmButtonText, confirmCallback){
+	$(".modal-title").text(title);
+	$(".modal-body").text(message); 
+	if (confirmCallback === undefined){
+		//no button text provided
+		$('#btn-confirm').text("Confirm");
+		confirmCallback = confirmButtonText; /**/
+
+	} else {
+		$('#btn-confirm').text(confirmButtonText);
+	}
+	$('#btn-confirm').removeClass('btn-danger').addClass('btn-success');
+	$('#modal-input1').removeClass('hidden');
+	$('#btn-confirm').unbind();
+	$('#btn-confirm').on('click', function(e) {
+		var value = $('#modal-input1').val();
+		$('#modal-input1').addClass('hidden');
+		$('#myModal').modal('hide');
+		setTimeout(function(){
+			confirmCallback(value);
+		}, 100);
 	});
 	$('#myModal .btn-default').show();
 	$('#btn-confirm').show();
@@ -500,5 +532,5 @@ $(function () {
 	//todo: run this only if logged in getWhenServerStarted();
 	$('.dropdown-toggle').dropdown();/*for the dropdown-toggle bootstrap class*/
 	$("[rel='tooltip']").tooltip();/*activate boostrap tooltips*/
-
+	
 });
