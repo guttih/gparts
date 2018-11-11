@@ -2,10 +2,8 @@
 
 ## Part Register & modify
 
-image, files and urls are allowed to be added when part is in edit mode
+ - files and are allowed to be added when part is in edit mode
 
-### Register new Part
-  - Will not be able to upload a image or any files from here here.
 
 ### Modify Part
  - Will need to be able to select a file already stored in the database.
@@ -14,6 +12,9 @@ image, files and urls are allowed to be added when part is in edit mode
    * how to search for and select a already stored image in the database
    * how to search for and select a already stored file in the database
 
+### files and images
+ - Do not Create a File object before you are sure that the file was saved to disk
+ 
 ### Delete button missing when
  - Modify Part
    * Delete part must also delete part image and all part files
@@ -22,5 +23,13 @@ image, files and urls are allowed to be added when part is in edit mode
  - Modify Location
  - Modify Type
  - Modify user
-   
 
+
+ ### When starting the app for the first time
+ - allow administrator to enable and disable new user registration
+   * When done, delete `"allowUserRegistration":false` text from Readme.md
+ - Create `public/files/images` if not exist
+   * When the program starts for the first time, these folders do not exist.
+     - `public/files`
+     - `public/files/images`
+   
