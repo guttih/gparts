@@ -6,7 +6,7 @@ This app is still in development.
 Project page can be found [here](http:www.guttih.com:9999/projects/gparts).
 
 ### Version
-0.0.9
+0.2.0
 
 ### Usage
 
