@@ -100,16 +100,14 @@ function registerPartSelect(obj) {
 	var select = partSelect(obj);
 	var id = select.attr('id');
 	var url = '/'+id+'s/register';
-	var win = window.open(url, '_blank');
-	win.focus();
+	openUrlInNewTab(url);
 }
 function editPartSelect(obj) {
 	var select = partSelect(obj);
 	var id = select.attr('id');
 	var selectedOption = select.val();
 	var url = '/' + id + 's/register/' + selectedOption;
-	var win = window.open(url, '_blank');
-	win.focus();
+	openUrlInNewTab(url);
 }
 
 function setLastModifiedDate(){
@@ -230,6 +228,119 @@ function validatePartImage(input) {
 	return enableButton;
 }
 
+function extractFileNameFromObject(data){
+	var ending = data.fileName.substr(data.fileName.lastIndexOf('.'));
+	return data._id + ending;
+}
+
+function showPartImage(data) {
+	console.log(data);
+	var fileName = '/files/images/' + extractFileNameFromObject(data);
+	$('#part-image-container img').attr('src', fileName);
+	
+}
+
+function setNewPartImage(dataResponseStr){
+	var data;
+	try {
+        data = JSON.parse(dataResponseStr);
+    } catch(e) {
+		console.log("error in object returned from part image ");
+		console.error(e);
+		return;
+	}
+	var $inputPartId = $('#imagePartId');
+	$inputPartId.val(data._id);
+	$('#part-values').removeClass("hidden");$('#image-values').addClass('hidden');
+	$('#imageId').val(data._id);
+	showPartImage(data);
+}
+
+function submitFormInBackground(formId) {
+	var $part = $('#'+formId+' [name="partId"]');
+	$part.val(item.id);
+	var form = document.getElementById(formId);
+	var action      = form.action;
+	var formData = new FormData(form);
+	$.ajax({
+		url: action, 
+		dataType: 'text',  
+		cache: false,
+		contentType: false,
+		processData: false,
+		data: formData,                         
+		type: 'post',
+		success: function(data){
+			console.log('new image success');
+			setNewPartImage(data);
+		}, 
+		error: function(data){
+			console.log('error');
+			console.log(data);
+		}, 
+	});
+}
+
+function showImageCommands(bShowImageCommands) {
+	
+	if (!bShowImageCommands) {
+		$('#part-image-container .commands.item').addClass('hidden');
+	} else {
+		//Do not show view and delete if default image
+		var image = $('#register-form [name="image"]').val();
+		var bDeaultImage = (image !== undefined && image.length < 1);
+		if (bDeaultImage) {
+			$('#part-image-container .list-command-view').addClass('hidden');
+			$('#part-image-container .list-command-delete').addClass('hidden');
+		} else {
+			$('#part-image-container .list-command-view').removeClass('hidden');
+			$('#part-image-container .list-command-delete').removeClass('hidden');
+		}
+		$('#part-image-container .commands.item').removeClass('hidden');
+	}
+}
+
+function setupImageFunctionsAndButtons() {
+	$('#part-image-container .list-command-view').bind('click tap',function(){
+		var src= $('.part-form .image-container img').attr('src');
+		openUrlInNewTab(src);
+	});
+	$('#part-image-container .list-command-edit').bind('click tap',function(){
+		$('#part-values').addClass("hidden");$('#image-values').removeClass('hidden');
+	});
+	$('#part-image-container .list-command-delete').bind('click tap',function(){
+		console.log("ask shure delete, and then delete");
+		var image = $('#register-form [name="image"]').val();
+		var partId = item.id;
+		if (  (image !== undefined && image.length > 0) &&
+			  (partId !== undefined && partId.length > 0)     ){
+			deleteItem('files/part/'+partId, image, function(data){
+				//Now, when we have deleted the image, let's remove it from the form and view
+				$('#register-form [name="image"]').val("");
+				$('#part-image-container img').attr('src', '/images/part-image.jpg');
+			});
+		} else {
+			showModalErrorText("Image not found for this part", "No image is selected.");
+		}
+	});
+	$('#part-image-container').mouseover(function(){
+		showImageCommands(true);
+	});
+	$('#part-image-container').mouseout(function(){
+		showImageCommands(false);
+	});
+	
+	$("#image-name").bind('keyup change cut paste',function(){
+		//when name of image is changed
+		validatePartImage(document.getElementById('image'));
+	});
+
+	$('#btnCancelPartImage').click(function() {
+		$('#part-values').removeClass("hidden");$('#image-values').addClass('hidden');
+	});
+	showImageCommands(false);
+}
+
 $( document ).ready(function() {
 	rowButtons.initItems();
 	initParts();
@@ -284,83 +395,7 @@ $( document ).ready(function() {
 	});
 	
 
-	$('.part-form .image-container').click(function(){
-		$('#part-values').addClass("hidden");$('#image-values').removeClass('hidden');
-	});
-
-	$('#btnCancelPartImage').click(function() {
-		$('#part-values').removeClass("hidden");$('#image-values').addClass('hidden');
-	});
-
-
 	//validate for the first time
 	validatePartImage(document.getElementById('image'));
-
+	setupImageFunctionsAndButtons();
 });
-function extractFileNameFromObject(data){
-	var ending = data.fileName.substr(data.fileName.lastIndexOf('.'));
-	return data._id + ending;
-}
-function showPartImage(data) {
-	console.log(data);
-	
-	var fileName = '/files/images/' + extractFileNameFromObject(data);
-	$('#part-image-container img').attr("src", fileName);
-	
-}
-function setNewPartImage(dataResponseStr){
-	var data;
-	try {
-        data = JSON.parse(dataResponseStr);
-    } catch(e) {
-		console.log("error in object returned from part image ");
-		console.error(e);
-		return;
-	}
-	var $inputPartId = $('#imagePartId');
-	$inputPartId.val(data._id);
-	$('#part-values').removeClass("hidden");$('#image-values').addClass('hidden');
-	$('#imageId').val(data._id);
-	showPartImage(data);
-	
-}
-function submitFormInBackground(formId) {
-
-	var $part = $('#'+formId+' [name="partId"]');
-	$part.val(item.id);
-	var form = document.getElementById(formId);
-	
-
-	var $elm = $(form);
-	var file_data   =   $('#image').prop('files')[0]; 
-	var name        =   $('#image-name').val();
-	var description =   $('#image-description').val();
-	
-	var action      = form.action;
-	
-	var formData = new FormData(form);
-	//formData.append('file', file_data);
-	//formData.append('name', name);
-	//formData.append('fileName', name);
-	//formData.append('partId', partId);
-	//enctype="multipart/form-data"
-	$.ajax({
-		url: action, 
-		dataType: 'text',  
-		cache: false,
-		contentType: false,
-		processData: false,
-		data: formData,                         
-		type: 'post',
-		success: function(data){
-			console.log('new image success');
-			setNewPartImage(data);
-			
-		}, 
-		error: function(data){
-			console.log('error');
-			console.log(data);
-		}, 
-	});
-
-}

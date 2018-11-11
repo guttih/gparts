@@ -274,7 +274,7 @@ function deleteItem(routeText, id, deleteSuccessCallback){
 				success: function(data) {
 					console.log("delete success.");
 					if (deleteSuccessCallback !== undefined){
-						deleteSuccessCallback();
+						deleteSuccessCallback(data);
 					} else{
 						console.log(data);
 						$('#listItem'+ id).remove();
@@ -282,8 +282,7 @@ function deleteItem(routeText, id, deleteSuccessCallback){
 				},
 				error: function (res){
 					console.log(res);
-					showModal('Error when deleting',	
-							res.responseText + '   (' + res.status + ': ' + res.statusText+')');
+					showModalError('Error when deleting', res);
 				}
 			});
 		
@@ -331,9 +330,14 @@ function showModalConfirm(title, message, confirmButtonText, confirmCallback){
 		$('#btn-confirm').text(confirmButtonText);
 	}
 	$('#btn-confirm').removeClass('btn-success').addClass('btn-danger');
+	$('#btn-confirm').unbind();
 	$('#btn-confirm').on('click', function(e) {
-		confirmCallback();
 		$('#myModal').modal('hide');
+		setTimeout(function(){
+			confirmCallback();
+		}, 400);
+		
+		
 	});
 	$('#myModal .btn-default').show();
 	$('#btn-confirm').show();
@@ -354,8 +358,9 @@ function showModalOk(title, message, confirmButtonText, okCallback) {
 	$('#btn-confirm').removeClass('btn-danger').addClass('btn-success');
 	
 	$('#btn-confirm').on('click', function(e) {
-		okCallback();
 		$('#myModal').modal('hide');
+		okCallback();
+		
 	});
 	$('#myModal .btn-default').hide();
 	$('#btn-confirm').show();
@@ -483,6 +488,10 @@ function getList(callback, url){
 	requestData(url, callback);
 }
 
+function openUrlInNewTab(url) {
+	var win = window.open(url, '_blank');
+	win.focus();
+  }
 
 
 $(function () {  

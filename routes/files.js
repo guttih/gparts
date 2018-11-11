@@ -420,7 +420,7 @@ router.delete('/:ID', lib.authenticateAdminRequest, function(req, res){
 				File.deleteIfOwner(id, req.user._id, function(err, result){
 					if(err !== null) {
 						if (err.status !== undefined && err.status === 409) {
-							res.status(200).send('Part no longer owner of this image.');
+							res.status(409).send('Can not delete, because there is another owner. ('+err.owners[0]._id+')');
 						} else {
 							res.status(404).send('unable to delete file "' + id + '".');
 						}
@@ -457,11 +457,15 @@ router.delete('/part/:pardID/:ID', lib.authenticateAdminRequest, function(req, r
 				File.deleteIfOwner(id, partId, function(err, result) {
 					if(err !== null) {
 						if (err.status !== undefined && err.status === 409) {
-							res.status(200).send('Part no longer owner of this image.');
+							res.status(409).send('Part no longer owner of this image.');
 						} else {
 							res.status(404).send('unable to delete file "' + id + '".');
 						}
 					} else {  //file was deleted, so let's remove it from disk
+						//Fyrst við eyddum owner á myndinni þá þurfum við að eyða vísun í myndina í partinn
+						Part.modify(partId, {image:null},function(err, res) {
+							console.log('Deleted image from part');
+						});
 						var fileName = File.getFullFileNameOnDisk(file);
 						if (validator.fileExists(fileName)) {
 							//The file exists so lets delete it
@@ -480,7 +484,6 @@ router.delete('/part/:pardID/:ID', lib.authenticateAdminRequest, function(req, r
 			}
 		});
 	}
-	
 });
 
 module.exports = router;

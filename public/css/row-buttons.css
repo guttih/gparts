@@ -6,7 +6,7 @@ table.row-buttons{
 }
 
 
-table.row-buttons .list-command-delete {
+.list-command-delete {
 	color:red;
 }
 table.row-buttons .list-command-view,table.row-buttons .list-command-edit,table.row-buttons .list-command-delete {

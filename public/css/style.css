@@ -401,3 +401,8 @@ a.temp-image.text > p {
 .cancel-button {
 	margin-right: 8px !important;
 }
+
+#part-image-container .commands.item {
+	position: absolute;
+    top: 84px;
+}
