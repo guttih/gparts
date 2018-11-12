@@ -100,12 +100,10 @@ function validateFormValues(){
 
 
 $( document ).ready(function() {
-	console.log( "ready!" );
 	$('#image-container').css('display', 'none');
 	initRegister();
 	
 	var $elm = $("#file,#image");
-	console.log('registering on change');
 	$elm.change(function () {
 		var name = $("#name").val();
 		console.log('changed');

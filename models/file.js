@@ -34,7 +34,21 @@ var findObjectIdInArray = function findObjectIdInArray(arrayOfObjectIds, stringI
 
 	return -1;
 }
-module.exports.deleteIfOwner = function (id, ownerId, callback){
+/*Deletes a file based on ownerId
+
+	If ownerId is NOT an owner and        
+				another owner is a owner  of the file   The file is NOT deleted                                    and 406 error returned
+				
+	If deleteIfNoOwner is true
+		-If there is no owner             of the file,  The file is     deleted
+		-If ownerId is     the only owner of the file,  The file is     deleted
+		-If ownerId is NOT the only owner of the file,  the file is NOT deleted and ownerId is removed from owners and 403 error returned
+	If deleteIfNoOwner is false
+		-If there is no owner             of the file,  The file is NOT deleted and                                    405 error returned
+		-If ownerId is     the only owner of the file,  The file is     deleted
+		-If ownerId is NOT the only owner of the file,  The file is NOT deleted and ownerId is removed from owners and 403 error returned
+*/
+module.exports.deleteIfOwner = function (id, ownerId, deleteIfNoOwner, callback) {
 	File.findById(id, function(err, item) {
 		var newArray = item.owners.slice();
 		var index = findObjectIdInArray(newArray, ownerId);
@@ -42,13 +56,12 @@ module.exports.deleteIfOwner = function (id, ownerId, callback){
 			if (newArray.length > 1) {
 				//there is another owner of this file so let's only remove ownerId
 				newArray.splice(index, 1);
-				//File.update({_id: id}, val, callback);
 				var values = {
 					owners        : newArray
 				};
 				File.modify(id, values, function(err, res) {
 					if (callback !== undefined) {
-						var err = {status: 409, message: "Another owner exists.", owners: newArray};
+						var err = {status: 403, message: "Another owner exists.", owners: newArray};
 						callback(err, res);
 					}
 				});
@@ -57,10 +70,25 @@ module.exports.deleteIfOwner = function (id, ownerId, callback){
 				File.findByIdAndRemove(id, callback);
 			}
 		} else {
-			//this is not owner of this file so nothing is to be deleted.'
-			if (callback !== undefined) {
-				var err = {status: 409, message: "Not a owner.", owners: newArray};
-				callback(err, {id:id, ownerId:ownerId });
+			//this is not owner of this file 
+			if (newArray.length === 0) {
+				//There are NO owners of this file, 
+				if (deleteIfNoOwner === true) { 
+					File.findByIdAndRemove(id, callback);
+				} else {
+					// Not allowed to delete even though NO owners
+					if (callback !== undefined) {
+						var err = {status: 405, message: "No owners, but delete is not allowed.", owners: newArray};
+						callback(err, res);
+					}
+				}
+			}
+			else {
+				//nothing is to be deleted but we need to tell user that nothing was deleted, so we must send an error object.
+				if (callback !== undefined) {
+					var err = {status: 406, message: "Another owner exists and this ownerId is not an owner.", owners: newArray};
+					callback(err);
+				}
 			}
 		}
 

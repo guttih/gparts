@@ -96,6 +96,7 @@ router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
 						name: file.name,
 						description: file.description,
 						fileName: file.fileName,
+						owners: file.owners,
 						src: File.getFullFileNameOnDisk(file).replace('./public', '')
 					};
 					var str = JSON.stringify(obj);
@@ -118,6 +119,7 @@ router.get('/register/image/:ID', lib.authenticatePowerUrl, function(req, res){
 						name: file.name,
 						description: file.description,
 						fileName: file.fileName,
+						owners: file.owners,
 						src: File.getFullFileNameOnDisk(file).replace('./public', '')
 					};
 					var str = JSON.stringify(obj);
@@ -416,27 +418,30 @@ router.delete('/:ID', lib.authenticateAdminRequest, function(req, res){
 			if(err || file === null) {
 				req.flash('error',	'Could not find file.' );
 				res.render('list-file');
-			} else {			
-				File.deleteIfOwner(id, req.user._id, function(err, result){
+			} else {
+				File.deleteIfOwner(id, req.user._id, true, function(err, result) {
 					if(err !== null) {
-						if (err.status !== undefined && err.status === 409) {
-							res.status(409).send('Can not delete, because there is another owner. ('+err.owners[0]._id+')');
-						} else {
-							res.status(404).send('unable to delete file "' + id + '".');
-						}
+						if (err.status !== undefined ) {
+							switch(err.status) {
+								case 403 : 
+								case 406 : res.status(err.status).send('Can not delete, because there is another owner. ('+err.owners[0]._id+')'); 
+										   break;
+								default  : res.status(err.status).send('Unable to delete file "' + id + '".');
+							}
+						} 
 					} else {
 						var fileName = File.getFullFileNameOnDisk(file);
 						if (validator.fileExists(fileName)) {
 							//The file exists so lets delete it
 							fs.unlink(fileName, (err) => {
 								if (err) {
-									res.status(404).send('unable to delete the file "' + fileName + '" from disk.');
+									res.status(404).send('Unable to delete the file "' + fileName + '" from disk.');
 								} else {
 									res.status(200).send('File and file on disk deleted.');                               
 								}
 						});
 						} else {
-							res.status(200).send('File deleted.');
+							res.status(200).send('Did not need to delete file from disk because it did not exist.');
 						}
 					}
 				});
@@ -454,30 +459,61 @@ router.delete('/part/:pardID/:ID', lib.authenticateAdminRequest, function(req, r
 				req.flash('error',	'Could not find file.' );
 				res.render('list-file');
 			} else {
-				File.deleteIfOwner(id, partId, function(err, result) {
-					if(err !== null) {
-						if (err.status !== undefined && err.status === 409) {
-							res.status(409).send('Part no longer owner of this image.');
+/*Deletes a file based on ownerId
+
+	If ownerId is NOT an owner and        
+				another owner is a owner  of the file   The file is NOT deleted                                    and 406 error returned
+				
+	If deleteIfNoOwner is true
+		-If there is no owner             of the file,  The file is     deleted
+		-If ownerId is     the only owner of the file,  The file is     deleted
+		-If ownerId is NOT the only owner of the file,  the file is NOT deleted and ownerId is removed from owners and 403 error returned
+	If deleteIfNoOwner is false
+		-If there is no owner             of the file,  The file is NOT deleted and                                    405 error returned
+		-If ownerId is     the only owner of the file,  The file is     deleted
+		-If ownerId is NOT the only owner of the file,  The file is NOT deleted and ownerId is removed from owners and 403 error returned
+*/
+				File.deleteIfOwner(id, partId, false, function(err, result) {
+					/*if(err !== null) {
+						if (err.status !== undefined && err.status === 403) {
+							res.status(err.status).send('Part no longer owner of this image.');
 						} else {
 							res.status(404).send('unable to delete file "' + id + '".');
 						}
+					}*/ 
+					if(err !== null) {
+						// File was not deleted
+						if (err.status !== undefined ) {
+							var addition = "part is not a owner.";
+							switch(err.status) {
+								case 403 : 			                                                        // Another owner found
+								case 406 :	addition = 	'there is another owner. ('+err.owners[0]._id+')';	// Another owner found and part NOT a owner
+								case 405 :                                                                  // No owners
+											res.status(err.status).send('Unable delete file, because ' + addition); 
+										 	//Fyrst við eyddum owner á myndinni þá þurfum við að eyða vísun í myndina í partinn
+											Part.modify(partId, {image:null},function(err, res) {
+												console.log('Deleted image from part');
+											});
+											break;
+											
+								default  : res.status(err.status).send('Unable to delete file "' + id + '".');
+							}
+						} else {
+							res.status(404).send('Unable to delete file "' + id + '".');
+						}
 					} else {  //file was deleted, so let's remove it from disk
-						//Fyrst við eyddum owner á myndinni þá þurfum við að eyða vísun í myndina í partinn
-						Part.modify(partId, {image:null},function(err, res) {
-							console.log('Deleted image from part');
-						});
 						var fileName = File.getFullFileNameOnDisk(file);
 						if (validator.fileExists(fileName)) {
 							//The file exists so lets delete it
 							fs.unlink(fileName, (err) => {
 								if (err) {
-									res.status(404).send('unable to delete the file "' + fileName + '" from disk.');
+									res.status(404).send('Unable to delete the file "' + fileName + '" from disk.');
 								} else {
 									res.status(200).send('File and file on disk deleted.');                               
 								}
 						});
 						} else {
-							res.status(200).send('File deleted.');
+							res.status(200).send('Did not need to delete file from disk because it did not exist.');
 						}
 					}
 				});

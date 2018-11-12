@@ -29,6 +29,5 @@ function validateFormValues(){
 }
 
 $( document ).ready(function() {
-	console.log( "ready!" );
 	initRegister();
 });

@@ -8,7 +8,12 @@ function setFormValues(fetchPartImage) {
 				if (key === 'firstAcquired'  || key === 'lastModified') {
 					val = val.substr(0,10);
 				} else if (key === 'urls') {
-					urls = JSON.parse(val);
+					try {
+						urls = JSON.parse(val);
+					} catch {
+						urls = [];
+					}
+					
 				}
 				
 				var $elm = $('#register-form [name="'+key+'"]');
