@@ -1,5 +1,5 @@
 # What needs to be done
-  Þegar þú Smellir mynda takkann Delete Þá eyðir þú myndinni, en ég held að imageId verði eftir í partinum, því on hover þá koma view og delete takkarnir þó svo myndin sé ekki til í File né á disk
+ 
 ## Part Register & modify
 
  - files and are allowed to be added when part is in edit mode
@@ -25,3 +25,6 @@
  - Modify user
 
    
+### minor bugs
+ - Part modify page
+   -  Þegar þú Smellir mynda takkann Delete Þá eyðir þú myndinni, en ég held að imageId verði eftir í partinum, því on hover þá koma view og delete takkarnir þó svo myndin sé ekki til í File né á disk
