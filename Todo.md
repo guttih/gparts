@@ -24,12 +24,4 @@
  - Modify Type
  - Modify user
 
-
- ### When starting the app for the first time
- - allow administrator to enable and disable new user registration
-   * When done, delete `"allowUserRegistration":false` text from Readme.md
- - Create `public/files/images` if not exist
-   * When the program starts for the first time, these folders do not exist.
-     - `public/files`
-     - `public/files/images`
    

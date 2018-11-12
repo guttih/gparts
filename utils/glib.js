@@ -816,3 +816,13 @@ module.exports.makeValidFilename = function makeValidFilename(filename) {
 	return filename;
 	
 };
+
+// Creates a folder if it does not exist
+module.exports.createFolderIfNotExists = function createFolder(folderPath, callback) {
+	var path = __dirname + '/../' + folderPath;
+	if (!validator.dirExists(path)) {
+		fs.mkdir(path, function (err){
+			callback(err, path);
+		});
+	}
+};

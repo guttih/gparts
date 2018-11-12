@@ -105,29 +105,28 @@ app.use(flash());
 // Global Vars
 app.use(function (req, res, next) {
 
-res.locals.success_msg = req.flash('success_msg');
-res.locals.error_msg = req.flash('error_msg');
-res.locals.error = req.flash('error');
-res.locals.user = req.user || null;
-if(res.locals.user && res.locals.user._doc.level > 0){
-			res.locals.power_user = req.user;
-}
-if(res.locals.user && res.locals.user._doc.level > 1){
-			res.locals.admin = req.user;
-}
+	res.locals.success_msg = req.flash('success_msg');
+	res.locals.error_msg = req.flash('error_msg');
+	res.locals.error = req.flash('error');
+	res.locals.user = req.user || null;
+	if(res.locals.user && res.locals.user._doc.level > 0){
+		res.locals.power_user = req.user;
+	}
+	if(res.locals.user && res.locals.user._doc.level > 1){
+		res.locals.admin = req.user;
+	}
 
-res.locals.modal_msg = req.flash('modal_msg');
-res.locals.modal_header_msg = req.flash('modal_header_msg');
+	res.locals.modal_msg = req.flash('modal_msg');
+	res.locals.modal_header_msg = req.flash('modal_header_msg');
 
+	if (lib.getConfig().allowUserRegistration === true)
+	{
+		res.locals.allowUserRegistration = "checked";
+	} else {
+		res.locals.allowUserRegistration = "unchecked";
+	}
 
-if (lib.getConfig().allowUserRegistration === true)
-{
-	res.locals.allowUserRegistration = "checked";
-} else {
-	res.locals.allowUserRegistration = "unchecked";
-}
-
-next();
+	next();
 });
 
 
@@ -140,6 +139,23 @@ app.use('/manufacturers', manufacturers);
 app.use('/locations', locations);
 app.use('/types', types);
 app.use('/files', files);
+
+lib.createFolderIfNotExists('files', function(err, path) {
+	if (err) {
+		console.log('Unable to create folder "' + path + '".');	
+		console.log(err);
+		process.exit(1);;
+	}
+	console.log('created folder "'+path+'".');	
+});
+lib.createFolderIfNotExists('files/images', function(err, path) {
+	if (err) {
+		console.log('Unable to create folder "' + path + '".');	
+		console.log(err);
+		process.exit(1);;
+	}
+	console.log('created folder "'+path+'".');	
+});
 
 
 // Set Port

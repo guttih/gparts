@@ -136,9 +136,10 @@ router.post('/register', lib.authenticateAdminRequest, function (req, res, next)
 		
 			uploadFile(req, res, function (err) {
 				if (err) {
-				// An error occurred when uploading
-				console.log(err);
-				return
+					// An error occurred when uploading
+					res.render('register-image',{ errors:[{msg:"Unable to save image to disk"}]});
+					console.log(err);
+					return;
 				}
 				var name  = req.body.name;
 				var id    = req.body.fileObjectId;
@@ -170,12 +171,14 @@ router.post('/register/image', lib.authenticateAdminRequest, function (req, res,
 	// req.body will hold the text fields, if there were any
 	
 		uploadImage(req, res, function (err) {
+			var name    = req.body.name;
 			if (err) {
 				// An error occurred when uploading
+				res.render('register-image',{ errors:[{msg:"Unable to save image to disk"}]});
 				console.log(err);
 				return;
 			}
-			var name    = req.body.name;
+			
 			var id      = req.body.fileObjectId;
 			var ownerId = req.user._id;
 			if (req.body.partId !== undefined) {
