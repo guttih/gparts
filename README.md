@@ -29,5 +29,5 @@ $ npm start
 3. Login as that user
 4. Stop other users to register
 <div style="text-align:center">
-  <img src="/images/first.jpg" width="300" alt="How to control if users can register" />
+  <img src="docs/images/first.jpg" width="350" alt="How to control if users can register" />
 </div>
