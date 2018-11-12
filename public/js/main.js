@@ -272,7 +272,6 @@ function deleteItem(routeText, id, deleteSuccessCallback){
 				url: url,
 				type: 'DELETE',
 				success: function(data) {
-					console.log("delete success.");
 					if (deleteSuccessCallback !== undefined){
 						deleteSuccessCallback(data);
 					} else{

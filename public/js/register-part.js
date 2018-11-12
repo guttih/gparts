@@ -34,7 +34,7 @@ function setFormValues(fetchPartImage) {
 	} else {
 		setLastModifiedDate();
 	}
-	if (fetchPartImage === true) {
+	if (fetchPartImage !== undefined && fetchPartImage === true) {
 		var $elm = $('#register-form [name="image"]');
 		var imageId = $elm.val();
 		if (imageId.length > 0) {
@@ -316,7 +316,6 @@ function setupImageFunctionsAndButtons() {
 		$('#part-values').addClass("hidden");$('#image-values').removeClass('hidden');
 	});
 	$('#part-image-container .list-command-delete').bind('click tap',function(){
-		console.log("ask shure delete, and then delete");
 		var image = $('#register-form [name="image"]').val();
 		var partId = item.id;
 		if (  (image !== undefined && image.length > 0) &&
@@ -472,15 +471,15 @@ function setupFilesAndUrls() {
 											"", 
 											"",
 											"Add",
-											function(name, url){
-			if (name.length > 0 && url.length > 0){
-				if (url.indexOf('www.') === 0) {
-					url = 'http://' + url;
-				}
-				urls.push({name:name, url:url});
-			}
-			urlsToView(urls);
-		});
+											function(name, url) {
+												if (name.length > 0 && url.length > 0){
+													if (url.indexOf('www.') === 0) {
+														url = 'http://' + url;
+													}
+													urls.push({name:name, url:url});
+												}
+												urlsToView(urls);
+											});
 	});
 	urlsToView();
 }

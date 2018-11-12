@@ -343,7 +343,7 @@ router.get('/item/:userID', lib.authenticateRequest, function(req, res){
 	if (id !== undefined){
 		User.getById(id, function(err, user){
 				if(err || user === null) {
-					res.send('Error 404 : Not found! ');
+					res.status(404).send('Not found!'); 
 				} else{
 					if (res.locals.user._doc.level > 1){
 						//current user is a poweruser so let's tell the client script that

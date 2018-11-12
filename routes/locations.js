@@ -110,7 +110,7 @@ router.get('/item/:ID', lib.authenticateRequest, function(req, res){
 	if (id !== undefined){
 		Location.getById(id, function(err, location){
 				if(err || location === null) {
-					res.send('Error 404 : Not found! ');
+					res.status(404).send('Not found!'); 
 				} else{
 					res.json(location);
 				}

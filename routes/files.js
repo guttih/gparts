@@ -355,7 +355,7 @@ router.get('/item/:ID', lib.authenticateRequest, function(req, res){
 	if (id !== undefined){
 		File.getById(id, function(err, file){
 				if(err || file === null) {
-					res.send('Error 404 : Not found! ');
+					res.status(404).send('Not found!'); 
 				} else{
 					res.json(file);
 				}
@@ -459,28 +459,7 @@ router.delete('/part/:pardID/:ID', lib.authenticateAdminRequest, function(req, r
 				req.flash('error',	'Could not find file.' );
 				res.render('list-file');
 			} else {
-/*Deletes a file based on ownerId
-
-	If ownerId is NOT an owner and        
-				another owner is a owner  of the file   The file is NOT deleted                                    and 406 error returned
-				
-	If deleteIfNoOwner is true
-		-If there is no owner             of the file,  The file is     deleted
-		-If ownerId is     the only owner of the file,  The file is     deleted
-		-If ownerId is NOT the only owner of the file,  the file is NOT deleted and ownerId is removed from owners and 403 error returned
-	If deleteIfNoOwner is false
-		-If there is no owner             of the file,  The file is NOT deleted and                                    405 error returned
-		-If ownerId is     the only owner of the file,  The file is     deleted
-		-If ownerId is NOT the only owner of the file,  The file is NOT deleted and ownerId is removed from owners and 403 error returned
-*/
 				File.deleteIfOwner(id, partId, false, function(err, result) {
-					/*if(err !== null) {
-						if (err.status !== undefined && err.status === 403) {
-							res.status(err.status).send('Part no longer owner of this image.');
-						} else {
-							res.status(404).send('unable to delete file "' + id + '".');
-						}
-					}*/ 
 					if(err !== null) {
 						// File was not deleted
 						if (err.status !== undefined ) {
