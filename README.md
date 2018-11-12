@@ -15,11 +15,9 @@ Project page can be found [here](http:www.guttih.com:9999/projects/gparts).
 
 GParts requires [Node.js](https://nodejs.org/) v4+ to run.
 
+In the root of gparts folder, type the following
 ```sh
 $ npm install
-```
-
-```sh
 $ npm start
 ```
 
