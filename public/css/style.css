@@ -425,3 +425,7 @@ a.temp-image.text > p {
 	padding-left: 8px;
 	margin-bottom:8px;
 }
+
+.form-control {
+	background-color: #3c763d0f;
+}

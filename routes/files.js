@@ -68,11 +68,41 @@ var storageFile = multer.diskStorage({
 	}
   });
 
+  var config = lib.getConfig();
 
- var uploadFile  = multer({ storage: storageFile,   limits: { fileSize: 3000000 } }).single('file');
- var uploadImage = multer({ storage: storageImage , limits: { fileSize: 3000000 } }).single('image');
+ var uploadFile  = multer({ storage: storageFile,   limits: { fileSize: config.fileSizeLimit } }).single('file');
+ var uploadImage = multer({ storage: storageImage , limits: { fileSize: config.fileSizeLimit } }).single('image');
 
-var config = lib.getConfig();
+function bytesToMegaByteString(number) {
+	number/=(1024*1024);
+	var str = parseFloat(number).toFixed(2) + " MB"
+	return str;
+}
+
+ function getUploadFileErrorText(err, itemText) {
+	//todo: more work needs to be done here
+	var ret = "Unable to save " + itemText + " to disk";
+	if (err === undefined || err.stack === undefined) {
+		return ret;
+	}
+	if (err.code !== undefined) {
+		switch (err.code) {
+			case "LIMIT_FILE_SIZE":	return ret+=" because " + itemText + " is too large.  The limit is "+ bytesToMegaByteString(config.fileSizeLimit) + ".";
+		}
+	}
+
+	var iEnd =  err.stack.indexOf('\n');
+	if (iEnd < 0 ) {
+		return ret;
+	}
+
+	var iStart = err.stack.indexOf("Error: ");
+	iStart = (iStart === 0)? 7 : 0;
+	if (iStart > iEnd ){ 
+		return ret;
+	}
+	return ret + " (" + err.stack.substr(iStart, iEnd - iStart) + ")";
+}
 
 
 // Register
@@ -136,8 +166,14 @@ router.post('/register', lib.authenticateAdminRequest, function (req, res, next)
 		
 			uploadFile(req, res, function (err) {
 				if (err) {
-					// An error occurred when uploading
-					res.render('register-image',{ errors:[{msg:"Unable to save image to disk"}]});
+					var message;
+					if 	(err.code === "LIMIT_FILE_SIZE" || 
+						(err.message === undefined || err.message.length < 1) ) {
+						message = getUploadFileErrorText(err, "file");
+					} else {
+						message = "Unable to save file to disk!" + " ("+err.message + ")";
+					}
+					res.render('register-file',{ errors:[{msg:message}]});
 					console.log(err);
 					return;
 				}
@@ -173,10 +209,16 @@ router.post('/register/image', lib.authenticateAdminRequest, function (req, res,
 		uploadImage(req, res, function (err) {
 			var name    = req.body.name;
 			if (err) {
-				// An error occurred when uploading
-				res.render('register-image',{ errors:[{msg:"Unable to save image to disk"}]});
-				console.log(err);
-				return;
+				var message;
+					if 	(err.code === "LIMIT_FILE_SIZE" || 
+						(err.message === undefined || err.message.length < 1) ) {
+						message = getUploadFileErrorText(err, "image");
+					} else {
+						message = "Unable to save image to disk!" + " ("+err.message + ")";
+					}
+					res.render('register-image',{ errors:[{msg:message}]});
+					console.log(err);
+					return;
 			}
 			
 			var id      = req.body.fileObjectId;
@@ -202,6 +244,7 @@ router.post('/register/image', lib.authenticateAdminRequest, function (req, res,
 		});
 	
 });
+
 router.post('/register/part/image', lib.authenticateAdminRequest, function (req, res, next) {
 	// req.file is the `avatar` file
 	// req.body will hold the text fields, if there were any
@@ -210,6 +253,8 @@ router.post('/register/part/image', lib.authenticateAdminRequest, function (req,
 			if (err) {
 				// An error occurred when uploading
 				console.log(err);
+				err.msg = getUploadFileErrorText(err, "image");
+				res.status(413).send(err); 
 				return;
 			}
 			var name    = req.body.name;
@@ -224,7 +269,8 @@ router.post('/register/part/image', lib.authenticateAdminRequest, function (req,
 			var errors = req.validationErrors();
 			
 			if(errors){
-				res.render('register-image',{ errors:errors 	});
+				res.statusCode = 400;
+				return res.json({text:(errors.length > 0 )? errors[0].msg : "Could not upload image!"}); 
 			} else {
 				req.flash('success_msg',	'File uploaded and created!' );
 				File.addOwner(id, ownerId, function(err, item){
@@ -246,14 +292,64 @@ router.post('/register/part/image', lib.authenticateAdminRequest, function (req,
 						return res.json(item);
 					});
 					
-				});
-				
-				
+				});	
 			}
 		});
-	
 });
-
+/*
+router.post('/register/part/file', lib.authenticateAdminRequest, function (req, res, next) {
+	// req.file is the `avatar` file
+	// req.body will hold the text fields, if there were any
+	
+		uploadFile(req, res, function (err) {
+			if (err) {
+				// An error occurred when uploading
+				console.log(err);
+				err.msg = getUploadFileErrorText(err, "file");
+				res.status(413).send(err); 
+				return;
+			}
+			var name    = req.body.name;
+			var id      = req.body.fileObjectId;
+			var ownerId = req.user._id;
+			if (req.body.partId !== undefined) {
+				ownerId = req.body.partId;
+			}
+		
+			req.checkBody('fileObjectId', 'A file to upload, must be selected.').notEmpty();
+			req.checkBody('name', 'Name is required').notEmpty();
+			var errors = req.validationErrors();
+			
+			if(errors){
+				res.statusCode = 400;
+				return res.json({text:(errors.length > 0 )? errors[0].msg : "Could not upload file!"}); 
+			} else {
+				req.flash('success_msg',	'File uploaded and created!' );
+				File.addOwner(id, ownerId, function(err, item){
+					if (err !== null) 	{ 	res.statusCode = 404;
+											var obj = {text:'Error 404: Could not add owner!'};
+											return res.json(obj); 
+										  }
+					//Fyrst við ödduðum owner þá þurfum við að adda  í partinn
+					if (ownerId !== req.user._id){
+						//todo here we need to add the file to the file array
+						Part.modify(ownerId, {image:id},function(err, res) {
+							console.log('added image:' + id + ' to part ' + ownerId);
+						});
+					}
+					File.getById(id, function(err, item){
+						if (err !== null)	{ 	res.statusCode = 404;
+												var obj = {text:'Error 404: Image not found!'};
+												return res.json(obj); 
+											}
+						return res.json(item);
+					});
+					
+				});	
+			}
+		});
+});
+*/
 router.post('/register/image/:ID', lib.authenticateAdminRequest, function(req, res){
 	//file modify
 	var id = req.params.ID;
@@ -317,41 +413,6 @@ router.post('/register/:ID', lib.authenticateAdminRequest, function(req, res){
 			
 	}
 });
-
-router.post('/register/image/:ID', lib.authenticateAdminRequest, function(req, res){
-	//file modify
-	var id = req.params.ID;
-
-	req.checkBody('name', 'Name is required').notEmpty();
-	var errors = req.validationErrors();
-
-	if(errors){
-		res.render('register-image',{errors:errors	});
-	} else {
-		var values = {
-				name        : req.body.name,
-				description : req.body.description,
-				url         : req.body.url
-			};
-		
-		
-		File.modify(id, values, function(err, result){
-			if(err || result === null || result.ok !== 1) {
-					req.flash('error',	' unable to update' );
-			} else{
-					if (result.nModified === 0){
-						req.flash('success_msg',	'File is unchanged!' );
-					} else {
-						req.flash('success_msg',	'File updated!' );
-					}
-			}
-			res.redirect('/files/register/'+id);
-		});
-			
-	}
-});
-
-
 
 router.get('/item/:ID', lib.authenticateRequest, function(req, res){
 	var id = req.params.ID;

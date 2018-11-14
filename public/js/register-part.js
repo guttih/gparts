@@ -282,7 +282,7 @@ function submitFormInBackground(formId) {
 			setNewPartImage(data);
 		}, 
 		error: function(data){
-			console.log('error');
+			showModalErrorMsg("Unable to save file", data);
 			console.log(data);
 		}, 
 	});
