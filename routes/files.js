@@ -175,6 +175,7 @@ router.post('/register', lib.authenticateAdminRequest, function (req, res, next)
 					}
 					res.render('register-file',{ errors:[{msg:message}]});
 					console.log(err);
+					File.delete(req.body.fileObjectId, function(err){ if (err === null ){ console.log("deleted File object because upload failed") } });
 					return;
 				}
 				var name  = req.body.name;
@@ -218,6 +219,7 @@ router.post('/register/image', lib.authenticateAdminRequest, function (req, res,
 					}
 					res.render('register-image',{ errors:[{msg:message}]});
 					console.log(err);
+					File.delete(req.body.fileObjectId, function(err){ if (err === null ){ console.log("deleted File object because upload failed") } });
 					return;
 			}
 			
@@ -255,6 +257,7 @@ router.post('/register/part/image', lib.authenticateAdminRequest, function (req,
 				console.log(err);
 				err.msg = getUploadFileErrorText(err, "image");
 				res.status(413).send(err); 
+				File.delete(req.body.fileObjectId, function(err){ if (err === null ){ console.log("deleted File object because upload failed") } });
 				return;
 			}
 			var name    = req.body.name;
@@ -480,8 +483,7 @@ router.delete('/:ID', lib.authenticateAdminRequest, function(req, res){
 	if (id !== undefined) {
 		File.getById(id, function(err, file) {
 			if(err || file === null) {
-				req.flash('error',	'Could not find file.' );
-				res.render('list-file');
+				res.status(404).send('Could not find file.'); 
 			} else {
 				File.deleteIfOwner(id, req.user._id, true, function(err, result) {
 					if(err !== null) {
@@ -520,8 +522,15 @@ router.delete('/part/:pardID/:ID', lib.authenticateAdminRequest, function(req, r
 	if (id !== undefined) {
 		File.getById(id, function(err, file) {
 			if(err || file === null) {
-				req.flash('error',	'Could not find file.' );
-				res.render('list-file');
+				Part.modify(partId, {image:null},function(err, data) {
+					if (err) {
+						res.status(404).send('Could not find file.'); 
+					} else {
+						console.log('Deleted image from part');
+						res.status(200).send('File removed from part.'); 
+					}
+				});
+				
 			} else {
 				File.deleteIfOwner(id, partId, false, function(err, result) {
 					if(err !== null) {
