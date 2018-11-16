@@ -149,7 +149,7 @@ module.exports.listByPath = function (pathToSearchFor, callback){
 
 module.exports.listByOwnerId = function (id, callback){
 	var query = {owners:{$elemMatch: { _id:id }}};
-	Device.find(query, callback);
+	File.find(query, callback);
 };
 
 

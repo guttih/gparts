@@ -16,8 +16,11 @@
     {{/each}}
     </div>
 {{/if}}
-<div id="image-values" class="hidden">
-    {{> iform }}
+<div id="image-values" class="part-additional-values hidden">
+    {{> partial_image_form }}
+</div>
+<div id="file-values" class="part-additional-values hidden">
+    {{> partial_file_form }}
 </div>
 <div id="part-values">
     <form method="post" id="register-form" action ="/parts/register" class="part-form" >

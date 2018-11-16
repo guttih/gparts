@@ -27,7 +27,7 @@ router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
 					req.flash('error',	'Could not find part.' );
 					res.redirect('/result');
 				} else{
-					var obj = {id : id,
+					/*var obj = {id : id,
 						name         : part.name,
 						description  : part.description,
 						category     : part.category,
@@ -41,9 +41,17 @@ router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
 						supplier     : part.supplier,
 						urls         : part.urls,
 						files		 : part.files
-					};
-					var str = JSON.stringify(obj);
-					res.render('register-part', {item:str});
+					};*/
+					Part.PartToSendObject(part, function(err, obj){
+						if (err) {
+							req.flash('error',	'Could not find part.' );
+						} else {
+							var str = JSON.stringify(obj);
+							res.render('register-part', {item:str});
+						}
+					});
+					
+					
 				}
 			});
 		

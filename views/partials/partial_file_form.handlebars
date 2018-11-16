@@ -1,0 +1,49 @@
+<h5 class="page-header" align="right" style="padding-top:18px;padding-bottom:15px">
+		Register a new file for selected part
+</h5>
+
+<form method="post" id="register-file" class="register-form" action ="/files/register/part/file"
+    enctype="multipart/form-data"
+>
+	<input type="hidden" name="fileId" form="register-file" value="" >
+    <input type="hidden" name="partId" form="register-file" value="" >
+    <div class="row row-padd">
+		<label>file name</label>
+			<p>Name of the file.</p>
+		<input type="text"   id="file-name" name="name" class="form-control" form="register-file" value="" placeholder="Type file name">
+	</div>
+	
+  <div class="form-horizontal">
+    <label>file description</label>
+    <p>Describe what this file is about,  if you think that is needed.  f.ex. What angle?  how wide is the part??</p>
+    <div class="form-group">
+      <div class="col-md-12">
+        <textarea id="file-description" name="description" class="form-control" form="register-file"
+		rows="3" placeholder="Describe the file."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="row row-padd file-input-gruppan">
+    <label>File</label>
+    <div class="input-group browse-file-btn">
+        <label class="input-group-btn">
+            <span class="btn btn-primary">
+                Browse… 
+                <input  type="file" 
+                    name="file" 
+                    id="file" 
+                    class="btn-file" 
+                    placeholder="Select the file you want to upload"
+                    required 
+                    style="display: none;"/>
+            </span>
+        </label>
+        <input type="text" name="file-fileName" class="form-control fileName" readonly="">
+    </div>
+</div>
+  
+</form>
+<button id="btnSavePartFile" type="button" class="btn btn-success save-button pull-right">Save file</button>
+  <button type="button" class="btn btn-default pull-right cancel-button">Cancel</button> 
+  

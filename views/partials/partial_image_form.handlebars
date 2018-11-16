@@ -5,7 +5,7 @@
 <form method="post" id="register-image" class="register-form" action ="/files/register/part/image"
     enctype="multipart/form-data"
 >
-	<input type="hidden" id="imagePartId" name="partId" form="register-image" value="" >
+	<input type="hidden" name="partId" form="register-image" value="" >
     <div class="row row-padd">
 		<label>Image name</label>
 			<p>Name of the image.</p>
@@ -35,12 +35,11 @@
                     id="image" 
                     class="btn-file" 
                     placeholder="Select the image you want to upload"
-                    onChange="validatePartImage(this);"
                     required 
                     style="display: none;"/>
             </span>
         </label>
-        <input type="text" id="image-fileName" class="form-control" readonly="">
+        <input type="text" class="form-control fileName" readonly="">
     </div>
 
     <div class="pull-right image-container" id="image-container">
@@ -50,5 +49,5 @@
    
 </form>
 
-  <button id="btnSavePartImage" type="button" class="btn btn-success pull-right">Save image</button>
-  <button id="btnCancelPartImage" type="button" class="btn btn-default pull-right cancel-button">Cancel</button>
+  <button id="btnSavePartImage" type="button" class="btn btn-success save-button pull-right">Save image</button>
+  <button type="button" class="btn btn-default pull-right cancel-button">Cancel</button>    

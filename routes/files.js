@@ -299,7 +299,7 @@ router.post('/register/part/image', lib.authenticateAdminRequest, function (req,
 			}
 		});
 });
-/*
+
 router.post('/register/part/file', lib.authenticateAdminRequest, function (req, res, next) {
 	// req.file is the `avatar` file
 	// req.body will hold the text fields, if there were any
@@ -336,8 +336,8 @@ router.post('/register/part/file', lib.authenticateAdminRequest, function (req, 
 					//Fyrst við ödduðum owner þá þurfum við að adda  í partinn
 					if (ownerId !== req.user._id){
 						//todo here we need to add the file to the file array
-						Part.modify(ownerId, {image:id},function(err, res) {
-							console.log('added image:' + id + ' to part ' + ownerId);
+						Part.addFile(ownerId, id, function(err, res) {
+							console.log('added file:' + id + ' to part ' + ownerId);
 						});
 					}
 					File.getById(id, function(err, item){
@@ -345,14 +345,23 @@ router.post('/register/part/file', lib.authenticateAdminRequest, function (req, 
 												var obj = {text:'Error 404: Image not found!'};
 												return res.json(obj); 
 											}
-						return res.json(item);
+						// Hér þarf að sækja allar skrárnar, og fá skráarnafn og Id á þeim
+						Part.getSendObject(ownerId, function(err, part){
+							if (err) {
+								res.status(500).json(part);
+							} else {
+								res.json(part);
+							}
+						});
+						
 					});
 					
 				});	
 			}
 		});
 });
-*/
+
+
 router.post('/register/image/:ID', lib.authenticateAdminRequest, function(req, res){
 	//file modify
 	var id = req.params.ID;
