@@ -160,6 +160,13 @@ nav > ul > li > a:hover{
 	font-size: 12px;
 	font-style: italic;
 }
+.list-group-item-owner{
+	margin-top: 0px;
+    position: absolute;
+    top: 0px;
+    font-size: 7px;
+    left: 5px;
+}
 
 .error-response-text{
 	background:#f2dede;

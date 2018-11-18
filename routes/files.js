@@ -139,6 +139,67 @@ router.get('/register/image', lib.authenticateAdminRequest, function(req, res){
 	res.render('register-image');
 });
 
+router.get('/item/:ID', lib.authenticateRequest, function(req, res){
+	var id = req.params.ID;
+	if (id !== undefined){
+		File.getById(id, function(err, file){
+				if(err || file === null) {
+					res.status(404).send('Not found!'); 
+				} else{
+					res.json(file);
+				}
+			});
+	}
+});
+
+//returns a file list page
+router.get('/list', lib.authenticateUrl, function(req, res){
+	res.render('list-file');
+});
+
+router.get('/list/image', lib.authenticateUrl, function(req, res){
+	res.render('list-image');
+});
+/*listing all parts and return them as a json array*/
+router.get('/file-list', lib.authenticateRequest, function(req, res){
+	File.list(function(err, list){
+		
+		var arr = [];
+		var isOwner;
+		var item; 
+		for(var i = 0; i < list.length; i++){
+				item = list[i];
+
+				arr.push({	id         :item._id,
+							name       :item.name, 
+							description:item.description,
+							url        :item.url,
+							owners     :File.ownersObjectArrayToStringArray(item.owners)
+						});
+		}
+		res.json(arr);
+	});
+});
+/*listing all parts which have the same path as storageFolderImage path and return them as a json array*/
+router.get('/image-list', lib.authenticateRequest, function(req, res){
+	File.listByPath(storageFolderImage, function(err, list){
+		
+		var arr = [];
+		var isOwner;
+		var item; 
+		for(var i = 0; i < list.length; i++){
+				item = list[i];
+
+				arr.push({	id         :item._id,
+							name       :item.name, 
+							description:item.description,
+							src: File.getFullFileNameOnDisk(item).replace('./public', '')
+						});
+		}
+		res.json(arr);
+	});
+});
+
 // modify page
 router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
 	var id = req.params.ID;
@@ -302,7 +363,6 @@ router.post('/register/part/image', lib.authenticateAdminRequest, function (req,
 			res.statusCode = 400;
 			return res.json({text:(errors.length > 0 )? errors[0].msg : "Could not upload image!"}); 
 		} else {
-			req.flash('success_msg',	'File uploaded and created!' );
 			File.addOwner(id, ownerId, function(err, item){
 				if (err !== null) 	{ 	res.statusCode = 404;
 										var obj = {text:'Error 404: Could not add owner!'};
@@ -311,7 +371,6 @@ router.post('/register/part/image', lib.authenticateAdminRequest, function (req,
 				//Fyrst við ödduðum owner þá þurfum við að adda myndinni í partinn
 				if (ownerId !== req.user._id){
 					Part.modify(ownerId, {image:id},function(err, res) {
-						console.log('added image:' + id + ' to part ' + ownerId);
 					});
 				}
 				File.getById(id, function(err, item){
@@ -354,7 +413,6 @@ router.post('/register/part/file', lib.authenticateAdminRequest, function (req, 
 				res.statusCode = 400;
 				return res.json({text:(errors.length > 0 )? errors[0].msg : "Could not upload file!"}); 
 			} else {
-				req.flash('success_msg',	'File uploaded and created!' );
 				File.addOwner(id, ownerId, function(err, item){
 					if (err !== null) 	{ 	res.statusCode = 404;
 											var obj = {text:'Error 404: Could not add owner!'};
@@ -364,7 +422,6 @@ router.post('/register/part/file', lib.authenticateAdminRequest, function (req, 
 					if (ownerId !== req.user._id){
 						//todo here we need to add the file to the file array
 						Part.addFile(ownerId, id, function(err, res) {
-							console.log('added file:' + id + ' to part ' + ownerId);
 						});
 					}
 					File.getById(id, function(err, item){
@@ -453,66 +510,8 @@ router.post('/register/:ID', lib.authenticateAdminRequest, function(req, res){
 	}
 });
 
-router.get('/item/:ID', lib.authenticateRequest, function(req, res){
-	var id = req.params.ID;
-	if (id !== undefined){
-		File.getById(id, function(err, file){
-				if(err || file === null) {
-					res.status(404).send('Not found!'); 
-				} else{
-					res.json(file);
-				}
-			});
-	}
-});
 
 
-//returns a file list page
-router.get('/list', lib.authenticateUrl, function(req, res){
-	res.render('list-file');
-});
-
-router.get('/list/image', lib.authenticateUrl, function(req, res){
-	res.render('list-image');
-});
-/*listing all parts and return them as a json array*/
-router.get('/file-list', lib.authenticateRequest, function(req, res){
-	File.list(function(err, list){
-		
-		var arr = [];
-		var isOwner;
-		var item; 
-		for(var i = 0; i < list.length; i++){
-				item = list[i];
-
-				arr.push({	id         :item._id,
-							name       :item.name, 
-							description:item.description,
-							url        :item.url
-						});
-		}
-		res.json(arr);
-	});
-});
-/*listing all parts which have the same path as storageFolderImage path and return them as a json array*/
-router.get('/image-list', lib.authenticateRequest, function(req, res){
-	File.listByPath(storageFolderImage, function(err, list){
-		
-		var arr = [];
-		var isOwner;
-		var item; 
-		for(var i = 0; i < list.length; i++){
-				item = list[i];
-
-				arr.push({	id         :item._id,
-							name       :item.name, 
-							description:item.description,
-							src: File.getFullFileNameOnDisk(item).replace('./public', '')
-						});
-		}
-		res.json(arr);
-	});
-});
 
 router.delete('/:ID', lib.authenticateAdminRequest, function(req, res){
 	var id = req.params.ID;
@@ -590,19 +589,25 @@ router.delete('/part/:pardID/:ID', lib.authenticateAdminRequest, function(req, r
 							res.status(404).send('Unable to delete file "' + id + '".');
 						}
 					} else {  //file was deleted, so let's remove it from disk
-						var fileName = File.getFullFileNameOnDisk(file);
-						if (validator.fileExists(fileName)) {
-							//The file exists so lets delete it
-							fs.unlink(fileName, (err) => {
-								if (err) {
-									res.status(404).send('Unable to delete the file "' + fileName + '" from disk.');
-								} else {
-									res.status(200).send('File and file on disk deleted.');                               
-								}
+
+						//if the file was part image then we need to remove reference to that file from the Part.image property 
+						Part.ClearPropertyIfMatch(partId, 'image', id,function(err, result) {
+							var fileName = File.getFullFileNameOnDisk(file);
+							if (validator.fileExists(fileName)) {
+								//The file exists so lets delete it
+								fs.unlink(fileName, (err) => {
+									if (err) {
+										res.status(404).send('Unable to delete the file "' + fileName + '" from disk.');
+									} else {
+										res.status(200).send('File and file on disk deleted.');                               
+									}
+							});
+							} else {
+								res.status(200).send('Did not need to delete file from disk because it did not exist.');
+							}
 						});
-						} else {
-							res.status(200).send('Did not need to delete file from disk because it did not exist.');
-						}
+
+						
 					}
 				});
 			}

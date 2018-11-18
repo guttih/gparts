@@ -22,6 +22,16 @@ module.exports.delete = function (id, callback){
 	File.findByIdAndRemove(id, callback);
 };
 
+module.exports.ownersObjectArrayToStringArray = function (ownersObjectArray) {
+	var ret = [];
+	if (ownersObjectArray !== undefined && ownersObjectArray !== null) {
+		for(var i = 0; i < ownersObjectArray.length; i++) {
+			ret.push(ownersObjectArray[i].id);
+		}
+	}
+	return ret;
+}
+
 var findObjectIdInArray = function findObjectIdInArray(arrayOfObjectIds, stringId) {
 	if (arrayOfObjectIds === undefined || arrayOfObjectIds == null ) {
 		return -1;

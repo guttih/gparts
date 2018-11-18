@@ -55,6 +55,42 @@ module.exports.addFile = function (id, newFileId, callback){
 	});
 };
 
+
+
+/**
+ * Changes a property value to null if it matches the given value (@propertyValue)
+ *
+ * @param {string} id id of the part
+ * @param {string} propertyName name of the property to search for
+ * @param {string} propertyValue value of the property to search for
+ * @param {string} callback call when search or saved change is over
+ */
+module.exports.ClearPropertyIfMatch = function ClearPropertyIfMatch(id, propertyName, propertyValue, callback) {
+	var query = {	_id: id	};
+
+	if (id === undefined ) {
+		return callback(errorToUser("File id is missing", 400)); 
+	} 
+
+	Part.findOne(query, function(err, item){
+		if (err) {
+			return callback(err); 
+		}
+
+		if(item[propertyName] !== undefined && item[propertyName] !== null && item[propertyName].toString() === propertyValue) {
+			item[propertyName] = null;
+			item.save(callback);
+			
+		} else {
+			if (callback !== undefined) {
+				callback(null, {msg: "No property matched, so nothing to clear"});
+			}
+		}
+
+		
+	});
+};
+
 module.exports.create = function(newPart,  callback){
         newPart.save(callback);
 };

@@ -502,20 +502,11 @@ function filesToView() {
 	if (item === undefined || item.files === undefined || item.files.length < 1) {
 		return;
 	}
-/*	
-	if (item !== undefined && item.files !== undefined && item.files.length > 0) {
-		for(var index in item.files) {
-			console.log(item.files[index]);
-		}
-	}
-
-	
-}*/
-
-
 
 	item.files.forEach(function(element, index) {
-		$table.append("<tr data-index='"+index+"' data-elm='"+JSON.stringify(element)+"'><td>"+element.name+"</td></tr>");
+		if (element.id !== item.image) {
+			$table.append("<tr data-index='"+index+"' data-elm='"+JSON.stringify(element)+"'><td>"+element.name+"</td></tr>");
+		}
 	});
 	
 	rowButtons.initItems();

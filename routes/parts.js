@@ -27,21 +27,7 @@ router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
 					req.flash('error',	'Could not find part.' );
 					res.redirect('/result');
 				} else{
-					/*var obj = {id : id,
-						name         : part.name,
-						description  : part.description,
-						category     : part.category,
-						image		 : part.image,
-						stockCount   : part.stockCount,
-						firstAcquired: part.firstAcquired,
-						lastModified : part.lastModified,
-						type         : part.type,
-						location     : part.location,
-						manufacturer : part.manufacturer,
-						supplier     : part.supplier,
-						urls         : part.urls,
-						files		 : part.files
-					};*/
+
 					Part.PartToSendObject(part, function(err, obj){
 						if (err) {
 							req.flash('error',	'Could not find part.' );
