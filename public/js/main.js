@@ -715,6 +715,15 @@ function bytesToUnitString(number, decimalPoints, unit) {
 	return str;
 }
 
+function deleteButtonClickRegister(collection){
+	$('#btnDelete').click(function() {
+		var subPath = collection;
+		deleteItem(subPath,item.id, function() {
+			window.location.href = '/'+subPath+'/list';
+		});
+	});	
+}
+
 $(function () {  
 	/* this is the $( document ).ready(function( $ ) but jshint does not like that*/
 	var SERVER = getServer();

@@ -173,4 +173,5 @@ $(function () {
 		}
 	}
 	updateSaveButtonStateHelper('btnSaveUser');
+	deleteButtonClickRegister('users');
 });

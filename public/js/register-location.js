@@ -30,4 +30,5 @@ function validateFormValues(){
 
 $( document ).ready(function() {
 	initRegister();
+	deleteButtonClickRegister('locations');
 });

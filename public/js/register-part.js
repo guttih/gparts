@@ -627,9 +627,9 @@ $( document ).ready(function() {
 		}
 	});
 	
-
 	//validate for the first time
 	validatePartImageOrFile('image');
 	setupImageFunctionsAndButtons();
 	setupFilesAndUrls();
+	deleteButtonClickRegister('parts');
 });
