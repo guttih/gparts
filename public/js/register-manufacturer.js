@@ -33,4 +33,5 @@ function validateFormValues(){
 
 $( document ).ready(function() {
 	initRegister();
+	deleteButtonClickRegister('manufacturers');
 });

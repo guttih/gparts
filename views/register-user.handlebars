@@ -57,8 +57,12 @@
 	<div id="error-text" class="alert alert-danger pull-left" role="alert">
 		<strong>Invalid form values, </strong> <span></span>
 	</div>
-	<button id="btnSaveUser" type="button" class="btn btn-success pull-right">Save User values</button>
-	
+	<button id="btnSaveUser" type="button" class="btn btn-success pull-right" style="margin-left: 10px;">Save User values</button>
+{{#if admin}}
+{{#if item}}  
+	<button id="btnDelete" type="button" class="btn btn-danger pull-right">Delete</button>
+{{/if}}
+{{/if}}
 </div>
 
 <script src="/js/register-user.js" type="text/javascript" charset="utf-8"></script>

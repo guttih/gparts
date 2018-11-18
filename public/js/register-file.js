@@ -76,12 +76,13 @@ function setFormValues(item){
 		if ($('#image-container').length > 0) {
 			destHref = '/files/list/image'; //we have an image.
 		}
+		
 		$('#btnDelete').click(function() {
 			deleteItem('files',item.id, function() {
 						window.location.href = destHref;
-				});
-				
 			});
+				
+		});
 
 
 	}
