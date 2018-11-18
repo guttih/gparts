@@ -17,33 +17,20 @@ var FileSchema = mongoose.Schema({
 
 var File = module.exports = mongoose.model('File', FileSchema);
 
+/**
+ * @callback requestCallbackWithError
+ * @param {object} if success null if not an err object
+ * @param {object} usually a object but can be a string too
+ */
+
+ 
+
+
 module.exports.delete = function (id, callback){
 	
 	File.findByIdAndRemove(id, callback);
 };
 
-module.exports.ownersObjectArrayToStringArray = function (ownersObjectArray) {
-	var ret = [];
-	if (ownersObjectArray !== undefined && ownersObjectArray !== null) {
-		for(var i = 0; i < ownersObjectArray.length; i++) {
-			ret.push(ownersObjectArray[i].id);
-		}
-	}
-	return ret;
-}
-
-var findObjectIdInArray = function findObjectIdInArray(arrayOfObjectIds, stringId) {
-	if (arrayOfObjectIds === undefined || arrayOfObjectIds == null ) {
-		return -1;
-	}
-	for(var i = 0; i < arrayOfObjectIds.length; i++) {
-		if (arrayOfObjectIds[i].equals(stringId)) {
-			return i;
-		}
-	}
-
-	return -1;
-}
 /*Deletes a file based on ownerId
 
 	If ownerId is NOT an owner and        
@@ -60,48 +47,49 @@ var findObjectIdInArray = function findObjectIdInArray(arrayOfObjectIds, stringI
 */
 module.exports.deleteIfOwner = function (id, ownerId, deleteIfNoOwner, callback) {
 	File.findById(id, function(err, item) {
-		var newArray = item.owners.slice();
-		var index = findObjectIdInArray(newArray, ownerId);
-		if (index > -1) {
-			if (newArray.length > 1) {
-				//there is another owner of this file so let's only remove ownerId
-				newArray.splice(index, 1);
-				var values = {
-					owners        : newArray
-				};
-				File.modify(id, values, function(err, res) {
-					if (callback !== undefined) {
-						var err = {status: 403, message: "Another owner exists.", owners: newArray};
-						callback(err, res);
-					}
-				});
-			} else {
-				//this is the only owner, so we can delete this file
-				File.findByIdAndRemove(id, callback);
-			}
-		} else {
-			//this is not owner of this file 
-			if (newArray.length === 0) {
-				//There are NO owners of this file, 
-				if (deleteIfNoOwner === true) { 
-					File.findByIdAndRemove(id, callback);
+		if (!err && item !== null ) {
+			var newArray = (item.owners === undefined || item.owners === null)? []: item.owners.slice();
+			var index = findObjectIdInArray(newArray, ownerId);
+			if (index > -1) {
+				if (newArray.length > 1) {
+					//there is another owner of this file so let's only remove ownerId
+					newArray.splice(index, 1);
+					var values = {
+						owners        : newArray
+					};
+					File.modify(id, values, function(err, res) {
+						if (callback !== undefined) {
+							var err = {status: 403, message: "Another owner exists.", owners: newArray};
+							callback(err, res);
+						}
+					});
 				} else {
-					// Not allowed to delete even though NO owners
-					if (callback !== undefined) {
-						var err = {status: 405, message: "No owners, but delete is not allowed.", owners: newArray};
-						callback(err, res);
+					//this is the only owner, so we can delete this file
+					File.findByIdAndRemove(id, callback);
+				}
+			} else {
+				//this is not owner of this file 
+				if (newArray.length === 0) {
+					//There are NO owners of this file, 
+					if (deleteIfNoOwner === true) { 
+						File.findByIdAndRemove(id, callback);
+					} else {
+						// Not allowed to delete even though NO owners
+						if (callback !== undefined) {
+							var err = {status: 405, message: "No owners, but delete is not allowed.", owners: newArray};
+							callback(err, res);
+						}
 					}
 				}
-			}
-			else {
-				//nothing is to be deleted but we need to tell user that nothing was deleted, so we must send an error object.
-				if (callback !== undefined) {
-					var err = {status: 406, message: "Another owner exists and this ownerId is not an owner.", owners: newArray};
-					callback(err);
+				else {
+					//nothing is to be deleted but we need to tell user that nothing was deleted, so we must send an error object.
+					if (callback !== undefined) {
+						var err = {status: 406, message: "Another owner exists and this ownerId is not an owner.", owners: newArray};
+						callback(err);
+					}
 				}
 			}
 		}
-
 	});
 	
 };
@@ -139,6 +127,33 @@ module.exports.addOwner = function (id, ownerIdToAdd, callback){
 	});
 };
 
+/**
+ *	Removes a owner from a File if owner does not exist, that is considered a success also.
+ *
+ * @param {File} fileItem A file item with properties id and property array of owners
+ * @param {string} ownerId Search for this owner in the File owner array
+ * @param {requestCallbackWithError} callback The callback that handles the response.
+ */
+module.exports.removeOwner = function (fileItem, ownerId, callback) {
+	//$set
+	var newArray = (fileItem.owners === undefined || fileItem.owners === null)? []: fileItem.owners.slice();
+			var index = findObjectIdInArray(newArray, ownerId);
+			if (index > -1) {
+				newArray.splice(index, 1);
+				var values = { owners: newArray };
+				var id = fileItem.id;
+				File.modify(id, values, function(err, res) {
+					if (callback !== undefined) {
+						callback(err, res);
+					}
+				});
+			} else {
+				if (callback !== undefined) {
+					callback(null, {n:0,ok:1}); //ownerId does not own this file
+				}
+			}
+};
+
 module.exports.create = function(newFile,  callback){
         newFile.save(callback);
 };
@@ -159,8 +174,59 @@ module.exports.listByPath = function (pathToSearchFor, callback){
 	File.find(query, callback);
 };
 
-module.exports.listByOwnerId = function (id, callback){
-	var query = {owners:{$elemMatch: { _id:id }}};
+/**
+ *	Finds all files that have ownerId as one of it's owners
+ *
+ * @param {string} ownerId Search for this owner in the File owner array
+ * @param {requestCallbackWithError} callback The callback that handles the response.
+ */
+module.exports.listByOwnerId = function listByOwnerId(ownerId, callback){
+	var query = {owners:{$elemMatch: { _id:ownerId }}};
+	File.find(query, callback);
+};
+
+/**
+ *	Finds all files that have only one owner and that owner is ownerId
+ *
+ * @param {string} ownerId Search for this owner in the File owner array
+ * @param {requestCallbackWithError} callback The callback that handles the response.
+ */
+module.exports.listByOwnerIdFindOnlyOne = function listByOwnerIdFindOnlyOne(ownerId, callback){
+	var query = {owners:{
+							$elemMatch: { _id:ownerId },
+							$size: 1
+						}
+				};
+	File.find(query, callback);
+};
+
+/**
+ *	Deletes all files that have only one owner and that owner is ownerId
+ *
+ * @param {string} ownerId Search for this owner in the File owner array
+ * @param {requestCallbackWithError} callback The callback that handles the response.
+ */
+module.exports.deleteByOwnerIdFindOnlyOne = function (ownerId, callback){
+	
+	var query = {owners:{
+							$elemMatch: { _id:ownerId },
+							$size: 1
+						}
+	};
+	File.remove(query, callback);
+};
+/**
+ *	Finds all files that have more than one owner and one of them is is ownerId
+ *
+ * @param {string} ownerId Search for this owner in the File owner array
+ * @param {requestCallbackWithError} callback The callback that handles the response.
+ */
+module.exports.listByOwnerIdFindOnlyMoreThanOne = function listByOwnerIdFindOnlyMoreThanOne(ownerId, callback){
+	var query = {owners:{
+							$elemMatch: { _id:ownerId },
+							$size: { $gt : 1 }
+						}
+				};
 	File.find(query, callback);
 };
 
@@ -171,6 +237,16 @@ module.exports.listByOwnerId = function (id, callback){
 			Non Database functions
 
 */
+
+module.exports.ownersObjectArrayToStringArray = function (ownersObjectArray) {
+	var ret = [];
+	if (ownersObjectArray !== undefined && ownersObjectArray !== null) {
+		for(var i = 0; i < ownersObjectArray.length; i++) {
+			ret.push(ownersObjectArray[i].id);
+		}
+	}
+	return ret;
+}
 
 var _getFileExtensions = function (fileName, includeTheDot){
 	if (fileName === undefined || fileName.length < 2) {
@@ -251,4 +327,17 @@ module.exports.getFilePathOnDisk = function (FileObject){
 module.exports.getFullFileNameOnDisk = function (FileObject) {
 	var ret = _getFilePath(FileObject.fileName, true) + module.exports.getFileNameOnDisk(FileObject);
 	return ret;
+}
+
+var findObjectIdInArray = function findObjectIdInArray(arrayOfObjectIds, stringId) {
+	if (arrayOfObjectIds === undefined || arrayOfObjectIds == null ) {
+		return -1;
+	}
+	for(var i = 0; i < arrayOfObjectIds.length; i++) {
+		if (arrayOfObjectIds[i].equals(stringId)) {
+			return i;
+		}
+	}
+
+	return -1;
 }

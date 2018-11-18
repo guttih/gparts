@@ -499,7 +499,7 @@ function filesToView() {
 	var $table = $('#files');
 	$table.empty();
 
-	if (item === undefined || item.files === undefined || item.files.length < 1) {
+	if (typeof item === 'undefined' || item === undefined || item.files === undefined || item.files.length < 1) {
 		return;
 	}
 

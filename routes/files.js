@@ -247,6 +247,20 @@ router.get('/register/image/:ID', lib.authenticatePowerUrl, function(req, res){
 
 });
 
+//todo: this should maybe be a router.put
+router.get('/addowner/:ownerID/:ID', lib.authenticateAdminRequest, function(req, res){
+	var id = req.params.ID;
+	var ownerId = req.params.ownerID;
+	File.addOwner(id, ownerId, function(err, result) {
+		if (err) {
+			res.status(404).send('Could not add owner.'); 
+		} else {
+			console.log('owner added');
+			res.status(200).send('Owner added til file.'); 
+		}
+	});
+});
+
 router.post('/register', lib.authenticateAdminRequest, function (req, res, next) {
 		// req.file is the `avatar` file
 		// req.body will hold the text fields, if there were any
@@ -551,6 +565,7 @@ router.delete('/:ID', lib.authenticateAdminRequest, function(req, res){
 	}
 	
 });
+
 router.delete('/part/:pardID/:ID', lib.authenticateAdminRequest, function(req, res){
 	var id = req.params.ID;
 	var partId = req.params.pardID;

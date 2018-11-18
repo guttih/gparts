@@ -1,5 +1,5 @@
 # What needs to be done
- 
+
 ## Part Register & modify
 
 ### Modify Part
@@ -28,3 +28,6 @@
 
  ### Listning files 
   - Need to provide a link to owner of an list item.
+
+  ### Development documentation
+  - [Mongoose](https://mongoosejs.com/docs/index.html)

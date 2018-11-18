@@ -22,10 +22,31 @@ var PartSchema = mongoose.Schema({
 
 var Part = module.exports = mongoose.model('Part', PartSchema);
 
-
 module.exports.delete = function (id, callback){
-	
-	Part.findByIdAndRemove(id, callback);
+	Part.findById(id, function(err, part){
+		//now we need to search for all files and remove them if this part is the owner
+		File.deleteByOwnerIdFindOnlyOne(id, function(err, files){
+			console.log('deleteByOwnerIdFindOnlyOne done --------------------------------------------------------------');
+			console.log(files);
+
+
+			File.listByOwnerId(id, function(err, files){
+				console.log('listByOwnerId start --------------------------------------------------------------');
+				files.forEach(element => {
+					console.log('-'+element.id+' :' + element.name);
+					console.log(element.owners);
+
+					File.removeOwner(element, id, function(err, result){
+						console.log('removed part ('+ id + ') as an owner of file ('+element.id+')');
+					});
+
+				});
+				console.log('listByOwnerId end   --------------------------------------------------------------');
+			});
+
+		});
+		Part.findByIdAndRemove(id, callback);	
+	});
 };
 
 module.exports.modify = function (id, newValues, callback){
