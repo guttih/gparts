@@ -826,3 +826,71 @@ module.exports.createFolderIfNotExists = function createFolder(folderPath, callb
 		});
 	}
 };
+
+/**
+ * @param {Number} number The bytes to be formatted
+ * @param {Number} [decimalPoints] The number of decimal points to be used (Default is 2)
+ * @param {String} [unit]  The units to be formatted to. (Default is automatically)
+ * 					Possible values are 'KB','MB','GB','TB','PB'  if this parameter is not provided or invalid then the unit will be selected automatically.
+ * @returns A formatted string on the form xxx.dd XB   where xxx is the integer part of the formatted number and dd is the fractional part of the formatted number and XB is the unit which the number is presented in.
+ */
+module.exports.bytesToUnitString = function bytesToUnitString(number, decimalPoints, unit) {
+	var power = 2; //for 'MB'
+	var powerMax = 8;
+	var decimals = 2 //two numbers right of the dot;
+	var usingUnit = 'MB';
+	var automatic = false;
+	if (decimalPoints !== undefined && decimalPoints !== null && decimalPoints > -1 ) {
+		decimals = decimalPoints;
+	} 
+	if (unit !== undefined && unit === null && unit.length === 2) {
+		usingUnit = usingUnit.toUpperCase();
+	} else { 
+		automatic = true;
+	}
+	
+	if (automatic === true) {
+		//automatically selecting unit;
+		var testPower = 0;
+		var testNumber;
+		
+		testNumber = number / Math.pow(1024, powerMax);
+		if (testNumber > 1) {
+			testPower = powerMax;
+		} else {
+			testNumber = number / Math.pow(1024, testPower);
+			while( testNumber > 1000 && testPower < (powerMax +1 ) ) {
+				testNumber = number / Math.pow(1024, ++testPower);
+			} 
+		}
+		power = testPower;
+
+		switch (power) {
+			case 0: usingUnit = 'bytes'; break;
+			case 1: usingUnit = 'KB';    break;
+			case 2: usingUnit = 'MB';    break;
+			case 3: usingUnit = 'GB';    break;
+			case 4: usingUnit = 'TB';    break;
+			case 5: usingUnit = 'PB';    break;
+			case 6: usingUnit = 'EB';    break;
+			case 7: usingUnit = 'ZB';    break;
+			case 8: usingUnit = 'YB';    break;
+		}
+	} else {
+		switch (usingUnit) {
+			case 'bytes': power = 0; break;
+			case 'KB': power = 1; break;
+			case 'MB': power = 2; break;
+			case 'GB': power = 3; break;
+			case 'TB': power = 4; break;
+			case 'PB': power = 5; break;
+			case 'EB': power = 6; break;
+			case 'ZB': power = 7; break;
+			case 'YB': power = 8; break;
+		}
+	}
+	
+	number/=Math.pow(1024, power);
+	var str = parseFloat(number).toFixed(decimals) + ' '+ usingUnit;
+	return str;
+}

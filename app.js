@@ -42,6 +42,7 @@ db.on('open', function () {
 
 // Routes
 var routes         = require('./routes/index');
+var settings       = require('./routes/settings');
 var users          = require('./routes/users');
 var suppliers      = require('./routes/suppliers');
 var parts          = require('./routes/parts');
@@ -103,6 +104,8 @@ app.use(expressValidator({
 app.use(flash());
 
 // Global Vars
+
+
 app.use(function (req, res, next) {
 
 	res.locals.success_msg = req.flash('success_msg');
@@ -125,13 +128,14 @@ app.use(function (req, res, next) {
 	} else {
 		res.locals.allowUserRegistration = "unchecked";
 	}
+	res.locals.fileSizeLimit = lib.getConfig().fileSizeLimit;
+	res.locals.fileSizeLimitText = lib.bytesToUnitString(res.locals.fileSizeLimit,2);
 
 	next();
 });
 
-
-
 app.use('/', routes);
+app.use('/settings', settings);
 app.use('/users', users);
 app.use('/suppliers', suppliers);
 app.use('/parts', parts);

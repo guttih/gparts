@@ -107,7 +107,9 @@ module.exports.addOwner = function (id, ownerIdToAdd, callback){
 	//$set
 	File.findById(id, function(err, file) {
 		if(err || file === null) {
-			if (err === undefined) { err = {error:404, message: "'Error 404 : Not found! "}; }
+			if (err === undefined) { 
+				err = {error:404, message: "'Error 404 : Not found! "}; 
+			}
 			if (callback !== undefined) {
 				callback(err);  
 			}

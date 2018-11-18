@@ -22,18 +22,24 @@
 		{{/if}}
 		{{#if admin}}
 			<li class="dropdown">
-				<a  data-toggle="dropdown" href="#">Users</a>
+				<a  data-toggle="dropdown" href="#">Settings</a>
 				<ul class="dropdown-menu">
-					<li><a  href="/users/register">Register a new user</a></li>
-					<li><a href="/users/list">List users</a></li>
+					<li class="menu-item dropdown dropdown-submenu"><a href="#">Users</a>
+						<ul class="dropdown-menu">
+							<li><a  href="/users/register">Register a new user</a></li>
+							<li><a href="/users/list">List users</a></li>
 
-					<li class="menu-item dropdown dropdown-submenu"><a href="#">Settings</a>
-					<ul class="dropdown-menu">
-						<li class="menu-item {{allowUserRegistration}}" id="allow-user-registration"><a href="javascript:changeUsersCanRegister()"><span class="glyphicon glyphicon-ok"></span>New users can register</a></li>
-					</ul>
+							<li class="menu-item dropdown dropdown-submenu"><a href="#">Settings</a>
+							<ul class="dropdown-menu">
+								<li class="menu-item {{allowUserRegistration}}" id="allow-user-registration"><a href="javascript:changeServerSettingsUsersCanRegister()"><span class="glyphicon glyphicon-ok"></span>New users can register</a></li>
+							</ul>
+							</li>
+						</ul>
 					</li>
+					<li class="menu-item" id="change-file-upload-size" data-limit="{{fileSizeLimit}}"><a href="javascript:changeFileUploadSize()">Change file upload size from {{fileSizeLimitText}}</a></li>
 				</ul>
 			</li>
+			
 		{{/if}}
 		{{#if user}}
 			<li class="dropdown">
@@ -190,11 +196,13 @@
 			<div class="modal-input1">
 				<input type="text"   id="modal-input1"     name="modal-input1" class="form-control hidden" value="" placeholder="">
 			</div>
-			<div class="modal-body2 hidden">
-				<p>Modal Text2</p>
-			</div>
-			<div class="modal-input2">
-				<input type="text"   id="modal-input2"     name="modal-input2" class="form-control hidden" value="" placeholder="">
+			<div class="modal-value2 hidden">
+				<div class="modal-body2">
+					<p>Modal Text2</p>
+				</div>
+				<div class="modal-input2">
+					<input type="text"   id="modal-input2"     name="modal-input2" class="form-control" value="" placeholder="">
+				</div>
 			</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

@@ -337,7 +337,6 @@ function showModal(title, message){
 	$('#myModal .btn-default').show();
 	$('#btn-confirm').hide(); 
 	$('#myModal').modal('show');
-	
 }
 
 
@@ -368,13 +367,44 @@ function showModalConfirm(title, message, confirmButtonText, confirmCallback){
 }
 
 // 	--Ask for user input, Example
-//  showModalInput("test", "texti", "vista", function(value) {
-//		alert(value);
-//	});
-function showModalInput(title, message, defaultText1, confirmButtonText, confirmCallback){
+
+function showModalInputHelperHideInputs() {
+	$('#modal-input1').addClass('hidden');
+	//$('.modal-body2').addClass('hidden');
+	$('.modal-value2').addClass('hidden');
+}
+
+/**
+ * Ask the user for imput
+ *
+ * @param {string} title Title of the Modal
+ * @param {string} message Text to show under title
+ * @param {string} defaultText1  Value in the input when the modal is shown
+ * @param {string} confirmButtonText Text on the OK/confirm button
+ * @param {string} confirmCallback what function to call when the user clicks the OK/confirm button
+ * @param {boolean} onlyNumbers Ask for a number.  If not then modal will ask for text.
+ *
+ * @example Ask the user for a name
+ *  showModalInput("Name needed", "Please type in your name", "OK",
+ *     function(value) { 
+ *	        alert(value);
+ *	   });
+  * @example Ask the user for his age
+ *  showModalInput("Age needed", "Please type in your age", "25",
+ *     function(value) { 
+ *	        alert(value);
+ *	   }, true);
+ * @example Ask the user for a number between 0 and 256
+ *	  showModalInput("Number needed", "Please provide a number Allowed are numbers (1-255)",22,"OK",
+ *	     function(value) { 
+ *		        alert(value);
+ *		   }, true, 1, 255 );
+ */
+function showModalInput(title, message, defaultText1, confirmButtonText, confirmCallback, onlyNumbers, minNumber, maxNumber){
+	showModalInputHelperHideInputs();
 	$(".modal-title").text(title);
 	$(".modal-body").text(message); 
-	if (confirmCallback === undefined){
+	if (confirmCallback === undefined || confirmCallback === null){
 		//no button text provided
 		$('#btn-confirm').text("Confirm");
 		confirmCallback = confirmButtonText; /**/
@@ -383,6 +413,20 @@ function showModalInput(title, message, defaultText1, confirmButtonText, confirm
 		$('#btn-confirm').text(confirmButtonText);
 	}
 	$('#modal-input1').val(defaultText1);
+	if (onlyNumbers !== undefined && onlyNumbers !== null && onlyNumbers === true){
+		{	var obj = {type:"number"};
+			if (minNumber !== undefined && minNumber !== null){ 
+				obj.min = minNumber;
+			}
+			if (maxNumber !== undefined && maxNumber !== null){ 
+				obj.max = maxNumber;
+			}
+			$('#modal-input1').attr(obj);
+		}
+	} else {
+		$('#modal-input1').attr({type:"text"});
+	}
+	
 	$('#btn-confirm').removeClass('btn-danger').addClass('btn-success');
 	$('#modal-input1').removeClass('hidden');
 	$('#btn-confirm').unbind();
@@ -390,6 +434,7 @@ function showModalInput(title, message, defaultText1, confirmButtonText, confirm
 		var value = $('#modal-input1').val();
 		$('#modal-input1').addClass('hidden');
 		$('#myModal').modal('hide');
+		showModalInputHelperHideInputs();
 		setTimeout(function(){
 			confirmCallback(value);
 		}, 100);
@@ -411,19 +456,21 @@ function showModalInputTwo(title, message1, message2, defaultText1, defaultText2
 	} else {
 		$('#btn-confirm').text(confirmButtonText);
 	}
+	$('#modal-input1').attr({type:"text"});
 	$('#modal-input1').val(defaultText1);
-	$('#modal-input2').val(defaultText2);
+	//$('#modal-input2').val(defaultText2);
 	$('#btn-confirm' ).removeClass('btn-danger').addClass('btn-success');
-	$(".modal-body2" ).removeClass('hidden');
+	
+	$(".modal-value2" ).removeClass('hidden');
 	$('#modal-input1').removeClass('hidden');
-	$('#modal-input2').removeClass('hidden');
+	$('.modal-value2').removeClass('hidden');
 	$('#btn-confirm' ).unbind();
 	$('#btn-confirm' ).on('click', function(e) {
 		var value1 = $('#modal-input1').val();
 		var value2 = $('#modal-input2').val();
-		$(".modal-body2" ).addClass('hidden');
+		//$(".modal-body2" ).addClass('hidden');
 		$('#modal-input1').addClass('hidden');
-		$('#modal-input2').addClass('hidden');
+		$('.modal-value2').addClass('hidden');
 		$('#myModal').modal('hide');
 		setTimeout(function(){
 			confirmCallback(value1, value2);
@@ -469,19 +516,9 @@ function getServerUrl(){
 	return serverUrl;
 }
 
-/*function getUserUserList(callback){
-	var url = SERVER+'/users/user-list';
-		var request = $.get(url);
-	request.done(function( data ) {
-		callback(data);
-		}).fail(function( data ) {
-			if (data.status===401){
-				showModal("You need to be logged in!", data.responseText);
-			}
-		});
-}*/
 
-function changeUsersCanRegister(){
+function changeServerSettingsUsersCanRegister(){
+	console.log(this.id);
 	var $elm = $('#allow-user-registration');
 	var checked = $elm.hasClass( "checked" );
 	var allow = true;  
@@ -490,8 +527,7 @@ function changeUsersCanRegister(){
 	}
 	var sendObj = {};
 	sendObj.allowUserRegistration = allow;
-	//var posting = $.post( '/users/settings', sendObj);
-	var posting = $.post( '/settings', sendObj);
+	var posting = $.post(SERVER+'/settings/allow-user-registration', sendObj);
 	posting
 		.done(function(data){
 			//successful update let's change the class "checked"
@@ -504,7 +540,35 @@ function changeUsersCanRegister(){
 		.fail(function(data){
 			console.log("failed posting");
 			console.log(data);
-			showModalError('Error updating settings for user registration', data);
+			showModalErrorMsg('Error updating settings for user registration', data);
+		});
+	
+	//window.location.href = asdf
+}
+
+function changeFileUploadSize(){
+	var $elm = $('#change-file-upload-size');
+	var oldSize = $elm.attr('data-limit');
+	showModalInput("Changing the upload file size", "Please provide in bytes how big files can be when users upload.",oldSize,"Change", function (value) { 
+		changeServerSettingsChangeFileUploadSize(value)
+	}, true, 0 );
+}
+
+function changeServerSettingsChangeFileUploadSize(newValue){
+	
+	var $elm = $('#change-file-upload-size');
+	var sendObj = {};
+	sendObj.fileSizeLimit = newValue;
+	var posting = $.post(SERVER+'/settings/file-size-limit', sendObj);
+	posting
+		.done(function(data){
+			$elm.attr('data-limit', newValue);
+			$elm.find('a').text('Change file upload size from '+ bytesToUnitString(newValue,2));
+		})
+		.fail(function(data){
+			console.log("failed posting");
+			console.log(data);
+			showModalErrorMsg('Error updating settings for user registration', data);
 		});
 	
 	//window.location.href = asdf
@@ -583,6 +647,73 @@ function openUrlInNewTab(url) {
 	win.focus();
   }
 
+/**
+ * @param {Number} number The bytes to be formatted
+ * @param {Number} [decimalPoints] The number of decimal points to be used (Default is 2)
+ * @param {String} [unit]  The units to be formatted to. (Default is automatically)
+ * 					Possible values are 'KB','MB','GB','TB','PB'  if this parameter is not provided or invalid then the unit will be selected automatically.
+ * @returns A formatted string on the form xxx.dd XB   where xxx is the integer part of the formatted number and dd is the fractional part of the formatted number and XB is the unit which the number is presented in.
+ */
+function bytesToUnitString(number, decimalPoints, unit) {
+	var power = 2; //for 'MB'
+	var powerMax = 8;
+	var decimals = 2 //two numbers right of the dot;
+	var usingUnit = 'MB';
+	var automatic = false;
+	if (decimalPoints !== undefined || decimalPoints !== null || decimalPoints > -1 ) {
+		decimals = decimalPoints;
+	} 
+	if (unit !== undefined && unit === null && unit.length === 2) {
+		usingUnit = usingUnit.toUpperCase();
+	} else { 
+		automatic = true;
+	}
+	
+	if (automatic === true) {
+		//automatically selecting unit;
+		var testPower = 0;
+		var testNumber;
+		
+		testNumber = number / Math.pow(1024, powerMax);
+		if (testNumber > 1) {
+			testPower = powerMax;
+		} else {
+			testNumber = number / Math.pow(1024, testPower);
+			while( testNumber > 1000 && testPower < (powerMax +1 ) ) {
+				testNumber = number / Math.pow(1024, ++testPower);
+			} 
+		}
+		power = testPower;
+
+		switch (power) {
+			case 0: usingUnit = 'bytes'; break;
+			case 1: usingUnit = 'KB';    break;
+			case 2: usingUnit = 'MB';    break;
+			case 3: usingUnit = 'GB';    break;
+			case 4: usingUnit = 'TB';    break;
+			case 5: usingUnit = 'PB';    break;
+			case 6: usingUnit = 'EB';    break;
+			case 7: usingUnit = 'ZB';    break;
+			case 8: usingUnit = 'YB';    break;
+		}
+	} else {
+		switch (usingUnit) {
+			case 'bytes': power = 0; break;
+			case 'KB': power = 1; break;
+			case 'MB': power = 2; break;
+			case 'GB': power = 3; break;
+			case 'TB': power = 4; break;
+			case 'PB': power = 5; break;
+			case 'EB': power = 6; break;
+			case 'ZB': power = 7; break;
+			case 'YB': power = 8; break;
+		}
+	}
+	
+	number/=Math.pow(1024, power);
+	var str = parseFloat(number).toFixed(decimals) + ' '+ usingUnit;
+	return str;
+}
 
 $(function () {  
 	/* this is the $( document ).ready(function( $ ) but jshint does not like that*/
@@ -590,5 +721,8 @@ $(function () {
 	//todo: run this only if logged in getWhenServerStarted();
 	$('.dropdown-toggle').dropdown();/*for the dropdown-toggle bootstrap class*/
 	$("[rel='tooltip']").tooltip();/*activate boostrap tooltips*/
-	
+	$('#myModal > div > div > div.modal-footer > button.btn.btn-default').click(function(){
+		showModalInputHelperHideInputs();
+	});
+
 });

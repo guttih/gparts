@@ -70,16 +70,29 @@ var storageFile = multer.diskStorage({
 
   var config = lib.getConfig();
 
- var uploadFile  = multer({ storage: storageFile,   limits: { fileSize: config.fileSizeLimit } }).single('file');
- var uploadImage = multer({ storage: storageImage , limits: { fileSize: config.fileSizeLimit } }).single('image');
+  var uploading = {
+	library        : {},
+	uploadFile     : {},
+	uploadImage    : {},
+	updateFileSize : function updateFileSize(fileSizeLimit) {
+						if (fileSizeLimit === undefined || fileSizeLimit === null ) {
+							fileSizeLimit = this.library.getConfig().fileSizeLimit;
+						}
+						this.uploadFile  = multer({ storage: storageFile,   limits: { fileSize: fileSizeLimit } }).single('file');
+						this.uploadImage = multer({ storage: storageImage , limits: { fileSize: fileSizeLimit} }).single('image');
+					},
+	update         : function update() {
+	                     this.updateFileSize(this.library.getConfig().fileSizeLimit);
+					 },
+	init           : function init(theLib) {
+						this.library = theLib;
+						this.update();
+					}
+  };
 
-function bytesToMegaByteString(number) {
-	number/=(1024*1024);
-	var str = parseFloat(number).toFixed(2) + " MB"
-	return str;
-}
+  uploading.init(lib);
 
- function getUploadFileErrorText(err, itemText) {
+ function getUploadFileErrorText(err, itemText, rawHeaders) {
 	//todo: more work needs to be done here
 	var ret = "Unable to save " + itemText + " to disk";
 	if (err === undefined || err.stack === undefined) {
@@ -87,7 +100,20 @@ function bytesToMegaByteString(number) {
 	}
 	if (err.code !== undefined) {
 		switch (err.code) {
-			case "LIMIT_FILE_SIZE":	return ret+=" because " + itemText + " is too large.  The limit is "+ bytesToMegaByteString(config.fileSizeLimit) + ".";
+			case "LIMIT_FILE_SIZE":	ret+=" because " + itemText + " is too large.  ";
+									if (rawHeaders !== undefined && rawHeaders !== null) {
+										var i = rawHeaders.indexOf("Content-Length");
+										if (i > -1) {
+											try {
+												if (!isNaN(rawHeaders[i+1]) ) {
+													var num = Number(rawHeaders[i+1]);
+													//got approximately file size
+													ret+="File size was about " + lib.bytesToUnitString(num) + ".  ";
+												}
+											} catch(e){	}// do nothing
+										}
+									}
+									return ret +"The limit is "+ lib.bytesToUnitString(config.fileSizeLimit) + ".";
 		}
 	}
 
@@ -116,7 +142,7 @@ router.get('/register/image', lib.authenticateAdminRequest, function(req, res){
 // modify page
 router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
 	var id = req.params.ID;
-	if (id !== undefined){
+	if (id !== undefined) {
 		File.getById(id, function(err, file){
 				if(err || file === null) {
 					req.flash('error',	'Could not find file.' );
@@ -139,7 +165,7 @@ router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
 
 router.get('/register/image/:ID', lib.authenticatePowerUrl, function(req, res){
 	var id = req.params.ID;
-	if (id !== undefined){
+	if (id !== undefined) {
 		File.getById(id, function(err, file){
 				if(err || file === null) {
 					req.flash('error',	'Could not find file.' );
@@ -163,152 +189,153 @@ router.get('/register/image/:ID', lib.authenticatePowerUrl, function(req, res){
 router.post('/register', lib.authenticateAdminRequest, function (req, res, next) {
 		// req.file is the `avatar` file
 		// req.body will hold the text fields, if there were any
-		
-			uploadFile(req, res, function (err) {
-				if (err) {
-					var message;
-					if 	(err.code === "LIMIT_FILE_SIZE" || 
-						(err.message === undefined || err.message.length < 1) ) {
-						message = getUploadFileErrorText(err, "file");
-					} else {
-						message = "Unable to save file to disk!" + " ("+err.message + ")";
-					}
-					res.render('register-file',{ errors:[{msg:message}]});
-					console.log(err);
-					File.delete(req.body.fileObjectId, function(err){ if (err === null ){ console.log("deleted File object because upload failed") } });
-					return;
-				}
-				var name  = req.body.name;
-				var id    = req.body.fileObjectId;
-				var ownerId = req.user._id;
-				if (req.body.partId !== undefined) {
-					ownerId = req.body.partId;
-				}
-			
-				req.checkBody('fileObjectId', 'A file to upload, must be selected.').notEmpty();
-				req.checkBody('name', 'Name is required').notEmpty();
-				var errors = req.validationErrors();
-				
-				if(errors){
-					res.render('register-file',{ errors:errors 	});
+		uploading.update();
+		uploading.uploadFile(req, res, function (err) {
+			if (err) {
+				var message;
+				if 	(err.code === "LIMIT_FILE_SIZE" || 
+					(err.message === undefined || err.message.length < 1) ) {
+
+					message = getUploadFileErrorText(err, "file", req.rawHeaders);
 				} else {
-					req.flash('success_msg',	'File uploaded and created!' );
-					File.addOwner(id, ownerId, function(err, item){
-						res.redirect('/files/register/'+id);
-					});
-					
-					
+					message = "Unable to save file to disk!" + " ("+err.message + ")";
 				}
-			});
+				res.render('register-file',{ errors:[{msg:message}]});
+				console.log(err);
+				File.delete(req.body.fileObjectId, function(err){ if (err === null ){ console.log("deleted File object because upload failed") } });
+				return;
+			}
+			var name  = req.body.name;
+			var id    = req.body.fileObjectId;
+			var ownerId = req.user._id;
+			if (req.body.partId !== undefined) {
+				ownerId = req.body.partId;
+			}
+		
+			req.checkBody('fileObjectId', 'A file to upload, must be selected.').notEmpty();
+			req.checkBody('name', 'Name is required').notEmpty();
+			var errors = req.validationErrors();
+			
+			if(errors){
+				res.render('register-file',{ errors:errors 	});
+			} else {
+				req.flash('success_msg',	'File uploaded and created!' );
+				File.addOwner(id, ownerId, function(err, item){
+					res.redirect('/files/register/'+id);
+				});
+				
+				
+			}
+		});
 		
 });
 
 router.post('/register/image', lib.authenticateAdminRequest, function (req, res, next) {
 	// req.file is the `avatar` file
 	// req.body will hold the text fields, if there were any
-	
-		uploadImage(req, res, function (err) {
-			var name    = req.body.name;
-			if (err) {
-				var message;
-					if 	(err.code === "LIMIT_FILE_SIZE" || 
-						(err.message === undefined || err.message.length < 1) ) {
-						message = getUploadFileErrorText(err, "image");
-					} else {
-						message = "Unable to save image to disk!" + " ("+err.message + ")";
-					}
-					res.render('register-image',{ errors:[{msg:message}]});
-					console.log(err);
-					File.delete(req.body.fileObjectId, function(err){ if (err === null ){ console.log("deleted File object because upload failed") } });
-					return;
-			}
-			
-			var id      = req.body.fileObjectId;
-			var ownerId = req.user._id;
-			if (req.body.partId !== undefined) {
-				ownerId = req.body.partId;
-			}
+	uploading.update();
+	uploading.uploadImage(req, res, function (err) {
+		var name    = req.body.name;
+		if (err) {
+			var message;
+				if 	(err.code === "LIMIT_FILE_SIZE" || 
+					(err.message === undefined || err.message.length < 1) ) {
+					message = getUploadFileErrorText(err, "image", req.rawHeaders);
+				} else {
+					message = "Unable to save image to disk!" + " ("+err.message + ")";
+				}
+				res.render('register-image',{ errors:[{msg:message}]});
+				console.log(err);
+				File.delete(req.body.fileObjectId, function(err){ if (err === null ){ console.log("deleted File object because upload failed") } });
+				return;
+		}
 		
-			req.checkBody('fileObjectId', 'A image to upload, must be selected.').notEmpty();
-			req.checkBody('name', 'Name is required').notEmpty();
-			var errors = req.validationErrors();
+		var id      = req.body.fileObjectId;
+		var ownerId = req.user._id;
+		if (req.body.partId !== undefined) {
+			ownerId = req.body.partId;
+		}
+	
+		req.checkBody('fileObjectId', 'A image to upload, must be selected.').notEmpty();
+		req.checkBody('name', 'Name is required').notEmpty();
+		var errors = req.validationErrors();
+		
+		if(errors){
+			res.render('register-image',{ errors:errors 	});
+		} else {
+			req.flash('success_msg',	'File uploaded and created!' );
+			File.addOwner(id, ownerId, function(err, item){
+				res.redirect('/files/register/image/'+id);
+			});
 			
-			if(errors){
-				res.render('register-image',{ errors:errors 	});
-			} else {
-				req.flash('success_msg',	'File uploaded and created!' );
-				File.addOwner(id, ownerId, function(err, item){
-					res.redirect('/files/register/image/'+id);
-				});
-				
-				
-			}
-		});
+			
+		}
+	});
 	
 });
 
 router.post('/register/part/image', lib.authenticateAdminRequest, function (req, res, next) {
 	// req.file is the `avatar` file
 	// req.body will hold the text fields, if there were any
+	uploading.update();
+	uploading.uploadImage(req, res, function (err) {
+		if (err) {
+			// An error occurred when uploading
+			console.log(err);
+			err.msg = getUploadFileErrorText(err, "image", req.rawHeaders);
+			res.status(413).send(err); 
+			File.delete(req.body.fileObjectId, function(err){ if (err === null ){ console.log("deleted File object because upload failed") } });
+			return;
+		}
+		var name    = req.body.name;
+		var id      = req.body.fileObjectId;
+		var ownerId = req.user._id;
+		if (req.body.partId !== undefined) {
+			ownerId = req.body.partId;
+		}
 	
-		uploadImage(req, res, function (err) {
-			if (err) {
-				// An error occurred when uploading
-				console.log(err);
-				err.msg = getUploadFileErrorText(err, "image");
-				res.status(413).send(err); 
-				File.delete(req.body.fileObjectId, function(err){ if (err === null ){ console.log("deleted File object because upload failed") } });
-				return;
-			}
-			var name    = req.body.name;
-			var id      = req.body.fileObjectId;
-			var ownerId = req.user._id;
-			if (req.body.partId !== undefined) {
-				ownerId = req.body.partId;
-			}
+		req.checkBody('fileObjectId', 'A image to upload, must be selected.').notEmpty();
+		req.checkBody('name', 'Name is required').notEmpty();
+		var errors = req.validationErrors();
 		
-			req.checkBody('fileObjectId', 'A image to upload, must be selected.').notEmpty();
-			req.checkBody('name', 'Name is required').notEmpty();
-			var errors = req.validationErrors();
-			
-			if(errors){
-				res.statusCode = 400;
-				return res.json({text:(errors.length > 0 )? errors[0].msg : "Could not upload image!"}); 
-			} else {
-				req.flash('success_msg',	'File uploaded and created!' );
-				File.addOwner(id, ownerId, function(err, item){
-					if (err !== null) 	{ 	res.statusCode = 404;
-											var obj = {text:'Error 404: Could not add owner!'};
-											return res.json(obj); 
-										  }
-					//Fyrst við ödduðum owner þá þurfum við að adda myndinni í partinn
-					if (ownerId !== req.user._id){
-						Part.modify(ownerId, {image:id},function(err, res) {
-							console.log('added image:' + id + ' to part ' + ownerId);
-						});
-					}
-					File.getById(id, function(err, item){
-						if (err !== null)	{ 	res.statusCode = 404;
-												var obj = {text:'Error 404: Image not found!'};
-												return res.json(obj); 
-											}
-						return res.json(item);
+		if(errors){
+			res.statusCode = 400;
+			return res.json({text:(errors.length > 0 )? errors[0].msg : "Could not upload image!"}); 
+		} else {
+			req.flash('success_msg',	'File uploaded and created!' );
+			File.addOwner(id, ownerId, function(err, item){
+				if (err !== null) 	{ 	res.statusCode = 404;
+										var obj = {text:'Error 404: Could not add owner!'};
+										return res.json(obj); 
+										}
+				//Fyrst við ödduðum owner þá þurfum við að adda myndinni í partinn
+				if (ownerId !== req.user._id){
+					Part.modify(ownerId, {image:id},function(err, res) {
+						console.log('added image:' + id + ' to part ' + ownerId);
 					});
-					
-				});	
-			}
-		});
+				}
+				File.getById(id, function(err, item){
+					if (err !== null)	{ 	res.statusCode = 404;
+											var obj = {text:'Error 404: Image not found!'};
+											return res.json(obj); 
+										}
+					return res.json(item);
+				});
+				
+			});	
+		}
+	});
 });
 
 router.post('/register/part/file', lib.authenticateAdminRequest, function (req, res, next) {
 	// req.file is the `avatar` file
 	// req.body will hold the text fields, if there were any
-	
-		uploadFile(req, res, function (err) {
+		uploading.update();
+		uploading.uploadFile(req, res, function (err) {
 			if (err) {
 				// An error occurred when uploading
 				console.log(err);
-				err.msg = getUploadFileErrorText(err, "file");
+				err.msg = getUploadFileErrorText(err, "file", req.rawHeaders);
 				res.status(413).send(err); 
 				return;
 			}

@@ -403,7 +403,7 @@ function setupUrlCommands(){
 		$elm = $(this).parent().parent();
 		var index = new Number($elm.attr("data-index"));
 		var urlObject = tempValues.urls[index];
-		showModalInputTwo("Adding a Url",  "Please provide the name", "Please provide the url",
+		showModalInputTwo("Adding a Url",  "Name", "Url",
 						   urlObject.name, urlObject.url,             "Add",
 							function(name, url) {
 													if (name.length > 0 && url.length > 0) {
