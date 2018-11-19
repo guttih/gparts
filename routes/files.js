@@ -201,7 +201,7 @@ router.get('/image-list', lib.authenticateRequest, function(req, res){
 });
 
 // modify page
-router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
+router.get('/register/:ID', lib.authenticateRequest, function(req, res){
 	var id = req.params.ID;
 	if (id !== undefined) {
 		File.getById(id, function(err, file){
@@ -224,7 +224,7 @@ router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
 
 });
 
-router.get('/register/image/:ID', lib.authenticatePowerUrl, function(req, res){
+router.get('/register/image/:ID', lib.authenticateRequest, function(req, res){
 	var id = req.params.ID;
 	if (id !== undefined) {
 		File.getById(id, function(err, file){
