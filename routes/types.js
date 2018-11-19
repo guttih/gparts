@@ -14,12 +14,12 @@ var config = lib.getConfig();
 
 
 // Register
-router.get('/register', lib.authenticateAdminRequest, function(req, res){
+router.get('/register', lib.authenticateRequest, function(req, res){
 	res.render('register-type');
 });
 
 // modify page
-router.get('/register/:typeID', lib.authenticatePowerUrl, function(req, res){
+router.get('/register/:typeID', lib.authenticateRequest, function(req, res){
 	var id = req.params.typeID;
 	if (id !== undefined){
 		Type.getById(id, function(err, type){
@@ -40,6 +40,42 @@ router.get('/register/:typeID', lib.authenticatePowerUrl, function(req, res){
 
 });
 
+//returns a type list page
+router.get('/list', lib.authenticateUrl, function(req, res){
+	res.render('list-type');
+});
+
+/*listing all parts and return them as a json array*/
+router.get('/type-list', lib.authenticateRequest, function(req, res){
+	Type.list(function(err, list){
+		
+		var arr = [];
+		var isOwner;
+		var item; 
+		for(var i = 0; i < list.length; i++){
+				item = list[i];
+
+				arr.push({	id         :item._id,
+							name       :item.name, 
+							description:item.description,
+						});
+		}
+		res.json(arr);
+	});
+});
+
+router.get('/item/:typeID', lib.authenticateRequest, function(req, res){
+	var id = req.params.typeID;
+	if (id !== undefined){
+		Type.getById(id, function(err, type){
+				if(err || type === null) {
+					res.status(404).send('Not found!'); 
+				} else{
+					res.json(type);
+				}
+			});
+	}
+});
 // Register Type
 router.post('/register', lib.authenticateAdminRequest, function(req, res){
 	var name = req.body.name;
@@ -103,45 +139,6 @@ router.post('/register/:typeID', lib.authenticateAdminRequest, function(req, res
 		});
 			
 	}
-});
-
-
-
-router.get('/item/:typeID', lib.authenticateRequest, function(req, res){
-	var id = req.params.typeID;
-	if (id !== undefined){
-		Type.getById(id, function(err, type){
-				if(err || type === null) {
-					res.status(404).send('Not found!'); 
-				} else{
-					res.json(type);
-				}
-			});
-	}
-});
-
-
-//returns a type list page
-router.get('/list', lib.authenticateUrl, function(req, res){
-	res.render('list-type');
-});
-/*listing all parts and return them as a json array*/
-router.get('/type-list', lib.authenticateRequest, function(req, res){
-	Type.list(function(err, list){
-		
-		var arr = [];
-		var isOwner;
-		var item; 
-		for(var i = 0; i < list.length; i++){
-				item = list[i];
-
-				arr.push({	id         :item._id,
-							name       :item.name, 
-							description:item.description,
-						});
-		}
-		res.json(arr);
-	});
 });
 
 router.delete('/:typeID', lib.authenticateAdminRequest, function(req, res){

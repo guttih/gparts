@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var lib = require('../utils/glib');
 
-router.post('/allow-user-registration', lib.authenticateCardOwnerRequest, function(req, res) {
+router.post('/allow-user-registration', lib.authenticateAdminRequest, function(req, res) {
 	
 	req.checkBody('allowUserRegistration', 'allowUserRegistration is missing').notEmpty();
 
@@ -29,7 +29,7 @@ router.post('/allow-user-registration', lib.authenticateCardOwnerRequest, functi
 	res.status(200).send('Settings changed.');
 });
 
-router.post('/file-size-limit', lib.authenticateCardOwnerRequest, function(req, res) {
+router.post('/file-size-limit', lib.authenticateAdminRequest, function(req, res) {
 	req.checkBody('fileSizeLimit', 'fileSizeLimit is missing').notEmpty();
 
 	var errors = req.validationErrors();

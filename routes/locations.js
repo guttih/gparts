@@ -12,14 +12,13 @@ var lib = require('../utils/glib');
 
 var config = lib.getConfig();
 
-
 // Register
-router.get('/register', lib.authenticateAdminRequest, function(req, res){
+router.get('/register', lib.authenticateUrl, function(req, res){
 	res.render('register-location');
 });
 
 // modify page
-router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
+router.get('/register/:ID', lib.authenticateRequest, function(req, res){
 	var id = req.params.ID;
 	if (id !== undefined){
 		Location.getById(id, function(err, location){
@@ -38,6 +37,43 @@ router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
 		
 	}
 
+});
+
+router.get('/item/:ID', lib.authenticateRequest, function(req, res){
+	var id = req.params.ID;
+	if (id !== undefined){
+		Location.getById(id, function(err, location){
+				if(err || location === null) {
+					res.status(404).send('Not found!'); 
+				} else{
+					res.json(location);
+				}
+			});
+	}
+});
+
+//returns a location list page
+router.get('/list', lib.authenticateUrl, function(req, res){
+	res.render('list-location');
+});
+
+/*listing all parts and return them as a json array*/
+router.get('/location-list', lib.authenticateRequest, function(req, res){
+	Location.list(function(err, list){
+		
+		var arr = [];
+		var isOwner;
+		var item; 
+		for(var i = 0; i < list.length; i++){
+				item = list[i];
+
+				arr.push({	id         :item._id,
+							name       :item.name, 
+							description:item.description,
+						});
+		}
+		res.json(arr);
+	});
 });
 
 // Register Location
@@ -101,45 +137,6 @@ router.post('/register/:ID', lib.authenticateAdminRequest, function(req, res){
 		});
 			
 	}
-});
-
-
-
-router.get('/item/:ID', lib.authenticateRequest, function(req, res){
-	var id = req.params.ID;
-	if (id !== undefined){
-		Location.getById(id, function(err, location){
-				if(err || location === null) {
-					res.status(404).send('Not found!'); 
-				} else{
-					res.json(location);
-				}
-			});
-	}
-});
-
-
-//returns a location list page
-router.get('/list', lib.authenticateUrl, function(req, res){
-	res.render('list-location');
-});
-/*listing all parts and return them as a json array*/
-router.get('/location-list', lib.authenticateRequest, function(req, res){
-	Location.list(function(err, list){
-		
-		var arr = [];
-		var isOwner;
-		var item; 
-		for(var i = 0; i < list.length; i++){
-				item = list[i];
-
-				arr.push({	id         :item._id,
-							name       :item.name, 
-							description:item.description,
-						});
-		}
-		res.json(arr);
-	});
 });
 
 router.delete('/:ID', lib.authenticateAdminRequest, function(req, res){

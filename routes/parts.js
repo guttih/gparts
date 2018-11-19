@@ -14,12 +14,12 @@ var config = lib.getConfig();
 
 
 // Register
-router.get('/register', lib.authenticateAdminRequest, function(req, res){
+router.get('/register', lib.authenticateRequest, function(req, res){
 	res.render('register-part');
 });
 
 // modify page
-router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
+router.get('/register/:ID', lib.authenticateRequest, function(req, res){
 	var id = req.params.ID;
 	if (id !== undefined){
 		Part.getById(id, function(err, part){
@@ -43,6 +43,45 @@ router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
 		
 	}
 
+});
+
+router.get('/item/:ID', lib.authenticateRequest, function(req, res){
+	var id = req.params.ID;
+	if (id !== undefined){
+		Part.getById(id, function(err, part){
+				if(err || part === null) {
+					res.status(404).send('Not found!'); 
+				} else{
+					
+					res.json(part);
+				}
+			});
+	}
+});
+
+//returns a part list page
+router.get('/list', lib.authenticateUrl, function(req, res){
+	res.render('list-part');
+});
+
+/*listing all parts and return them as a json array*/
+router.get('/part-list', lib.authenticateRequest, function(req, res){
+	Part.list(function(err, list){
+		
+		var arr = [];
+		var isOwner;
+		var item; 
+		for(var i = 0; i < list.length; i++){
+				item = list[i];
+
+				arr.push({	id         :item._id,
+							name       :item.name, 
+							description:item.description,
+							url        :item.url
+						});
+		}
+		res.json(arr);
+	});
 });
 
 // Register Part
@@ -155,47 +194,6 @@ router.post('/register/:ID', lib.authenticateAdminRequest, function(req, res){
 		});
 			
 	}
-});
-
-
-
-router.get('/item/:ID', lib.authenticateRequest, function(req, res){
-	var id = req.params.ID;
-	if (id !== undefined){
-		Part.getById(id, function(err, part){
-				if(err || part === null) {
-					res.status(404).send('Not found!'); 
-				} else{
-					
-					res.json(part);
-				}
-			});
-	}
-});
-
-
-//returns a part list page
-router.get('/list', lib.authenticateUrl, function(req, res){
-	res.render('list-part');
-});
-/*listing all parts and return them as a json array*/
-router.get('/part-list', lib.authenticateRequest, function(req, res){
-	Part.list(function(err, list){
-		
-		var arr = [];
-		var isOwner;
-		var item; 
-		for(var i = 0; i < list.length; i++){
-				item = list[i];
-
-				arr.push({	id         :item._id,
-							name       :item.name, 
-							description:item.description,
-							url        :item.url
-						});
-		}
-		res.json(arr);
-	});
 });
 
 router.delete('/:ID', lib.authenticateAdminRequest, function(req, res){

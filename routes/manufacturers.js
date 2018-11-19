@@ -14,12 +14,12 @@ var config = lib.getConfig();
 
 
 // Register
-router.get('/register', lib.authenticateAdminRequest, function(req, res){
+router.get('/register', lib.authenticateRequest, function(req, res){
 	res.render('register-manufacturer');
 });
 
 // modify page
-router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
+router.get('/register/:ID', lib.authenticateRequest, function(req, res){
 	var id = req.params.ID;
 	if (id !== undefined){
 		Manufacturer.getById(id, function(err, manufacturer){
@@ -39,6 +39,45 @@ router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
 		
 	}
 
+});
+
+
+router.get('/item/:ID', lib.authenticateRequest, function(req, res){
+	var id = req.params.ID;
+	if (id !== undefined){
+		Manufacturer.getById(id, function(err, manufacturer){
+				if(err || manufacturer === null) {
+					res.status(404).send('Not found!'); 
+				} else{
+					res.json(manufacturer);
+				}
+			});
+	}
+});
+
+//returns a manufacturer list page
+router.get('/list', lib.authenticateUrl, function(req, res){
+	res.render('list-manufacturer');
+});
+
+/*listing all parts and return them as a json array*/
+router.get('/manufacturer-list', lib.authenticateRequest, function(req, res){
+	Manufacturer.list(function(err, list){
+		
+		var arr = [];
+		var isOwner;
+		var item; 
+		for(var i = 0; i < list.length; i++){
+				item = list[i];
+
+				arr.push({	id         :item._id,
+							name       :item.name, 
+							description:item.description,
+							url        :item.url
+						});
+		}
+		res.json(arr);
+	});
 });
 
 // Register Manufacturer
@@ -105,46 +144,6 @@ router.post('/register/:ID', lib.authenticateAdminRequest, function(req, res){
 		});
 			
 	}
-});
-
-
-
-router.get('/item/:ID', lib.authenticateRequest, function(req, res){
-	var id = req.params.ID;
-	if (id !== undefined){
-		Manufacturer.getById(id, function(err, manufacturer){
-				if(err || manufacturer === null) {
-					res.status(404).send('Not found!'); 
-				} else{
-					res.json(manufacturer);
-				}
-			});
-	}
-});
-
-
-//returns a manufacturer list page
-router.get('/list', lib.authenticateUrl, function(req, res){
-	res.render('list-manufacturer');
-});
-/*listing all parts and return them as a json array*/
-router.get('/manufacturer-list', lib.authenticateRequest, function(req, res){
-	Manufacturer.list(function(err, list){
-		
-		var arr = [];
-		var isOwner;
-		var item; 
-		for(var i = 0; i < list.length; i++){
-				item = list[i];
-
-				arr.push({	id         :item._id,
-							name       :item.name, 
-							description:item.description,
-							url        :item.url
-						});
-		}
-		res.json(arr);
-	});
 });
 
 router.delete('/:ID', lib.authenticateAdminRequest, function(req, res){

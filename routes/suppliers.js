@@ -14,12 +14,12 @@ var config = lib.getConfig();
 
 
 // Register
-router.get('/register', lib.authenticateAdminRequest, function(req, res){
+router.get('/register', lib.authenticateRequest, function(req, res){
 	res.render('register-supplier');
 });
 
 // modify page
-router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
+router.get('/register/:ID', lib.authenticateRequest, function(req, res){
 	var id = req.params.ID;
 	if (id !== undefined){
 		Supplier.getById(id, function(err, supplier){
@@ -39,6 +39,44 @@ router.get('/register/:ID', lib.authenticatePowerUrl, function(req, res){
 		
 	}
 
+});
+
+//returns a supplier list page
+router.get('/list', lib.authenticateUrl, function(req, res){
+	res.render('list-supplier');
+});
+
+/*listing all parts and return them as a json array*/
+router.get('/supplier-list', lib.authenticateRequest, function(req, res){
+	Supplier.list(function(err, list){
+		
+		var arr = [];
+		var isOwner;
+		var item; 
+		for(var i = 0; i < list.length; i++){
+				item = list[i];
+
+				arr.push({	id         :item._id,
+							name       :item.name, 
+							description:item.description,
+							url        :item.url
+						});
+		}
+		res.json(arr);
+	});
+});
+
+router.get('/item/:ID', lib.authenticateRequest, function(req, res){
+	var id = req.params.ID;
+	if (id !== undefined){
+		Supplier.getById(id, function(err, supplier){
+				if(err || supplier === null) {
+					res.status(404).send('Not found!'); 
+				} else{
+					res.json(supplier);
+				}
+			});
+	}
 });
 
 // Register Supplier
@@ -106,45 +144,6 @@ router.post('/register/:ID', lib.authenticateAdminRequest, function(req, res){
 	}
 });
 
-
-
-router.get('/item/:ID', lib.authenticateRequest, function(req, res){
-	var id = req.params.ID;
-	if (id !== undefined){
-		Supplier.getById(id, function(err, supplier){
-				if(err || supplier === null) {
-					res.status(404).send('Not found!'); 
-				} else{
-					res.json(supplier);
-				}
-			});
-	}
-});
-
-
-//returns a supplier list page
-router.get('/list', lib.authenticateUrl, function(req, res){
-	res.render('list-supplier');
-});
-/*listing all parts and return them as a json array*/
-router.get('/supplier-list', lib.authenticateRequest, function(req, res){
-	Supplier.list(function(err, list){
-		
-		var arr = [];
-		var isOwner;
-		var item; 
-		for(var i = 0; i < list.length; i++){
-				item = list[i];
-
-				arr.push({	id         :item._id,
-							name       :item.name, 
-							description:item.description,
-							url        :item.url
-						});
-		}
-		res.json(arr);
-	});
-});
 
 router.delete('/:ID', lib.authenticateAdminRequest, function(req, res){
 	var id = req.params.ID;

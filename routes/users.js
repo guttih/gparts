@@ -32,17 +32,113 @@ var lib = require('../utils/glib');
 
 var config = lib.getConfig();
 
-// Register
-router.get('/register', function(req, res){
-	res.render('register-user');
-});
-
 // Login
 router.get('/login', function(req, res){
 	res.render('login');
 });
 
+router.get('/logout', function(req, res){
+	req.logout();
 
+	req.flash('success_msg', 'You are logged out');
+
+	res.redirect('/users/login');
+});
+
+// Register
+router.get('/register', function(req, res){
+	res.render('register-user');
+});
+
+router.get('/list', lib.authenticateAdminUrl, function(req, res){
+	res.render('list-user');
+});
+
+/*listing all devices and return them as a json array*/
+router.get('/user-list', lib.authenticateRequest, function(req, res){
+	User.list(function(err, userList){
+		var strDescription, strLevel;
+		var arr = [];
+		for(var i = 0; i < userList.length; i++){
+
+			
+		switch (userList[i].level) {
+			case 0:
+				strLevel = "normal user";
+				break;
+			case 1:
+				strLevel = "power user";
+				break;
+			default: 
+				strLevel = "administrator";
+			}
+
+			strDescription = 'User ' + userList[i].username + 
+							' is a <b>' + strLevel + 
+							 '</b>.  email:' + userList[i].email;
+
+					arr.push({	name:userList[i].name, 
+								description:strDescription,
+								id:userList[i]._id,
+								username:userList[i].username,
+								email: userList[i].email,
+								level:userList[i].level
+							});
+		}
+		res.json(arr);
+	});
+});
+
+router.get('/register/:userID', lib.authenticateAdminUrl, function(req, res){
+	var id = req.params.userID;
+	if (id !== undefined){
+		User.getById(id, function(err, user){
+				if(err || user === null) {
+					req.flash('error',	'Could not find user.' );
+					res.redirect('/result');
+				} else{
+					var obj = {id : id,
+						name: user.name};
+					var str = JSON.stringify(obj);
+					res.render('register-user', {item:str});
+				}
+			});
+	}
+});
+
+router.get('/profile/:userID', lib.authenticateUrl, function(req, res){
+	var id = req.params.userID;
+	if (id !== undefined){
+		User.getById(id, function(err, user){
+				if(err || user === null) {
+					req.flash('error',	'Could not find user.' );
+					res.redirect('/result');
+				} else{
+					var obj = {id : id,
+						name: user.name};
+					var str = JSON.stringify(obj);
+					res.render('profile-user', {item:str});
+				}
+			});
+	}
+});
+
+router.get('/item/:userID', lib.authenticateRequest, function(req, res){
+	var id = req.params.userID;
+	if (id !== undefined){
+		User.getById(id, function(err, user){
+				if(err || user === null) {
+					res.status(404).send('Not found!'); 
+				} else{
+					if (res.locals.user._doc.level > 1){
+						//current user is a poweruser so let's tell the client script that
+						user._doc.currentUserLevel = res.locals.user._doc.level;
+					}
+					res.json(user);
+				}
+			});
+	}
+});
 
 // Register User
 router.post('/register', function(req, res){
@@ -124,7 +220,6 @@ if (config.allowUserRegistration === true) {
 	}
 });
 
-//todo: only a authenticateAdminRequest
 //todo: user change profile
 router.post('/register/:userID', lib.authenticateAdminRequest, function(req, res){
 	//user modify
@@ -221,139 +316,11 @@ router.post('/profile/:userID', lib.authenticateRequest, function(req, res){
 }
 });
 
-
-passport.use(new LocalStrategy(
-  function(username, password, done) {
-   User.getUserByUsername(username, function(err, user){
-   	if(err) {throw err;}
-   	if(!user){
-   		return done(null, false, {message: 'Unknown User'});
-   	}
-
-   	User.comparePassword(password, user.password, function(err, isMatch){
-   		if(err) {throw err;}
-   		if(isMatch){
-   			return done(null, user);
-   		} else {
-   			return done(null, false, {message: 'Invalid password'});
-   		}
-   	});
-   });
-  }));
-
-passport.serializeUser(function(user, done) {
-  done(null, user.id);
-});
-
-passport.deserializeUser(function(id, done) {
-  User.getById(id, function(err, user) {
-    done(err, user);
-  });
-});
-
 router.post('/login',
   passport.authenticate('local', {successRedirect:'/', failureRedirect:'/users/login',failureFlash: true}),
   function(req, res) {
     res.redirect('/');
   });
-
-router.get('/logout', function(req, res){
-	req.logout();
-
-	req.flash('success_msg', 'You are logged out');
-
-	res.redirect('/users/login');
-});
-
-router.get('/list', lib.authenticateAdminUrl, function(req, res){
-	res.render('list-user');
-});
-
-/*listing all devices and return them as a json array*/
-router.get('/user-list', lib.authenticateRequest, function(req, res){
-	User.list(function(err, userList){
-		var strDescription, strLevel;
-		var arr = [];
-		for(var i = 0; i < userList.length; i++){
-
-			
-		switch (userList[i].level) {
-			case 0:
-				strLevel = "normal user";
-				break;
-			case 1:
-				strLevel = "power user";
-				break;
-			default: 
-				strLevel = "administrator";
-			}
-
-			strDescription = 'User ' + userList[i].username + 
-							' is a <b>' + strLevel + 
-							 '</b>.  email:' + userList[i].email;
-
-					arr.push({	name:userList[i].name, 
-								description:strDescription,
-								id:userList[i]._id,
-								username:userList[i].username,
-								email: userList[i].email,
-								level:userList[i].level
-							});
-		}
-		res.json(arr);
-	});
-});
-
-router.get('/register/:userID', lib.authenticateAdminUrl, function(req, res){
-	var id = req.params.userID;
-	if (id !== undefined){
-		User.getById(id, function(err, user){
-				if(err || user === null) {
-					req.flash('error',	'Could not find user.' );
-					res.redirect('/result');
-				} else{
-					var obj = {id : id,
-						name: user.name};
-					var str = JSON.stringify(obj);
-					res.render('register-user', {item:str});
-				}
-			});
-	}
-});
-
-router.get('/profile/:userID', lib.authenticateUrl, function(req, res){
-	var id = req.params.userID;
-	if (id !== undefined){
-		User.getById(id, function(err, user){
-				if(err || user === null) {
-					req.flash('error',	'Could not find user.' );
-					res.redirect('/result');
-				} else{
-					var obj = {id : id,
-						name: user.name};
-					var str = JSON.stringify(obj);
-					res.render('profile-user', {item:str});
-				}
-			});
-	}
-});
-
-router.get('/item/:userID', lib.authenticateRequest, function(req, res){
-	var id = req.params.userID;
-	if (id !== undefined){
-		User.getById(id, function(err, user){
-				if(err || user === null) {
-					res.status(404).send('Not found!'); 
-				} else{
-					if (res.locals.user._doc.level > 1){
-						//current user is a poweruser so let's tell the client script that
-						user._doc.currentUserLevel = res.locals.user._doc.level;
-					}
-					res.json(user);
-				}
-			});
-	}
-});
 
 router.delete('/:userID', lib.authenticateAdminRequest, function(req, res){
 	var id = req.params.userID;
@@ -367,5 +334,33 @@ router.delete('/:userID', lib.authenticateAdminRequest, function(req, res){
 	
 });
 
+
+passport.use(new LocalStrategy(function(username, password, done) {
+	User.getUserByUsername(username, function(err, user){
+		if(err) {throw err;}
+		if(!user){
+			return done(null, false, {message: 'Unknown User'});
+		}
+
+		User.comparePassword(password, user.password, function(err, isMatch){
+			if(err) {throw err;}
+			if(isMatch){
+				return done(null, user);
+			} else {
+				return done(null, false, {message: 'Invalid password'});
+			}
+		});
+	});
+}));
+  
+passport.serializeUser(function(user, done) {
+	done(null, user.id);
+});
+  
+passport.deserializeUser(function(id, done) {
+	User.getById(id, function(err, user) {
+		done(err, user);
+	});
+});
 
 module.exports = router;

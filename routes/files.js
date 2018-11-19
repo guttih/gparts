@@ -132,10 +132,10 @@ var storageFile = multer.diskStorage({
 
 
 // Register
-router.get('/register', lib.authenticateAdminRequest, function(req, res){
+router.get('/register', lib.authenticateRequest, function(req, res){
 	res.render('register-file');
 });
-router.get('/register/image', lib.authenticateAdminRequest, function(req, res){
+router.get('/register/image', lib.authenticateRequest, function(req, res){
 	res.render('register-image');
 });
 
@@ -523,9 +523,6 @@ router.post('/register/:ID', lib.authenticateAdminRequest, function(req, res){
 			
 	}
 });
-
-
-
 
 router.delete('/:ID', lib.authenticateAdminRequest, function(req, res){
 	var id = req.params.ID;

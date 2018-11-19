@@ -656,7 +656,6 @@ function openUrlInNewTab(url) {
  */
 function bytesToUnitString(number, decimalPoints, unit) {
 	var power = 2; //for 'MB'
-	var powerMax = 8;
 	var decimals = 2 //two numbers right of the dot;
 	var usingUnit = 'MB';
 	var automatic = false;

@@ -836,7 +836,6 @@ module.exports.createFolderIfNotExists = function createFolder(folderPath, callb
  */
 module.exports.bytesToUnitString = function bytesToUnitString(number, decimalPoints, unit) {
 	var power = 2; //for 'MB'
-	var powerMax = 8;
 	var decimals = 2 //two numbers right of the dot;
 	var usingUnit = 'MB';
 	var automatic = false;
