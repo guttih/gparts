@@ -671,19 +671,7 @@ function bytesToUnitString(number, decimalPoints, unit) {
 	
 	if (automatic === true) {
 		//automatically selecting unit;
-		var testPower = 0;
-		var testNumber;
-		
-		testNumber = number / Math.pow(1024, powerMax);
-		if (testNumber > 1) {
-			testPower = powerMax;
-		} else {
-			testNumber = number / Math.pow(1024, testPower);
-			while( testNumber > 1000 && testPower < (powerMax +1 ) ) {
-				testNumber = number / Math.pow(1024, ++testPower);
-			} 
-		}
-		power = testPower;
+		var power = Math.floor(Math.log(number)/Math.log(1024));
 
 		switch (power) {
 			case 0: usingUnit = 'bytes'; break;
