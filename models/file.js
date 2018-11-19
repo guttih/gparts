@@ -46,6 +46,7 @@ module.exports.delete = function (id, callback){
 		-If ownerId is NOT the only owner of the file,  The file is NOT deleted and ownerId is removed from owners and 403 error returned
 */
 module.exports.deleteIfOwner = function (id, ownerId, deleteIfNoOwner, callback) {
+	// todo: simplify by using alike queries used by listByOwnerId, listByOwnerIdFindOnlyOne, deleteByOwnerIdFindOnlyOne
 	File.findById(id, function(err, item) {
 		if (!err && item !== null ) {
 			var newArray = (item.owners === undefined || item.owners === null)? []: item.owners.slice();
