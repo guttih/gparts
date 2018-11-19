@@ -1,6 +1,7 @@
 "use strict";
 var mongoose = require('mongoose');
 var File = require('./file');
+var Type = require('./type');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 /*how to load an image example: https://gist.github.com/aheckmann/2408370*/
@@ -114,25 +115,52 @@ module.exports.list = function (callback){
 	Part.find(query, callback);
 };
 
-module.exports.PartToSendObject = function (item, callback) {
+module.exports.query = function (query, callback){
+	Part.find(query, callback);
+};
 
-		var ret = {
-			id			 : item.id,
-			name         : item.name,
-			description  : item.description,
-			category     : item.category,	
-			urls         : item.urls,
-			files		 : [],
-			stockCount   : item.stockCount,
-			firstAcquired: item.firstAcquired,
-			lastModified : item.lastModified,
-			type         :(item.type        !== undefined && item.type        !== null)? item.type.toString()        : null,
-			location     :(item.location    !== undefined && item.location    !== null)? item.location.toString()    : null,
-			manufacturer :(item.manufacturer!== undefined && item.manufacturer!== null)? item.manufacturer.toString(): null,
-			supplier     :(item.supplier    !== undefined && item.supplier    !== null)? item.supplier.toString()    : null,
-			image		 :(item.image       !== undefined && item.image       !== null)? item.image.toString()       : null
+module.exports.queryType = function (query, callback){
+	Type.find(query, callback);
+};
 
-		};
+module.exports.listByType = function (typeId, callback){
+	var query = {type:typeId};
+	Part.find(query, callback);
+};
+
+module.exports.toJsonList = function (item) {
+	var ret = {
+		id			 : item.id,
+		name         : item.name,
+		description  : item.description,
+		image		 :(item.image       !== undefined && item.image       !== null)? item.image.toString()       : null
+	};
+	return ret;
+}
+
+module.exports.toJson = function (item) {
+	var ret = {
+		id			 : item.id,
+		name         : item.name,
+		description  : item.description,
+		category     : item.category,	
+		urls         : item.urls,
+		files		 : [],
+		stockCount   : item.stockCount,
+		firstAcquired: item.firstAcquired,
+		lastModified : item.lastModified,
+		type         :(item.type        !== undefined && item.type        !== null)? item.type.toString()        : null,
+		location     :(item.location    !== undefined && item.location    !== null)? item.location.toString()    : null,
+		manufacturer :(item.manufacturer!== undefined && item.manufacturer!== null)? item.manufacturer.toString(): null,
+		supplier     :(item.supplier    !== undefined && item.supplier    !== null)? item.supplier.toString()    : null,
+		image		 :(item.image       !== undefined && item.image       !== null)? item.image.toString()       : null
+
+	};
+	return ret;
+}
+module.exports.toJsonCallback = function (item, callback) {
+
+		var ret = module.exports.toJson(item);
 		File.listByOwnerId(item.id, function(err, fileList) {
 			if (err) { callback(err);return;}
 			for(var index in fileList) {
@@ -163,11 +191,16 @@ module.exports.PartToSendObject = function (item, callback) {
 		});
 };
 
+module.exports.TypeToJson = function (item) {
+
+	return Type.toJson(item);
+};
+
 
 module.exports.getSendObject = function (partId, callback) {
 	Part.getById(partId,function(err, item){
 		if (err) { callback(err);	return; }
-		Part.PartToSendObject(item, callback);
+		Part.toJsonCallback(item, callback);
 	});
 };
 

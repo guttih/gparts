@@ -1,3 +1,4 @@
+var listBy = null;
 
 var setListValues = function setListValues(list){
 	var id, name, description;
@@ -13,7 +14,17 @@ var setListValues = function setListValues(list){
 
 $( document ).ready(function() {
 	
-	
-	getList(setListValues, '/parts/part-list');
+	var $listBy = $('.list-by-header');
+	if ($listBy.length > 0) {
+		console.log($listBy.attr("data-id"));
+		var listBy = JSON.parse($listBy.attr("data-obj"));
+		console.log(listBy);
+	}
+
+	if (listBy !== undefined && listBy !== null && listBy.search !== undefined && listBy.id !== undefined) {
+		getList(setListValues, '/parts/part-list/'+listBy.search+'/'+listBy.id);
+	} else {
+		getList(setListValues, '/parts/part-list');
+	}
 	
 });

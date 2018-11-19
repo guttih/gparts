@@ -7,6 +7,8 @@
    * how to search for and select a already stored image in the database
    * how to search for and select a already stored file in the database
 
+### List
+ - Add List parts by button to /types/list page, button url should be "/parts/list/type/5bf1b6ad0fe7480f105c124c"
 
 ### New button missing when 
  - List Parts

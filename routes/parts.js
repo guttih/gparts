@@ -28,7 +28,7 @@ router.get('/register/:ID', lib.authenticateRequest, function(req, res){
 					res.redirect('/result');
 				} else{
 
-					Part.PartToSendObject(part, function(err, obj){
+					Part.toJsonCallback(part, function(err, obj){
 						if (err) {
 							req.flash('error',	'Could not find part.' );
 						} else {
@@ -59,11 +59,116 @@ router.get('/item/:ID', lib.authenticateRequest, function(req, res){
 	}
 });
 
+
 //returns a part list page
 router.get('/list', lib.authenticateUrl, function(req, res){
 	res.render('list-part');
 });
 
+function reportListByError(req, res, collection) {
+
+		req.flash('error',	collection + ' Id missing' );
+		res.redirect('/parts/list');
+}
+
+router.get('/list/type/:ID', lib.authenticateUrl, function(req, res){
+	var id = req.params.ID;
+	
+	if (id === undefined || typeof id !== 'string' || id.length < 24 ){
+		return reportListByError(req, res, 'type');
+	} 
+
+	Part.queryType({_id:id}, function(err, result){
+		if (err || result === null || !Array.isArray(result) || result.length < 1){
+			console.log(err);
+			return;
+		}
+		var listBy = Part.TypeToJson(result[0]);
+		listBy.search = 'type';
+		res.render('list-part', {	listById   :listBy.id, 
+									listByName :listBy.name, 
+									listBySearch:listBy.search,
+								    listByObj:JSON.stringify(listBy)});
+	});
+
+	
+});
+
+router.get('/list/location/:ID', lib.authenticateUrl, function(req, res){
+	res.render('list-part');
+});
+
+
+router.get('/list/supplier/:ID', lib.authenticateUrl, function(req, res){
+	res.render('list-part');
+});
+
+router.get('/list/manufacturer/:ID', lib.authenticateUrl, function(req, res){
+	res.render('list-part');
+});
+
+router.get('/list/type/:ID', lib.authenticateUrl, function(req, res){
+	res.render('list-part');
+});
+
+
+
+router.get('/part-list/location/:ID', lib.authenticateRequest, function(req, res){
+	Part.list(function(err, list){
+		
+		var arr = [];
+		var isOwner;
+		var item; 
+		for(var i = 0; i < list.length; i++){
+				item = list[i];
+
+				arr.push({	id         :item._id,
+							name       :item.name, 
+							description:item.description,
+							url        :item.url
+						});
+		}
+		res.json(arr);
+	});
+});
+
+router.get('/part-list/type/:ID', lib.authenticateRequest, function(req, res){
+
+	var id = req.params.ID;
+	if (id === undefined || id.length < 24) {
+		return res.status(400).send('Id "' + id + '" invalid.');
+	}
+	Part.listByType(id,function(err, list){
+		
+		var arr = [];
+		var isOwner;
+		var item; 
+		for(var i = 0; i < list.length; i++){
+				item = list[i];
+				//todo: to big
+				arr.push(Part.toJsonList(item));
+		}
+		res.json(arr);
+	});
+});
+router.get('/part-list/location/:ID', lib.authenticateRequest, function(req, res){
+	Part.list(function(err, list){
+		
+		var arr = [];
+		var isOwner;
+		var item; 
+		for(var i = 0; i < list.length; i++){
+				item = list[i];
+
+				arr.push({	id         :item._id,
+							name       :item.name, 
+							description:item.description,
+							url        :item.url
+						});
+		}
+		res.json(arr);
+	});
+});
 /*listing all parts and return them as a json array*/
 router.get('/part-list', lib.authenticateRequest, function(req, res){
 	Part.list(function(err, list){

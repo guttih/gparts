@@ -304,7 +304,7 @@ function showModalErrorText(title, errorMessage){
 
 function showModalErrorMsg(title, response) {
 var text = {};
-if (typeof response === 'object' && response !== null  && response !== null )
+if (typeof response === 'object' && response !== null )
 try {
 	obj = JSON.parse(response.responseText);
 	if (obj.msg !== undefined && obj.msg.length > 0) {
@@ -720,5 +720,4 @@ $(function () {
 	$('#myModal > div > div > div.modal-footer > button.btn.btn-default').click(function(){
 		showModalInputHelperHideInputs();
 	});
-
 });
