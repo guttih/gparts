@@ -6,7 +6,7 @@ var setListValues = function setListValues(list){
 		name 		= list[i].name;
 		description = list[i].description;
 		
-		var str =  createListItem(id, name, description, 'suppliers', false, false, true, true);
+		var str =  createListItem(id, name, description, 'suppliers', false, true, true, true);
 		$("#list").append(str);
 	}
 };

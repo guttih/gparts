@@ -2,6 +2,9 @@
 var mongoose = require('mongoose');
 var File = require('./file');
 var Type = require('./type');
+var Location = require('./location');
+var Manufacturer = require('./manufacturer');
+var Supplier = require('./supplier');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 /*how to load an image example: https://gist.github.com/aheckmann/2408370*/
@@ -22,6 +25,16 @@ var PartSchema = mongoose.Schema({
 }); 
 
 var Part = module.exports = mongoose.model('Part', PartSchema);
+
+function errorToUser(msg, statusCode){
+	var obj = {
+		messageToUser : msg
+	};
+	if (statusCode !== undefined){
+		obj["statusCode"] = statusCode;
+	}
+	return obj;
+}
 
 module.exports.delete = function (id, callback){
 	Part.findById(id, function(err, part){
@@ -119,15 +132,6 @@ module.exports.query = function (query, callback){
 	Part.find(query, callback);
 };
 
-module.exports.queryType = function (query, callback){
-	Type.find(query, callback);
-};
-
-module.exports.listByType = function (typeId, callback){
-	var query = {type:typeId};
-	Part.find(query, callback);
-};
-
 module.exports.toJsonList = function (item) {
 	var ret = {
 		id			 : item.id,
@@ -191,11 +195,6 @@ module.exports.toJsonCallback = function (item, callback) {
 		});
 };
 
-module.exports.TypeToJson = function (item) {
-
-	return Type.toJson(item);
-};
-
 
 module.exports.getSendObject = function (partId, callback) {
 	Part.getById(partId,function(err, item){
@@ -204,12 +203,59 @@ module.exports.getSendObject = function (partId, callback) {
 	});
 };
 
-function errorToUser(msg, statusCode){
-	var obj = {
-		messageToUser : msg
-	};
-	if (statusCode !== undefined){
-		obj["statusCode"] = statusCode;
-	}
-	return obj;
-}
+
+// Type
+module.exports.queryType = function (query, callback){
+	Type.find(query, callback);
+};
+
+module.exports.TypeToJson = function (item) {
+
+	return Type.toJson(item);
+};
+
+module.exports.listByType = function (typeId, callback){
+	Part.find({type:typeId}, callback);
+};
+
+
+//Location
+module.exports.queryLocation = function (query, callback){
+	Location.find(query, callback);
+};
+module.exports.listByLocation = function (locationId, callback){
+	Part.find({location:locationId}, callback);
+};
+
+module.exports.LocationToJson = function (item) {
+
+	return Location.toJson(item);
+};
+
+//Manufacturer
+module.exports.queryManufacturer = function (query, callback){
+	Manufacturer.find(query, callback);
+};
+module.exports.listByManufacturer = function (manufacturerId, callback){
+	Part.find({manufacturer:manufacturerId}, callback);
+};
+
+module.exports.ManufacturerToJson = function (item) {
+
+	return Manufacturer.toJson(item);
+};
+
+//Supplier
+module.exports.querySupplier = function (query, callback){
+	Supplier.find(query, callback);
+};
+module.exports.listBySupplier = function (supplierId, callback){
+	Part.find({supplier:supplierId}, callback);
+};
+
+module.exports.SupplierToJson = function (item) {
+
+	return Supplier.toJson(item);
+};
+
+

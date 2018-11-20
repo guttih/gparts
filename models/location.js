@@ -10,6 +10,15 @@ var LocationSchema = mongoose.Schema({
 
 var Location = module.exports = mongoose.model('Location', LocationSchema);
 
+module.exports.toJson = function (item) {
+
+	var ret = {
+		id			 : item.id,
+		name         : item.name,
+		description  : item.description,
+	};
+	return ret;
+};
 
 module.exports.delete = function (id, callback){
 	

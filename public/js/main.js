@@ -179,7 +179,7 @@ function getWhenServerStarted(){
 
 
 /*routeText is the element type to be deleted 'cards', 'controls' or 'devices'*/
-function createListItem(id, name, description, routeText, bAddRunButton, bAddAccessButton, bAddEditButton, bAddDeleteButton, imageSrc){
+function createListItem(id, name, description, routeText, bAddRunButton, bAddListByButton, bAddEditButton, bAddDeleteButton, imageSrc){
 	var url = SERVER+'/'+ routeText +'/register/'+ id;
 	
 	if (imageSrc!== undefined) {
@@ -194,8 +194,10 @@ function createListItem(id, name, description, routeText, bAddRunButton, bAddAcc
 	if (bAddRunButton){
 		strElm +='<button onclick="runItem(\''+id+'\');" class="btn btn-xs btn-success"> <span class="glyphicon glyphicon-play"></span>&nbsp;Run </button>';
 	}
-	if (bAddAccessButton){
-		strElm += '<a href="/'+ routeText +'/useraccess/'+ id +'" class="btn btn-xs btn-warning"> <span class="glyphicon glyphicon-user"></span>&nbsp;Access </a>';
+	if (bAddListByButton){
+		var singular = routeText.substr(0, routeText.length-1);
+		var listPartByUrl = SERVER+ '/parts/list/'+ singular +'/'+ id;
+		strElm += '<a href="'+ listPartByUrl +'" class="btn btn-xs btn-info"> <span class="glyphicon glyphicon-list-alt"></span>&nbsp;List Parts by</a>';
 	}
 	if (bAddEditButton){
 		strElm += '<a href="'+ url +'" class="btn btn-xs btn-warning"> <span class="glyphicon glyphicon-edit"></span>&nbsp;Edit </a>';

@@ -11,6 +11,16 @@ var ManufacturerSchema = mongoose.Schema({
 
 var Manufacturer = module.exports = mongoose.model('Manufacturer', ManufacturerSchema);
 
+module.exports.toJson = function (item) {
+
+	var ret = {
+		id			 : item.id,
+		name         : item.name,
+		description  : item.description,
+		url			 : item.url
+	};
+	return ret;
+};
 
 module.exports.delete = function (id, callback){
 	

@@ -11,6 +11,16 @@ var SupplierSchema = mongoose.Schema({
 
 var Supplier = module.exports = mongoose.model('Supplier', SupplierSchema);
 
+module.exports.toJson = function (item) {
+
+	var ret = {
+		id			 : item.id,
+		name         : item.name,
+		description  : item.description,
+		url			 : item.url
+	};
+	return ret;
+};
 
 module.exports.delete = function (id, callback){
 	
