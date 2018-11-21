@@ -556,6 +556,14 @@ function changeFileUploadSize(){
 	}, true, 0 );
 }
 
+function changeListDescriptionMaxLength(){
+	var $elm = $('#change-list-description-max-length');
+	var oldSize = $elm.attr('data-maxlength');
+	showModalInput("Changing part description max length", "Please provide max length of a part description in a list.",oldSize,"Change", function (value) { 
+		changeServerSettingsListDescriptionMaxLength(value);
+	}, true, 0 );
+}
+
 function changeServerSettingsChangeFileUploadSize(newValue){
 	
 	var $elm = $('#change-file-upload-size');
@@ -575,6 +583,27 @@ function changeServerSettingsChangeFileUploadSize(newValue){
 	
 	//window.location.href = asdf
 }
+
+function changeServerSettingsListDescriptionMaxLength(newValue){
+	
+	var $elm = $('#change-list-description-max-length');
+	var sendObj = {};
+	sendObj.listDescriptionMaxLength = newValue;
+	var posting = $.post(SERVER+'/settings/list-description-max-length', sendObj);
+	posting
+		.done(function(data){
+			$elm.attr('data-maxlength', newValue);
+			$elm.find('a').text('Change file upload size from '+newValue);
+		})
+		.fail(function(data){
+			console.log("failed posting");
+			console.log(data);
+			showModalErrorMsg('Error updating settings for user registration', data);
+		});
+	
+	//window.location.href = asdf
+}
+
 
 function getUserUserList(callback){
 	var url = '/users/user-list';

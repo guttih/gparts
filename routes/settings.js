@@ -55,4 +55,30 @@ router.post('/file-size-limit', lib.authenticateAdminRequest, function(req, res)
 	res.status(200).send('Settings changed.');
 });
 
+router.post('/list-description-max-length', lib.authenticateAdminRequest, function(req, res) {
+	req.checkBody('listDescriptionMaxLength', 'listDescriptionMaxLength is missing').notEmpty();
+
+	var errors = req.validationErrors();
+
+	if(errors){
+			return res.status(400).send({text:(errors.length > 0 )? errors[0].msg : "Unable to change file limit"}); 
+	}
+
+	var listDescriptionMaxLength;
+
+	try {
+		listDescriptionMaxLength = JSON.parse(req.body.listDescriptionMaxLength);
+	} catch(e) {
+		return res.status(400).send({text:"Unable to extract value from object."});
+	}
+
+
+	//read the config file into a variable.
+	var config = lib.getConfig();
+	console.log("Ok, let's change listDescriptionMaxLength to " + listDescriptionMaxLength);
+	config.listDescriptionMaxLength = listDescriptionMaxLength;
+	lib.setConfig(config);
+	res.status(200).send('Settings changed.');
+});
+
 module.exports = router;

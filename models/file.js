@@ -24,8 +24,6 @@ var File = module.exports = mongoose.model('File', FileSchema);
  */
 
  
-
-
 module.exports.delete = function (id, callback){
 	
 	File.findByIdAndRemove(id, callback);

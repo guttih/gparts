@@ -1,13 +1,12 @@
-var express = require('express');
-var router = express.Router();
-var passport = require('passport');
+var express       = require('express');
+var router        = express.Router();
+var passport      = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+var request       = require('request');
+var lib           = require('../utils/glib');
 
-var Part = require('../models/part');
-
-
-var request = require('request');
-var lib = require('../utils/glib');
+var Part          = require('../models/part');
+var modelUtils    = require('../models/modelUtility');
 
 
 var config = lib.getConfig();
@@ -74,7 +73,7 @@ function reportListByError(req, res, collection) {
 router.get('/list/type/:ID', lib.authenticateUrl, function(req, res){
 	var id = req.params.ID;
 	var collection = 'type';
-	
+	var descriptionMaxLength = lib.getConfig().listDescriptionMaxLength;
 	if (id === undefined || typeof id !== 'string' || id.length < 24 ){
 		return reportListByError(req, res, collection);
 	} 
@@ -84,7 +83,7 @@ router.get('/list/type/:ID', lib.authenticateUrl, function(req, res){
 			console.log(err);
 			return;
 		}
-		var listBy = Part.TypeToJson(result[0]);
+		var listBy = Part.TypeToJson(result[0], descriptionMaxLength);
 		listBy.search = collection;
 		res.render('list-part', {	listById   :listBy.id, 
 									listByName :listBy.name, 
@@ -165,10 +164,11 @@ router.get('/part-list/type/:ID', lib.authenticateRequest, function(req, res){
 	if (id === undefined || id.length < 24) {
 		return res.status(400).send('Id "' + id + '" invalid.');
 	}
+	var maxLen = lib.getConfig().listDescriptionMaxLength;
 	Part.listByType(id,function(err, list){
 		var arr = [];
 		for(var i = 0; i < list.length; i++){
-				arr.push(Part.toJsonList(list[i]));
+				arr.push(Part.toJsonList(list[i], maxLen));
 		}
 		res.json(arr);
 	});
@@ -216,16 +216,17 @@ router.get('/part-list/supplier/:ID', lib.authenticateRequest, function(req, res
 /*listing all parts and return them as a json array*/
 router.get('/part-list', lib.authenticateRequest, function(req, res){
 	Part.list(function(err, list){
-		
+		var maxLen = lib.getConfig().listDescriptionMaxLength;
 		var arr = [];
 		var isOwner;
 		var item; 
+		var des;
 		for(var i = 0; i < list.length; i++){
 				item = list[i];
-
+				des = modelUtils.maxStringLength(item.description, maxLen);
 				arr.push({	id         :item._id,
 							name       :item.name, 
-							description:item.description,
+							description:des,
 							url        :item.url
 						});
 		}

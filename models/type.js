@@ -16,7 +16,7 @@ module.exports.toJson = function (item) {
 	var ret = {
 		id			 : item.id,
 		name         : item.name,
-		description  : item.description,
+		description	 : item.description
 	};
 	return ret;
 };

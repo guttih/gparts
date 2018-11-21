@@ -266,7 +266,9 @@ module.exports.getConfig = function getConfig(){
 	}
 	if (makeNewFile === true){
 		conf = { 	port:6100,
-					allowUserRegistration: true 
+					allowUserRegistration: true,
+					fileSizeLimit:3915728,
+					listDescriptionMaxLength:1024
 				};
 		module.exports.setConfig(conf);
 

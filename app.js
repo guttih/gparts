@@ -130,6 +130,8 @@ app.use(function (req, res, next) {
 	}
 	res.locals.fileSizeLimit = lib.getConfig().fileSizeLimit;
 	res.locals.fileSizeLimitText = lib.bytesToUnitString(res.locals.fileSizeLimit,2);
+	res.locals.listDescriptionMaxLength = lib.getConfig().listDescriptionMaxLength;
+	
 
 	next();
 });

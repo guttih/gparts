@@ -7,7 +7,8 @@ var Manufacturer = require('./manufacturer');
 var Supplier = require('./supplier');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
-/*how to load an image example: https://gist.github.com/aheckmann/2408370*/
+var Utils = require('./modelUtility');
+
 var PartSchema = mongoose.Schema({
 	name         : { type: String, index:true },
 	description  : { type: String },	
@@ -132,11 +133,11 @@ module.exports.query = function (query, callback){
 	Part.find(query, callback);
 };
 
-module.exports.toJsonList = function (item) {
+module.exports.toJsonList = function (item, descriptionMaxLength) {
 	var ret = {
 		id			 : item.id,
 		name         : item.name,
-		description  : item.description,
+		description  : Utils.maxStringLength(item.description, descriptionMaxLength),
 		image		 :(item.image       !== undefined && item.image       !== null)? item.image.toString()       : null
 	};
 	return ret;
@@ -209,9 +210,9 @@ module.exports.queryType = function (query, callback){
 	Type.find(query, callback);
 };
 
-module.exports.TypeToJson = function (item) {
+module.exports.TypeToJson = function (item, descriptionMaxLength) {
 
-	return Type.toJson(item);
+	return Type.toJson(item, descriptionMaxLength);
 };
 
 module.exports.listByType = function (typeId, callback){
