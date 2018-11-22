@@ -182,7 +182,7 @@ function getWhenServerStarted(){
 function createListItem(id, name, description, routeText, bAddRunButton, bAddListByButton, bAddEditButton, bAddDeleteButton, imageSrc){
 	var url = SERVER+'/'+ routeText +'/register/'+ id;
 	
-	if (imageSrc!== undefined) {
+	if (imageSrc!== undefined && routeText ==='files' ) {
 		url = SERVER+'/'+ routeText +'/register/image/'+ id;
 	}
 	var strElm = 
