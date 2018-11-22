@@ -1,5 +1,5 @@
 module.exports.maxStringLength = function maxStringLength(str, maxLength, appender) {
-	if (maxLength === undefined || str.length < maxLength) {
+	if (maxLength === undefined || maxLength === null || str.length < maxLength) {
 		return str;
 	}
 

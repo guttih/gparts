@@ -8,6 +8,8 @@ var lib           = require('../utils/glib');
 var Part          = require('../models/part');
 var modelUtils    = require('../models/modelUtility');
 
+//todo: færa allt File.functions í Part function
+var File          = require('../models/file');
 
 var config = lib.getConfig();
 
@@ -157,6 +159,13 @@ router.get('/list/manufacturer/:ID', lib.authenticateUrl, function(req, res){
 	});
 });
 
+/*listing all parts and return them as a json array*/
+router.get('/part-list', lib.authenticateRequest, function(req, res){
+
+	Part.list(null, lib.getConfig().listDescriptionMaxLength, function(err, list) {
+			res.json(list);
+	});
+});
 
 router.get('/part-list/type/:ID', lib.authenticateRequest, function(req, res){
 
@@ -164,13 +173,8 @@ router.get('/part-list/type/:ID', lib.authenticateRequest, function(req, res){
 	if (id === undefined || id.length < 24) {
 		return res.status(400).send('Id "' + id + '" invalid.');
 	}
-	var maxLen = lib.getConfig().listDescriptionMaxLength;
-	Part.listByType(id,function(err, list){
-		var arr = [];
-		for(var i = 0; i < list.length; i++){
-				arr.push(Part.toJsonList(list[i], maxLen));
-		}
-		res.json(arr);
+	Part.listByType(id, lib.getConfig().listDescriptionMaxLength, function(err, list) {
+		res.json(list);
 	});
 });
 router.get('/part-list/location/:ID', lib.authenticateRequest, function(req, res){
@@ -178,61 +182,34 @@ router.get('/part-list/location/:ID', lib.authenticateRequest, function(req, res
 	if (id === undefined || id.length < 24) {
 		return res.status(400).send('Id "' + id + '" invalid.');
 	}
-	Part.listByLocation(id,function(err, list){
-		var arr = [];
-		for(var i = 0; i < list.length; i++){
-				arr.push(Part.toJsonList(list[i]));
-		}
-		res.json(arr);
+	Part.listByLocation(id, lib.getConfig().listDescriptionMaxLength, function(err, list) {
+		res.json(list);
 	});
 });
 router.get('/part-list/manufacturer/:ID', lib.authenticateRequest, function(req, res){
 	var id = req.params.ID;
 	if (id === undefined || id.length < 24) {
 		return res.status(400).send('Id "' + id + '" invalid.');
-	}
-	Part.listByManufacturer(id,function(err, list){
-		var arr = [];
-		for(var i = 0; i < list.length; i++){
-				arr.push(Part.toJsonList(list[i]));
-		}
-		res.json(arr);
+	}	
+
+	Part.listByManufacturer(id, lib.getConfig().listDescriptionMaxLength, function(err, list) {
+		res.json(list);
 	});
+
+
+
 });
 router.get('/part-list/supplier/:ID', lib.authenticateRequest, function(req, res){
 	var id = req.params.ID;
 	if (id === undefined || id.length < 24) {
 		return res.status(400).send('Id "' + id + '" invalid.');
 	}
-	Part.listBySupplier(id,function(err, list){
-		var arr = [];
-		for(var i = 0; i < list.length; i++){
-				arr.push(Part.toJsonList(list[i]));
-		}
-		res.json(arr);
+	Part.listBySupplier(id, lib.getConfig().listDescriptionMaxLength, function(err, list) {
+		res.json(list);
 	});
 });
 
-/*listing all parts and return them as a json array*/
-router.get('/part-list', lib.authenticateRequest, function(req, res){
-	Part.list(function(err, list){
-		var maxLen = lib.getConfig().listDescriptionMaxLength;
-		var arr = [];
-		var isOwner;
-		var item; 
-		var des;
-		for(var i = 0; i < list.length; i++){
-				item = list[i];
-				des = modelUtils.maxStringLength(item.description, maxLen);
-				arr.push({	id         :item._id,
-							name       :item.name, 
-							description:des,
-							url        :item.url
-						});
-		}
-		res.json(arr);
-	});
-});
+
 
 // Register Part
 router.post('/register', lib.authenticateAdminRequest, function(req, res){

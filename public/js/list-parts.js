@@ -5,9 +5,9 @@ var setListValues = function setListValues(list){
 	for(var i = 0; i < list.length; i++){
 		id 		= list[i].id;
 		name 		= list[i].name;
-		description = list[i].description;
-		
-		var str =  createListItem(id, name, description, 'parts', false, false, true, true);
+		description = list[i].description,
+		src = 		  list[i].src;
+		var str =  createListItem(id, name, description, 'parts', false, false, true, true, src);
 		$("#list").append(str);
 	}
 };

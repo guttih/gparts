@@ -27,6 +27,12 @@ var PartSchema = mongoose.Schema({
 
 var Part = module.exports = mongoose.model('Part', PartSchema);
 
+/**
+ * @callback requestCallbackWithError
+ * @param {object} if success null if not an err object
+ * @param {object} usually a object but can be a string too
+ */
+
 function errorToUser(msg, statusCode){
 	var obj = {
 		messageToUser : msg
@@ -123,11 +129,51 @@ module.exports.getById = function(id, callback){
 	Part.findById(id, callback);
 };
 
-//get all records
-module.exports.list = function (callback){
-	var query = {};
-	Part.find(query, callback);
+
+/**
+ * List parts.
+ *
+ * @param {Object} query Query object to search for.  Pass null to list all parts.
+ * @param {Number} maxDescriptionLength How long can Part.descriptions. pass null for no length restriction
+ * @param {requestCallbackWithError} callback callback function where fist parameter is err and second is result
+ */
+module.exports.list = function list(query, maxDescriptionLength, callback) {
+	var queryObj = {};
+
+	if (query !== null) {
+		queryObj = query;
+	}
+	Part.find(queryObj, function(err, list) {
+		var arr = [];
+		var i,part;
+		var imageIds = [];
+		for(i = 0; i < list.length; i++) {
+				part = Part.toJsonList(list[i], maxDescriptionLength);
+				
+				arr.push(part);
+				if (part.image !== null) {
+					imageIds.push(part.image);
+				}
+		}
+		if (imageIds.length > 0 ) {
+			File.find({'_id':	{$in: imageIds}}, function (err, fileList){
+				for(var fIndex=0; fIndex < fileList.length; fIndex++) {
+				var fileItem = fileList[fIndex];
+				i = arr.map(function(e) {
+					return e.image;
+				}).indexOf(fileItem.id);
+					if (i > -1) {
+						arr[i].src = File.getFullFileNameOnDisk(fileItem).replace('./public', '');
+					}
+				}
+				callback(err, arr);
+			});
+		} else {
+			callback(err, arr);
+		}
+	});
 };
+
 
 module.exports.query = function (query, callback){
 	Part.find(query, callback);
@@ -210,22 +256,24 @@ module.exports.queryType = function (query, callback){
 	Type.find(query, callback);
 };
 
+module.exports.listByType = function (typeId, maxDescriptionLength, callback){
+	Part.list({type:typeId}, maxDescriptionLength, callback);
+};
+
 module.exports.TypeToJson = function (item, descriptionMaxLength) {
 
 	return Type.toJson(item, descriptionMaxLength);
 };
 
-module.exports.listByType = function (typeId, callback){
-	Part.find({type:typeId}, callback);
-};
+
 
 
 //Location
 module.exports.queryLocation = function (query, callback){
 	Location.find(query, callback);
 };
-module.exports.listByLocation = function (locationId, callback){
-	Part.find({location:locationId}, callback);
+module.exports.listByLocation = function (locationId, maxDescriptionLength, callback){
+	Part.list({location:locationId}, maxDescriptionLength, callback);
 };
 
 module.exports.LocationToJson = function (item) {
@@ -237,8 +285,8 @@ module.exports.LocationToJson = function (item) {
 module.exports.queryManufacturer = function (query, callback){
 	Manufacturer.find(query, callback);
 };
-module.exports.listByManufacturer = function (manufacturerId, callback){
-	Part.find({manufacturer:manufacturerId}, callback);
+module.exports.listByManufacturer = function (manufacturerId, maxDescriptionLength, callback){
+	Part.list({manufacturer:manufacturerId}, maxDescriptionLength, callback);
 };
 
 module.exports.ManufacturerToJson = function (item) {
@@ -250,8 +298,8 @@ module.exports.ManufacturerToJson = function (item) {
 module.exports.querySupplier = function (query, callback){
 	Supplier.find(query, callback);
 };
-module.exports.listBySupplier = function (supplierId, callback){
-	Part.find({supplier:supplierId}, callback);
+module.exports.listBySupplier = function (supplierId, maxDescriptionLength, callback){
+	Part.list({supplier:supplierId}, maxDescriptionLength, callback);
 };
 
 module.exports.SupplierToJson = function (item) {
