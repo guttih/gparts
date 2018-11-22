@@ -9,6 +9,7 @@ var setListValues = function setListValues(list){
 		var str =  createListItem(id, name, description, 'locations', false, true, true, true);
 		$("#list").append(str);
 	}
+	updateListCount(list.length);
 };
 
 $( document ).ready(function() {

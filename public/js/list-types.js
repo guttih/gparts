@@ -7,8 +7,9 @@ var setListValues = function setListValues(list){
 		description = list[i].description;
 		
 		var str =  createListItem(id, name, description, 'types', false, true, true, true);
-		$("#list").append(str);
+		$("#list").append(str);	
 	}
+	updateListCount(list.length);
 };
 
 $( document ).ready(function() {

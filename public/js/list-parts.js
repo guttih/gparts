@@ -8,8 +8,9 @@ var setListValues = function setListValues(list){
 		description = list[i].description,
 		src = 		  list[i].src;
 		var str =  createListItem(id, name, description, 'parts', false, false, true, true, src);
-		$("#list").append(str);
+		$("#list").append(str);		
 	}
+	updateListCount(list.length);
 };
 
 $( document ).ready(function() {

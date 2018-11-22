@@ -10,6 +10,7 @@ var setListValues = function setListValues(list){
 		var str =  createListItem(id, name, description, 'files', false, false, true, true, src);
 		$("#list").append(str);
 	}
+	updateListCount(list.length);
 };
 
 $( document ).ready(function() {

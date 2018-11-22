@@ -37,6 +37,7 @@ var setUserlistValues = function setUserlistValues(userList){
 		var str =  createListItem(id, name, description, 'users', false, false, true, true);
 		$("#user-list").append(str);
 	}
+	updateListCount(userList.length);
 };
 
 $(function () {  

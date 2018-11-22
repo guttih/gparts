@@ -257,8 +257,6 @@ function setSelectAccessBackgroundClick(){
 	});
 }
 
-
-
 /*routeText is the element type to be deleted 'cards', 'controls' or 'devices'*/
 function deleteItem(routeText, id, deleteSuccessCallback){
 	var singular;
@@ -279,6 +277,7 @@ function deleteItem(routeText, id, deleteSuccessCallback){
 					} else{
 						console.log(data);
 						$('#listItem'+ id).remove();
+						updateListCount();
 					}
 				},
 				error: function (res){
@@ -740,6 +739,19 @@ function deleteButtonClickRegister(collection){
 			window.location.href = '/'+subPath+'/list';
 		});
 	});	
+}
+
+function updateListCount(newCount) {
+	if (newCount === undefined || newCount === null)
+	{
+		newCount = $('.list-group-item-heading').length;
+		
+	}
+	var e = $('.list-count');
+	var strItem = e.attr('data-name');
+	strItem+= (newCount > 1)? 's' : '';
+	e.find('.text').text(strItem);
+	e.find('.number').text(newCount);
 }
 
 $(function () {  
