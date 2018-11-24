@@ -732,6 +732,21 @@ function bytesToUnitString(number, decimalPoints, unit) {
 	return str;
 }
 
+function compareNames(a,b) {
+	if (a.name < b.name)
+	  return -1;
+	if (a.name > b.name)
+	  return 1;
+	return 0;
+}
+
+function getUrlParameter(name) {
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    var results = regex.exec(location.search);
+    return results === null ? null : decodeURIComponent(results[1].replace(/\+/g, ' '));
+};
+
 function deleteButtonClickRegister(collection){
 	$('#btnDelete').click(function() {
 		var subPath = collection;

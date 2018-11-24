@@ -27,17 +27,23 @@ function runItem(id){
 }*/
 
 
-var setUserlistValues = function setUserlistValues(userList){
+var setUserlistValues = function setUserlistValues(list){
 	var id, name, description;
-	for(var i = 0; i < userList.length; i++){
-		id 		= userList[i].id;
-		name 		= userList[i].name;
-		description = userList[i].description;
+	
+	var listBy = getUrlParameter('listBy');
+	switch (listBy) {
+		case 'name' : list.sort(compareNames); break;
+	}
+
+	for(var i = 0; i < list.length; i++){
+		id 		= list[i].id;
+		name 		= list[i].name;
+		description = list[i].description;
 		
 		var str =  createListItem(id, name, description, 'users', false, false, true, true);
 		$("#user-list").append(str);
 	}
-	updateListCount(userList.length);
+	updateListCount(list.length);
 };
 
 $(function () {  

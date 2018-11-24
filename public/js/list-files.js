@@ -41,6 +41,12 @@ function createListItemFiles(id, name, description, owners, routeText, bAddRunBu
 }
 var setListValues = function setListValues(list){
 	var id, name, description;
+
+	var listBy = getUrlParameter('listBy');
+	switch (listBy) {
+		case 'name' : list.sort(compareNames); break;
+	}
+
 	for(var i = 0; i < list.length; i++){
 		id 		= list[i].id;
 		name 		= list[i].name;
