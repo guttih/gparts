@@ -37,11 +37,12 @@
 		<input type="text"   id="url"     name="url" form="register-form" class="form-control" value="" placeholder="Type the manufacturers ">
 	</div>
   
-
+{{#if admin}}
   <button id="btnSave" type="button" class="btn btn-success pull-right">Save</button>
   {{#if item}}  
   <button id="btnDelete" type="button" class="btn btn-danger pull-right">Delete</button>
   {{/if}}
+{{/if}}
 </form>
 
 

@@ -54,13 +54,13 @@
 	</div>
    
 </form>
-
-  <button id="btnSave" type="button" class="btn btn-success pull-right">Save</button>
-{{#if item}} 
-  <button id="btnView" type="button" class="btn btn-default pull-right">View</button>
-  <button id="btnDelete" type="button" class="btn btn-danger pull-right">Delete</button>
+{{#if admin}}
+    <button id="btnSave" type="button" class="btn btn-success pull-right">Save</button>
+  {{#if item}} 
+    <button id="btnView" type="button" class="btn btn-default pull-right">View</button>
+    <button id="btnDelete" type="button" class="btn btn-danger pull-right">Delete</button>
+  {{/if}}
 {{/if}}
-
 
 
 <script src="/js/register-file.js" type="text/javascript" charset="utf-8"></script>

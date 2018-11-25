@@ -46,7 +46,9 @@
 			<li class="dropdown">
 				<a  data-toggle="dropdown" href="#">Parts </a>
 				<ul class="dropdown-menu">
+				{{#if admin}}
 					<li><a href="/parts/register">Register a new part</a></li>
+				{{/if}}
 					<li><a href="/parts/list">List parts</a></li>
 				</ul>
 			</li>
@@ -65,6 +67,7 @@
 				{{/if}}					
 				</ul>
 			</li>
+		{{#if admin}}
 			<li class="dropdown">
 				<a  data-toggle="dropdown" href="#">Register</a>
 				<ul class="dropdown-menu">
@@ -80,7 +83,7 @@
 				{{/if}}
 				</ul>
 			</li>
-			
+		{{/if}}	
 		{{/if}}
 		{{#if user}}
 			<li role="presentation">
