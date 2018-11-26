@@ -317,7 +317,7 @@ try {
 	if (obj.text !== undefined &&  obj.text.length > 0) {
 		text = obj.text;
 	}
-} catch {
+} catch (e) {
 	text = response.statusText;
 }
 	showModal(title, 

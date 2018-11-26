@@ -18,7 +18,7 @@ function setFormValues(fetchPartImage) {
 
 					case  'urls'          :	 	try {
 													tempValues[key] = JSON.parse(val);
-												} catch {
+												} catch (e) {
 													tempValues[key] = [];
 												}
 												break;
