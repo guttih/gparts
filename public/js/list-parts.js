@@ -3,12 +3,14 @@ var listBy = null;
 //returns null if no params are found
 var setListValues = function setListValues(list){
 	var id, name, description;
-	
 	var listBy = getUrlParameter('listBy');
 	switch (listBy) {
-		case 'name' : list.sort(compareNames); break;
+		case 'name' : list.sort(compareNames);
+					  queryStr="";
+					  btnText = "List by creation order";
+					  break;
 	}
-
+	setListByButtonUrlAndText();
 	
 	for(var i = 0; i < list.length; i++){
 		id 		= list[i].id;
@@ -34,6 +36,5 @@ $( document ).ready(function() {
 		getList(setListValues, '/parts/part-list/'+listBy.search+'/'+listBy.id);
 	} else {
 		getList(setListValues, '/parts/part-list');
-	}
-	
+	}	
 });

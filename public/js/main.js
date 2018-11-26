@@ -459,7 +459,7 @@ function showModalInputTwo(title, message1, message2, defaultText1, defaultText2
 	}
 	$('#modal-input1').attr({type:"text"});
 	$('#modal-input1').val(defaultText1);
-	//$('#modal-input2').val(defaultText2);
+	$('#modal-input2').val(defaultText2);
 	$('#btn-confirm' ).removeClass('btn-danger').addClass('btn-success');
 	
 	$(".modal-value2" ).removeClass('hidden');
@@ -627,16 +627,6 @@ function requestData(subUrl, callback, errorCallback){
 			}
 		});
 }
-/*
-function changeHref(caller, id){
-	console.log(caller);
-	var newValue = caller.value;
-	var $elm = $("#"+id);
-	if ( $elm.length < 1 ) { 
-		return;
-	}
-	$elm.attr({href: newValue});
-}*/
 
 function runItem(id){
 	window.location.assign("run/"+id);
@@ -738,6 +728,54 @@ function compareNames(a,b) {
 	if (a.name > b.name)
 	  return 1;
 	return 0;
+}
+
+//returns null if error
+function getUrlFirstPath(href){
+	if (SERVER === undefined || SERVER.length < 6 ||
+		href    === undefined || href < SERVER.length ){
+		return null;
+	}
+	var url = href.substr(SERVER.length+1);
+	if (url.length < 2) {
+		return null;
+	}
+	var iSlash = url.indexOf('/');
+	if (iSlash < 1) {
+		iSlash = url.indexOf('?');
+	}
+	if (iSlash < 1) {
+		return url;
+	}
+	var ret = url.substr(0, iSlash);
+	return ret;
+}
+
+function setListByButtonUrlAndText() {
+	var listBy = getUrlParameter('listBy');
+	var queryStr = "?listBy=name";
+	var btnText = "Order by name";
+	var desText = "Ordered by creation time";
+
+	 if (listBy === 'name') {
+		var queryStr =""  
+		var btnText ="Order by creation order";
+		desText = "Ordered by name";
+	 }
+
+	var btn = $('.list-by button');
+	var par = $('.list-by p');
+	btn.unbind();
+	btn.text(btnText);
+	par.text(desText);
+
+	
+	btn.bind('click tap',function() {
+		//var page = 'parts';
+		var page = getUrlFirstPath(window.location.href);
+		var url = SERVER+'/'+ page +'/list'+ queryStr;
+		window.location.href = url;
+	});
 }
 
 function getUrlParameter(name) {

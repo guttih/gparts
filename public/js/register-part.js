@@ -37,7 +37,9 @@ function setFormValues(fetchPartImage) {
 		if (item.setFormValuesCount === undefined && item.id !== undefined) {
 			item.setFormValuesCount = 1;
 			var action = document.getElementById('register-form').action;
-			document.getElementById('register-form').action = action+='/'+item.id;
+			if (action.indexOf(item.id) < 0) {
+				document.getElementById('register-form').action = action+='/'+item.id;
+			}
 		} else {
 			item.setFormValuesCount++;
 		}
@@ -60,6 +62,7 @@ function setFormValues(fetchPartImage) {
 
 function setSelectOptionsFromArray(id, list){
 
+	list.sort(compareNames);
 	var select = 	$("#"+id);
 	var selected = select.find('option:selected');
 	var required = select.attr('required') === 'required';

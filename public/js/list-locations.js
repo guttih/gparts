@@ -6,7 +6,7 @@ var setListValues = function setListValues(list){
 	switch (listBy) {
 		case 'name' : list.sort(compareNames); break;
 	}
-
+	setListByButtonUrlAndText();
 	for(var i = 0; i < list.length; i++){
 		id 		= list[i].id;
 		name 		= list[i].name;
