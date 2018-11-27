@@ -731,7 +731,7 @@ function compareNames(a,b) {
 }
 
 //returns null if error
-function getUrlFirstPath(href){
+function getUrlFirstPath(href, removeLastChar){
 	if (SERVER === undefined || SERVER.length < 6 ||
 		href    === undefined || href < SERVER.length ){
 		return null;
@@ -746,6 +746,9 @@ function getUrlFirstPath(href){
 	}
 	if (iSlash < 1) {
 		return url;
+	}
+	if (removeLastChar !== undefined && removeLastChar === true) {
+		iSlash--;
 	}
 	var ret = url.substr(0, iSlash);
 	return ret;
@@ -793,6 +796,28 @@ function deleteButtonClickRegister(collection){
 		});
 	});	
 }
+
+function RegisterViewButtonClick(){
+	var $button = $( "#btnView" );
+	var $form = $('#register-form');
+	if ($form.length < 1 || $button.length < 1) {
+		return;
+	}
+	var action =  $form.attr("action");
+	if (action === undefined || action.length < 2) {
+		return; 
+	}
+
+	var collection = getUrlFirstPath(action, true);
+	if (collection === null) {
+		return;
+	}
+	var url = SERVER+'/parts/list/'+ collection +'/'+ item.id;
+
+	$( "#btnView" ).click(function() {
+		var win = window.open(url, '_blank');
+		win.focus();
+	});}
 
 function updateListCount(newCount) {
 	if (newCount === undefined || newCount === null)

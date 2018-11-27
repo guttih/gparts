@@ -14,6 +14,7 @@ function setFormValues(item){
 			action+='/'+item.id;
 		}
 		document.getElementById('register-form').action = action;
+		RegisterViewButtonClick();
 	}
 }
 

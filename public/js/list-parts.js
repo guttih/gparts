@@ -33,6 +33,9 @@ $( document ).ready(function() {
 	}
 
 	if (listBy !== undefined && listBy !== null && listBy.search !== undefined && listBy.id !== undefined) {
+		var url = SERVER+'/'+listBy.search+'s/register/'+ listBy.id;
+		$listBy.find('a').attr("href", url)
+		
 		getList(setListValues, '/parts/part-list/'+listBy.search+'/'+listBy.id);
 	} else {
 		getList(setListValues, '/parts/part-list');
