@@ -6,7 +6,14 @@ This app is still in development.
 Project page can be found [here](http:www.guttih.com:9999/projects/gparts).
 
 ### Version
-0.2.0
+1.0.0
+
+
+### requirements:
+You will need to install the following if you haven't already.
++ [MongoDb](https://www.mongodb.com) To store data. ([Install tutorials](https://docs.mongodb.com/manual/installation/) or [installing with package manager](https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions) ) 
++ [Node.js](https://nodejs.org/en/) To run the app
+
 
 ### Usage
 
