@@ -1,12 +1,20 @@
 # Node.js GParts
 
-This application will be about storing information about parts and how to use them.
-This app is still in development.  
+Online storage application to store information about various parts. Specially parts I use when having fun with micro-controllers like Arduino, Esp32 and Esp2866(nodeMcu).
 
-Project page can be found [here](http:www.guttih.com:9999/projects/gparts).
+Now when the project is finished, I logged all my parts I've bought over the years and logged all information I have on them. This will make things easier when starting a new arduino project, I can read about the part and how to use it. Click on stored data-sheets, or visit links that are stored on the parts page.
+
+The project page can be found [here](http://www.guttih.com/projects/gparts).
 
 ### Version
-0.2.0
+1.0.0
+
+
+### requirements:
+You will need to install the following if you haven't already.
++ [MongoDb](https://www.mongodb.com) To store data. ([Install tutorials](https://docs.mongodb.com/manual/installation/) or [installing with package manager](https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-distributions) ) 
++ [Node.js](https://nodejs.org/en/) To run the app
+
 
 ### Usage
 
