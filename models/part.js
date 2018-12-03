@@ -171,7 +171,7 @@ module.exports.list = function list(query, maxDescriptionLength, callback) {
 		} else {
 			callback(err, arr);
 		}
-	});
+	}).sort({lastModified:-1});
 };
 
 

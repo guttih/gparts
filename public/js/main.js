@@ -759,10 +759,17 @@ function setListByButtonUrlAndText() {
 	var queryStr = "?listBy=name";
 	var btnText = "Order by name";
 	var desText = "Ordered by creation time";
+	var page = getUrlFirstPath(window.location.href);
+	if (page !== undefined && page === 'parts') {
+		desText = "Ordered by last modified time";
+	}
 
 	 if (listBy === 'name') {
 		var queryStr =""  
 		var btnText ="Order by creation order";
+		if (page !== undefined && page === 'parts') {
+			btnText = "Order by last modified";
+		}
 		desText = "Ordered by name";
 	 }
 
@@ -775,7 +782,6 @@ function setListByButtonUrlAndText() {
 	
 	btn.bind('click tap',function() {
 		//var page = 'parts';
-		var page = getUrlFirstPath(window.location.href);
 		var url = SERVER+'/'+ page +'/list'+ queryStr;
 		window.location.href = url;
 	});
