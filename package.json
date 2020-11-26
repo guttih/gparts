@@ -2,9 +2,9 @@
   "name": "gparts",
   "version": "1.0.0",
   "description": "Simple authentication system",
-  "main": "app.js",
+  "main": "gparts.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "node gparts.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Gudjon Holm Sigurdsson",
@@ -19,7 +19,7 @@
     "express-handlebars": "*",
     "express-messages": "*",
     "express-session": "*",
-    "express-validator": "*",
+    "express-validator": "^5.3.0",
     "mongodb": "*",
     "mongoose": "*",
     "multer": "^1.3.0",
