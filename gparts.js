@@ -48,6 +48,7 @@ var suppliers      = require('./routes/suppliers');
 var parts          = require('./routes/parts');
 var manufacturers  = require('./routes/manufacturers');
 var locations      = require('./routes/locations');
+var actions      = require('./routes/actions');
 var types          = require('./routes/types');
 var files          = require('./routes/files');
 
@@ -143,6 +144,7 @@ app.use('/suppliers', suppliers);
 app.use('/parts', parts);
 app.use('/manufacturers', manufacturers);
 app.use('/locations', locations);
+app.use('/actions', actions);
 app.use('/types', types);
 app.use('/files', files);
 
