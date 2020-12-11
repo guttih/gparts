@@ -8,6 +8,14 @@ function setFormValues(item){
 		if (item.description !== undefined){
 			$("#description").val( item.description );
 		}
+
+		if (item.type !== undefined){
+			$('#action-type').val(item.type);
+		}
+
+		if (item.url !== undefined){
+			$("#url").val( item.url );
+		}
 		var action = document.getElementById('register-form').action;
 		
 		if (item.id !== undefined) {
@@ -16,6 +24,7 @@ function setFormValues(item){
 		document.getElementById('register-form').action = action;
 		RegisterViewButtonClick();
 	}
+
 }
 
 //use this function to validate the form values
@@ -32,4 +41,5 @@ function validateFormValues(){
 $( document ).ready(function() {
 	initRegister();
 	deleteButtonClickRegister('actions');
+
 });

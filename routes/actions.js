@@ -28,7 +28,11 @@ router.get('/register/:ID', lib.authenticateRequest, function(req, res){
 				} else{
 					var obj = {id : id,
 						name: action.name,
-						description: action.description
+						description: action.description,
+						type: action.type,
+						url: action.url,
+						body: action.body,
+
 					};
 					var str = JSON.stringify(obj);
 					res.render('register-action', {item:str});
@@ -70,6 +74,9 @@ router.get('/action-list', lib.authenticateRequest, function(req, res){
 				arr.push({	id         :item._id,
 							name       :item.name, 
 							description:item.description,
+							type       : item.type,
+							url        : item.url,
+							body       : item.body,
 						});
 		}
 		res.json(arr);
@@ -78,8 +85,11 @@ router.get('/action-list', lib.authenticateRequest, function(req, res){
 
 // Register Action
 router.post('/register', lib.authenticateAdminRequest, function(req, res){
-	var name = req.body.name;
-	var description = req.body.description;
+	var name         = req.body.name,
+	    description = req.body.description,
+		type        = req.body.type,
+		url         = req.body.url ,
+		body        = req.body.body;
 
 	// Validation
 	req.checkBody('name', 'Name is required').notEmpty();
@@ -93,7 +103,10 @@ router.post('/register', lib.authenticateAdminRequest, function(req, res){
 	} else {
 		var newAction = new Action({
 			name: name,
-			description:description
+			description:description,
+			type       : type,
+			url        : url,
+			body       : body,
 		});
 		
 		Action.create(newAction, function(err, action){
@@ -111,15 +124,22 @@ router.post('/register/:ID', lib.authenticateAdminRequest, function(req, res){
 	//action modify
 	var id = req.params.ID;
 
-	req.checkBody('name', 'Name is required').notEmpty();
+	req.checkBody('name'       , 'Name is required').notEmpty();
+	req.checkBody('description', 'Description is required').notEmpty();
+	req.checkBody('type'       , 'Type is required').notEmpty();
+	req.checkBody('url'        , 'Url is required').notEmpty();
+
 	var errors = req.validationErrors();
 
 	if(errors){
 		res.render('register-action',{errors:errors	});
 	} else {
 		var values = {
-				name     : req.body.name,
-				description    : req.body.description,
+				name        : req.body.name,
+				description : req.body.description,
+				type        : req.body.type,
+				url         : req.body.url,
+				body        : req.body.body
 			};
 		
 		

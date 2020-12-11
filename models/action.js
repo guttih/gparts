@@ -13,8 +13,16 @@ var ObjectId = Schema.ObjectId;
 var ActionSchema = mongoose.Schema({
 	name       : { type: String, index:true },
 	description: { type: String },
-	type       : Number,
-	path       : { type: String},
+	type       : {type   : String,
+		enum   : ['HTTP_GET',
+				  'HTTP_POST',
+				  'HTTP_PUT',
+				  'HTTP_PATCH',
+				  'HTTP_DELETE'],
+		default: 'HTTP_GET'
+	   },
+	url       : { type: String},
+	body      : { type: String},
 }); 
 
 var Action = module.exports = mongoose.model('Action', ActionSchema);
@@ -26,7 +34,8 @@ module.exports.toJson = function (item) {
 		name         : item.name,
 		description  : item.description,
 		type         : item.type,
-		path         : item.path
+		url          : item.url,
+		body          : item.body
 	};
 	return ret;
 };
@@ -53,4 +62,31 @@ module.exports.getById = function(id, callback){
 module.exports.list = function (callback){
 	var query = {};
 	Action.find(query, callback);
+};
+
+//get all records as a Json object
+module.exports.listAsJson = function (callback){
+	var query = {};
+	Action.find(query, function(err, list) {
+		if(err || list === null) {
+			callback(err, list);
+		} else {
+			var arr = [];
+			for(var i = 0; i < list.length; i++) {
+				arr.push(module.exports.toJson(list[i]));
+			}
+			callback(err, arr);
+		}
+		
+	});
+};
+
+module.exports.makeActionUrl = function (actionUrl, locationData){
+	if (actionUrl === undefined || actionUrl === null)
+		return null;
+	
+	if (locationData === undefined || locationData === null) {
+		return actionUrl;
+	}
+	return actionUrl.replace("<<DATA>>", locationData);
 };
