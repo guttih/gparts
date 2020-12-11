@@ -1,11 +1,15 @@
 "use strict";
 var mongoose = require('mongoose');
+var Action = require('./action');
+
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 
 var LocationSchema = mongoose.Schema({
 	name       : { type: String, index:true },
-	description: { type: String }
+	description: { type: String },
+	data       : { type: String },
+	action     : ObjectId,
 }); 
 
 var Location = module.exports = mongoose.model('Location', LocationSchema);
@@ -16,6 +20,8 @@ module.exports.toJson = function (item) {
 		id			 : item.id,
 		name         : item.name,
 		description  : item.description,
+		data         : item.data,
+		action       : item.action
 	};
 	return ret;
 };
@@ -36,6 +42,23 @@ module.exports.create = function(newLocation,  callback){
 };
 module.exports.getById = function(id, callback){
 	Location.findById(id, callback);
+};
+
+module.exports.getActionUrlByLocationId = function(id, callback){
+	Location.findById(id, function(err, location){
+		if(err || location === null) {
+			callback(err, location);
+		} else {
+			
+			Action.findById(location.action, function(err, action) {
+				if(err || location === null) {
+					callback(err, location);
+				} else {
+					callback(err, Action.makeActionUrl(action.url, location.data));
+				}
+			});
+		}
+	});
 };
 
 //get all records

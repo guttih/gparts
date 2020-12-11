@@ -196,6 +196,20 @@ function validateFormValues(){
 	return true;
 }
 
+function runLocationActionUrl() {
+	if (typeof item === 'undefined' ||  item === 'undefined' || 
+		item.location === undefined ||  item.location === "") {
+		return;
+	}
+		requestData('/locations/run-action/'+item.location, function(data){
+			console.log("got data", data);
+		},function(data){
+			console.log("Unable to get data", data);
+		});
+	console.log(item.location);
+	
+}
+
 function initParts() {
 	setFormValues(true);
 	getList( function(list) { setSelectOptionsFromArray("type",         list );	}, '/types/type-list');
@@ -209,6 +223,7 @@ function initParts() {
 			$('.files-and-urls').addClass('hidden');
 	}
 	filesToView();
+	runLocationActionUrl();
 }
 
 function validateNormalInput(id) {

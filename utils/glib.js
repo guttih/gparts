@@ -29,7 +29,7 @@ var defaultInterfaces = require('default-network');
 var ipconfig = require('../utils/ipconfigwin.js');
 var router = express.Router();
 var bcrypt = require('bcryptjs');
-
+var request  = require('request');
 
 module.exports.getDeviceTypeName = function getDeviceTypeName(type) {
 	switch(type){
@@ -882,4 +882,44 @@ module.exports.bytesToUnitString = function bytesToUnitString(number, decimalPoi
 	number/=Math.pow(1024, power);
 	var str = parseFloat(number).toFixed(decimals) + ' '+ usingUnit;
 	return str;
-}
+};
+
+module.exports.makeRequestPostBodyOptions = function makeRequestPostBodyOptions(url, payload, method, ContentType){
+	
+	if (method === undefined ){
+		method = 'POST';
+	}
+	if (ContentType === undefined ){
+		ContentType = 'application/json';
+	}
+	var body = JSON.stringify(payload);
+	var options = {
+	url: url,
+	method: method,
+	body: body,
+		
+		headers: {
+			'Content-Type': ContentType,
+			/*'Content-Type': 'application/x-www-form-urlencoded',*/
+			'Content-Length':  Buffer.byteLength(body)
+		}
+	};
+	return options;
+};
+
+module.exports.runRequest = function runRequest(method, url, body, callback) {
+    var requestOptions = module.exports.makeRequestPostBodyOptions(url, body, method);
+    request(requestOptions, function (err, result) {
+        if (err) {
+            console.log('Error when calling request. Url : '+ url);
+            if (callback !== undefined){
+                callback(err, null);
+            }
+        } else {
+            //success
+            if (callback !== undefined){
+                callback(err, result);
+            }
+        }
+    });
+ };
