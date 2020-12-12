@@ -51,7 +51,7 @@ module.exports.getActionUrlByLocationId = function(id, callback){
 		} else {
 			
 			Action.findById(location.action, function(err, action) {
-				if(err || location === null) {
+				if(err || action === null) {
 					callback(err, location);
 				} else {
 					callback(err, Action.makeActionUrl(action.url, location.data));
