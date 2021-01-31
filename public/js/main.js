@@ -825,17 +825,19 @@ function RegisterViewButtonClick(){
 		win.focus();
 	});}
 
-function updateListCount(newCount) {
+function updateListCount(newCount, prefix) {
 	if (newCount === undefined || newCount === null)
 	{
 		newCount = $('.list-group-item-heading').length;
-		
 	}
 	var e = $('.list-count');
 	var strItem = e.attr('data-name');
 	strItem+= (newCount > 1)? 's' : '';
 	e.find('.text').text(strItem);
 	e.find('.number').text(newCount);
+	{
+		e.find('.prefix').text(prefix? prefix: '');
+	}
 }
 
 $(function () {  
