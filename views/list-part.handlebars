@@ -17,9 +17,20 @@
         <button class="btn btn-default btn-xs pull-right" type="button">Order by name</button>
 	</div>
 </div>
+<div class="row" style="margin-bottom: 10px;">
+	<button id="filter-button" class="btn btn-default btn-xs pull-right" type="button">Filter the list</button>
+</div>
+<div class="row search-inputs hidden">
+	<div class="form-group col-xs-12 col-sm-6">
+		<input type="text" id="searchInput1" class="search-input" placeholder="Filter list by first text" title="Type in your search" class="form-control">
+	</div>
+	<div class="form-group col-xs-12 col-sm-6">
+		<input type="text" id="searchInput2" class="search-input" placeholder="Filter list by second text" title="Type in your search" class="form-control">
+	</div>
+</div>
 <div class="row">
-	<div id = "list" class="part-list list-group">
-	<!-- listItems will be added here-->
+	<div id="list" class="part-list list-group">
+		<!-- listItems will be added here-->
 	</div>
 </div>
 <div class="row">
@@ -29,5 +40,5 @@
 	</div>
 </div>
 
-<script src="/js/bootstrap.min.js"></script>	
-<script src="/js/list-parts.js"></script>	
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/list-parts.js"></script>
