@@ -126,7 +126,6 @@ function getUserDeviceList(){
 		var request = $.get(url);
 	request.done(function( data ) {
 		// Put the results in a div
-		console.log(data);
 		setDevicelistValues(data);
 		}).fail(function( data ) {
 			if (data.status===401){
@@ -134,27 +133,7 @@ function getUserDeviceList(){
 			}
 		});
 }
-/*
-function setDevicelistValues(devicelist){
-	var key, name, shallDisable = true;
-	$("#devicelist").empty().prop( "disabled", true );
-	for(var i = 0; i < devicelist.length; i++){
-		shallDisable=false;
-		console.log(devicelist[i]);
-		
-		key = devicelist[i].id;
-		name = devicelist[i].name;
-		$('#devicelist')
-			.append($('<option>', { value : JSON.stringify(devicelist[i])})
-			.text(name));
-	}
-	$('#devicelist').prop( "disabled", shallDisable );
-	$("#devicelist option").each(function(item){
-			console.log(item);
-		// Add $(this).val() to your list
-	});
-}
-*/
+
 function getWhenServerStarted(){
 	var url = SERVER+'/devices/started';
 	var selected = $( "#devicelist" ).val();
@@ -163,9 +142,7 @@ function getWhenServerStarted(){
 		return;
 	}
 	selected = JSON.parse(selected);
-	console.log("selected");
-	console.log(selected);
-		var request = $.get(SERVER+'/devices/started/'+selected.id);
+	var request = $.get(SERVER+'/devices/started/'+selected.id);
 		
 	request.done(function( data ) {
 		// Put the results in a div
@@ -288,6 +265,19 @@ function deleteItem(routeText, id, deleteSuccessCallback){
 		
 		});
 		
+}
+
+function cloneItem(routeText, cloneSuccessCallback){
+	var singular;
+	singular = routeText.substring(0, routeText.length-1);
+	
+	showModalConfirm('Clone ' + singular,	
+		'Are you sure you want to copy all values in this '+ singular +
+		' and create a new one?',
+		'Yes, clone it', 
+		function() {
+			cloneSuccessCallback()
+		});		
 }
 
 function showModalError(title, response){
@@ -519,7 +509,6 @@ function getServerUrl(){
 
 
 function changeServerSettingsUsersCanRegister(){
-	console.log(this.id);
 	var $elm = $('#allow-user-registration');
 	var checked = $elm.hasClass( "checked" );
 	var allow = true;  
@@ -799,6 +788,16 @@ function deleteButtonClickRegister(collection){
 		var subPath = collection;
 		deleteItem(subPath,item.id, function() {
 			window.location.href = '/'+subPath+'/list';
+		});
+	});	
+}
+
+function cloneButtonClickRegister(collection){
+	$('#btnClone').click(function() {
+		var subPath = collection;
+
+		cloneItem(subPath, function() {
+			window.location.href = '/'+subPath+'/clone/'+item.id;
 		});
 	});	
 }

@@ -42,7 +42,6 @@ function validateFormValues(){
 }
 
 var onDataChange = function onDataChange() {
-	console.log("onDataChange");
 	var url = "";
 	var actionId = $('#item_action').val();
 	var data = $('#data').val();
@@ -96,6 +95,7 @@ $( document ).ready(function() {
 	setFormActionOptions();
 	initRegister();
 	deleteButtonClickRegister('locations');
+	cloneButtonClickRegister('locations');
 	onSelectActionChange();
 	$('#item_action').on('change', function() {
 		onSelectActionChange();

@@ -14,16 +14,23 @@ var LocationSchema = mongoose.Schema({
 
 var Location = module.exports = mongoose.model('Location', LocationSchema);
 
-module.exports.toJson = function (item) {
+module.exports.copyValues = function (item, includeId = true) {
 
 	var ret = {
-		id			 : item.id,
 		name         : item.name,
 		description  : item.description,
 		data         : item.data,
 		action       : item.action
 	};
+	if (includeId) {
+		ret.id = item.id;
+	}
+
 	return ret;
+};
+
+module.exports.toJson = function (item) {
+	return module.exports.copyValues(item);
 };
 
 module.exports.delete = function (id, callback){
@@ -40,8 +47,28 @@ module.exports.modify = function (id, newValues, callback){
 module.exports.create = function(newLocation,  callback){
         newLocation.save(callback);
 };
+
+module.exports.createPromise = function(location) {
+	return new Promise((resolve, reject) => {
+		location.save(location, (err, res) => {
+			if (err || !res) {reject(err)}
+			else resolve(res)
+		})
+	})
+};
+
+
 module.exports.getById = function(id, callback){
 	Location.findById(id, callback);
+};
+
+module.exports.getByIdPromise = function(id) {
+	return new Promise((resolve, reject) => {
+		Location.findById(id, (err, res) => {
+			if (err || !res) {reject(err)}
+			else resolve(res)
+		})
+	})
 };
 
 module.exports.getActionUrlByLocationId = function(id, callback){
@@ -66,3 +93,4 @@ module.exports.list = function (callback){
 	var query = {};
 	Location.find(query, callback);
 };
+module.exports.createObjectId = () => {return new mongoose.mongo.ObjectId()};

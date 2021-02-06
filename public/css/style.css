@@ -306,7 +306,7 @@ button.btn-log-pins {
 	margin-top:20px;
 }
 
-#btnSave, #btnView, #btnDelete{
+#btnSave, #btnView, #btnDelete, #btnClone{
 	margin-left: 10px;
 }
 
