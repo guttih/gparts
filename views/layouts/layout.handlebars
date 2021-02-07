@@ -271,13 +271,17 @@
 							<li role="presentation">
 								<a href="/users/profile/{{user._id}}" rel="tooltip" data-placement="bottom"
 									title="Your profile settings">
-									<img src="/images/profile.png" alt="Your profile" style="width:20px;height:20px;">
+									<div style="color:{{{user.menuFontColor}}}">
+								<span class="glyphicon glyphicon-user"></span>
+								</div>
 								</a>
 							</li>
 							<li role="presentation">
 								<a href="/users/logout" rel="tooltip" data-placement="bottom" title="Logout from Gudjons Parts">
-									<img src="/images/logout.png" alt="Logout from Gudjons Parts"
-										style="width:20px;height:20px;">
+									
+								<div style="color:{{{user.menuFontColor}}}">
+								<span class="glyphicon glyphicon-log-out"></span>
+								</div>
 								</a>
 							</li>
 							{{else}}
