@@ -27,7 +27,6 @@ var part = require('../models/part');
 const exec = require('child_process').exec;
 var defaultInterfaces = require('default-network'); 
 var ipconfig = require('../utils/ipconfigwin.js');
-var router = express.Router();
 var bcrypt = require('bcryptjs');
 var request  = require('request');
 

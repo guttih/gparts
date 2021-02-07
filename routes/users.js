@@ -145,36 +145,42 @@ router.post('/register', function(req, res){
 var config = lib.getConfig();
 if (config.allowUserRegistration === true) {
 	
-		var name = req.body.name;
-		var email = req.body.email;
-		var username = req.body.username;
-		var password = req.body.password;
-		var password2 = req.body.password2;
-		
 		// Validation
 		req.checkBody('name', 'Name is required').notEmpty();
 		req.checkBody('email', 'Email is required').notEmpty();
 		req.checkBody('email', 'Email is not valid').isEmail();
 		req.checkBody('username', 'Username is required').notEmpty();
+		req.checkBody('backgroundcolor', 'Default background color required').notEmpty();
+		req.checkBody('fontcolor', 'Default font color required').notEmpty();
+		req.checkBody('menubackgroundcolor', 'Default menu background required').notEmpty();
+		req.checkBody('menufontcolor', 'Default menu font color required').notEmpty();
 		req.checkBody('password', 'Password is required').notEmpty();
 		req.checkBody('password2', 'Passwords do not match').equals(req.body.password);
 		var errors = req.validationErrors();
 
 		if(errors){
 			var item = {
-						name: name,
-						email:email,
-						username: username
+						name: req.body.name,
+						email:req.body.email,
+						username: req.body.username,
+						backgroundColor: req.body.backgroundcolor,
+						fontColor: req.body.fontcolor,
+						menuBackgroundColor: req.body.menubackgroundcolor,
+						menuFontColor: req.body.menufontcolor
 					};
 					item = JSON.stringify(item); //todo test this
 			res.render('register-user',{ errors:errors, item:item });
 		} else {
 			var newUser = new User({
-				name: name,
-				email:email,
-				username: username,
-				password: password,
-				level:0
+				name: req.body.name,
+				email:req.body.email,
+				username: req.body.username,
+				password: req.body.password,
+				level:0,
+				backgroundColor:req.body.backgroundcolor,
+				fontColor: req.body.fontcolor,
+				menuBackgroundColor: req.body.menubackgroundcolor,
+				menuFontColor: req.body.menufontcolor
 			});
 
 			User.getUserByUsername(newUser._doc.username, function(err, oldUser){
@@ -196,12 +202,12 @@ if (config.allowUserRegistration === true) {
 					errors.push({
 									msg: "Username is taken",
 									param:"name",
-									value: name
+									value: req.body.name
 					});
 					var item = {
-						name: name,
-						email:email,
-						username: username
+						name: req.body.name,
+						email:req.body.email,
+						username: req.body.username
 					};
 					item = JSON.stringify(item);
 
@@ -225,12 +231,17 @@ router.post('/register/:userID', lib.authenticateAdminRequest, function(req, res
 	//user modify
 	var id = req.params.userID;
 	var password = req.body.password;
-
 	req.checkBody('name', 'Name is required').notEmpty();
 	req.checkBody('email', 'Email is required').notEmpty();
 	req.checkBody('email', 'Email is not valid').isEmail();
 	req.checkBody('username', 'Username is required').notEmpty();
-	req.checkBody('level', 'level is required').notEmpty();
+	req.checkBody('level', 'Level is required').notEmpty();
+	req.checkBody('backgroundcolor', 'Default background color is required').notEmpty();
+	req.checkBody('fontcolor', 'Default background color is required').notEmpty();
+	req.checkBody('menubackgroundcolor', 'Default menu background required').notEmpty();
+	req.checkBody('menufontcolor', 'Default menu font color required').notEmpty();
+
+	
 	if (password !== undefined && password.length > 0 ){
 		req.checkBody('password', 'Password is required').notEmpty();
 		req.checkBody('password2', 'Passwords do not match').equals(req.body.password);
@@ -242,10 +253,14 @@ router.post('/register/:userID', lib.authenticateAdminRequest, function(req, res
 		res.render('register-user',{errors:errors	});
 	} else {
 		var values = {
-				name     : req.body.name,
-				email    : req.body.email,
-				username : req.body.username,
-				level : req.body.level
+				name            : req.body.name,
+				email           : req.body.email,
+				username        : req.body.username,
+				backgroundColor : req.body.backgroundcolor,
+				fontColor       : req.body.fontcolor,
+				menuBackgroundColor: req.body.menubackgroundcolor,
+				menuFontColor: req.body.menufontcolor,
+				level           : req.body.level
 			};
 		
 		if (password !== undefined && password.length > 0 ){
@@ -280,6 +295,11 @@ router.post('/profile/:userID', lib.authenticateRequest, function(req, res){
 	req.checkBody('email', 'Email is required').notEmpty();
 	req.checkBody('email', 'Email is not valid').isEmail();
 	req.checkBody('username', 'Username is required').notEmpty();
+	req.checkBody('backgroundcolor', 'Default background color is required').notEmpty();
+	req.checkBody('fontcolor', 'Default font color is required').notEmpty();
+	req.checkBody('menubackgroundcolor', 'Default menu background required').notEmpty();
+	req.checkBody('menufontcolor', 'Default menu font color required').notEmpty();
+	
 	if (password !== undefined && password.length > 0 ){
 		req.checkBody('password', 'Password is required').notEmpty();
 		req.checkBody('password2', 'Passwords do not match').equals(req.body.password);
@@ -294,6 +314,10 @@ router.post('/profile/:userID', lib.authenticateRequest, function(req, res){
 				name     : req.body.name,
 				email    : req.body.email,
 				username : req.body.username,
+				backgroundColor : req.body.backgroundcolor,
+				fontColor : req.body.fontcolor,
+				menuBackgroundColor: req.body.menubackgroundcolor,
+				menuFontColor: req.body.menufontcolor
 			};
 		
 		if (password !== undefined && password.length > 0 ){

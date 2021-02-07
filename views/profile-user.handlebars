@@ -2,40 +2,72 @@
 	<h3 class="page-header" align="right">User Profile</h3>
 </div>
 {{#if errors}}
-    <div class="error-container"> 
-		{{#each errors}}
-			<div class="alert alert-danger">{{msg}}</div>
-		{{/each}}
-    </div>
+<div class="error-container">
+	{{#each errors}}
+	<div class="alert alert-danger">{{msg}}</div>
+	{{/each}}
+</div>
 {{/if}}
-{{#if item}} <!-- if you want to edit a specific user -->
-			<script type="text/javascript">
-			var item = {{{item}}};
-		</script>
+{{#if item}}
+<!-- if you want to edit a specific user -->
+<script type="text/javascript">
+	var item = {{{ item }}};
+</script>
 {{/if}}
-<form method="post" id ="user-form">
-<div class="form-group">
-	<label>Name</label>
-	<input type="text" class="form-control" placeholder="Name" id="name" name="name">
-	<input type="hidden"                                      id="id"   name="id" value="">
-</div>
-<div class="form-group">
-	<label>Username</label>
-	<input type="text" class="form-control" placeholder="Username" id="username" name="username">
-</div>
-<div class="form-group">
-	<label>Email</label>
-	<input type="email" class="form-control" placeholder="Email" id="email" name="email">
-</div>
-<div class="form-group">
-	<label>Password (leave blank to keep unchanged)</label>
-	<input type="password" class="form-control" placeholder="Password" id="password" name="password">
-</div>
-<div class="form-group">
-	<label>Confirm Password</label>
-	<input type="password" class="form-control" placeholder="Password" id="password2" name="password2">
-</div>
-<!--<div id ="div-level" class="form-group">
+<form method="post" id="user-form">
+	<div class="form-group">
+		<label>Name</label>
+		<input type="text" class="form-control" placeholder="Name" id="name" name="name">
+		<input type="hidden" id="id" name="id" value="">
+	</div>
+	<div class="form-group">
+		<label>Username</label>
+		<input type="text" class="form-control" placeholder="Username" id="username" name="username">
+	</div>
+	<div class="form-group">
+		<label>Email</label>
+		<input type="email" class="form-control" placeholder="Email" id="email" name="email">
+	</div>
+	<div class="form-group" style="padding-top: 20px;">
+		<div class="row">
+			<div class="col-xs-6">
+				<h4>Colors</h4>
+			</div>
+			<div class="col-xs-6">
+				<button id="btnResetUser" type="button" class="btn btn-default pull-right">Reset colors</button>
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="row">
+			<div class="col-xs-6 col-sm-3">
+				<label>Text</label>
+				<input type="color" class="form-control " id="fontcolor" name="fontcolor" value="#333333">
+			</div>
+			<div class="col-xs-6 col-sm-3">
+				<label>Background</label>
+				<input type="color" class="form-control " id="backgroundcolor" name="backgroundcolor" value="#ffffff">
+			</div>
+			<div class="col-xs-6 col-sm-3">
+				<label>Menu text</label>
+				<input type="color" class="form-control " id="menufontcolor" name="menufontcolor" value="#424242">
+			</div>
+			<div class="col-xs-6 col-sm-3">
+				<label>Menu background</label>
+				<input type="color" class="form-control " id="menubackgroundcolor" name="menubackgroundcolor"
+					value="#b3b3b3">
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<label>Password (leave blank to keep unchanged)</label>
+		<input type="password" class="form-control" placeholder="Password" id="password" name="password">
+	</div>
+	<div class="form-group">
+		<label>Confirm Password</label>
+		<input type="password" class="form-control" placeholder="Password" id="password2" name="password2">
+	</div>
+	<!--<div id ="div-level" class="form-group">
 	<label>User level</label>
 	<select id="level" name="level" class="form-control" form="user-form">
 		<option selected="selected" value="0">Normal user</option>
@@ -49,7 +81,7 @@
 		<strong>Invalid form values, </strong> <span></span>
 	</div>
 	<button id="btnSaveUser" type="button" class="btn btn-success pull-right">Save User values</button>
-	
+
 </div>
 
 <script src="/js/register-user.js" type="text/javascript" charset="utf-8"></script>

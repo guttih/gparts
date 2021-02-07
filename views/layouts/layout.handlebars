@@ -10,177 +10,220 @@
 	<script src="/js/bootstrap.min.js"></script>
 	<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=2" />
 	
+	<style>
+	{{#if user}}
+		body {
+			background:{{{user.backgroundColor}}};
+			color:{{{user.fontColor}}};
+		}
+		.dropdown {
+			color: {{{user.menuFontColor}}};
+		}
+		.dropdown-menu > li > a {
+			color: {{{user.menuFontColor}}};
+		}
+		.dropdown a {
+			color: {{{user.menuFontColor}}};
+		}
+		.form-control {
+			color: {{{user.menuFontColor}}};
+		}
+	
+		.list-group-item {
+			background-color:{{{user.backgroundColor}}};
+		}
+		ul.dropdown-menu {
+			background-color:{{{user.menuBackgroundColor}}};
+		}
+		.nav > li > a:hover, .nav > li > a:focus {
+			background-color:	{{{user.menuBackgroundColor}}};
+		}
+
+	{{/if}}
+	</style>
 </head>
 <body>
-
-<div class="container">
-	<div class="header clearfix">
-	<nav>
-		<ul class="nav nav-pills pull-right">
-		{{#if user}}
-			<!-- <li role="presentation"><a href="/">Dashboard</a></li> --> 
-		{{/if}}
-		{{#if admin}}
-			<li class="dropdown">
-				<a  data-toggle="dropdown" href="#">Settings</a>
-				<ul class="dropdown-menu">
-					<li class="menu-item dropdown dropdown-submenu"><a href="#">Users</a>
+	<div class="container">
+		<div class="header clearfix">
+			<nav>
+				<ul class="nav nav-pills pull-right">
+					{{#if user}}
+					<!-- <li role="presentation"><a href="/">Dashboard</a></li> -->
+					{{/if}}
+					{{#if admin}}
+					<li class="dropdown">
+						<a data-toggle="dropdown" href="#">Settings</a>
 						<ul class="dropdown-menu">
-							<li><a  href="/users/register">Register a new user</a></li>
-							<li><a href="/users/list">List users</a></li>
+							<li class="menu-item dropdown dropdown-submenu"><a href="#">Users</a>
+								<ul class="dropdown-menu">
+									<li><a href="/users/register">Register a new user</a></li>
+									<li><a href="/users/list">List users</a></li>
 
-							<li class="menu-item dropdown dropdown-submenu"><a href="#">Settings</a>
-							<ul class="dropdown-menu">
-								<li class="menu-item {{allowUserRegistration}}" id="allow-user-registration"><a href="javascript:changeServerSettingsUsersCanRegister()"><span class="glyphicon glyphicon-ok"></span>New users can register</a></li>
-							</ul>
+									<li class="menu-item dropdown dropdown-submenu"><a href="#">Settings</a>
+										<ul class="dropdown-menu">
+											<li class="menu-item {{allowUserRegistration}}"
+												id="allow-user-registration"><a
+													href="javascript:changeServerSettingsUsersCanRegister()"><span
+														class="glyphicon glyphicon-ok"></span>New users can register</a>
+											</li>
+										</ul>
+									</li>
+								</ul>
 							</li>
+							<li class="menu-item" id="change-file-upload-size" data-limit="{{fileSizeLimit}}"><a
+									href="javascript:changeFileUploadSize()">Change file upload size from
+									{{fileSizeLimitText}}</a></li>
+							<li class="menu-item" id="change-list-description-max-length"
+								data-maxlength="{{listDescriptionMaxLength}}"><a
+									href="javascript:changeListDescriptionMaxLength()">Change maximum part description
+									length in a list from {{listDescriptionMaxLength}}</a></li>
 						</ul>
 					</li>
-					<li class="menu-item" id="change-file-upload-size" data-limit="{{fileSizeLimit}}"><a href="javascript:changeFileUploadSize()">Change file upload size from {{fileSizeLimitText}}</a></li>
-					<li class="menu-item" id="change-list-description-max-length" data-maxlength="{{listDescriptionMaxLength}}"><a href="javascript:changeListDescriptionMaxLength()">Change maximum part description length in a list from {{listDescriptionMaxLength}}</a></li>
-				</ul>
-			</li>
-			
-		{{/if}}
-		{{#if user}}
-			<li class="dropdown">
-				<a  data-toggle="dropdown" href="#">Parts </a>
-				<ul class="dropdown-menu">
-				{{#if admin}}
-					<li><a href="/parts/register">Register a new part</a></li>
-				{{/if}}
-					<li><a href="/parts/list">List parts</a></li>
-				</ul>
-			</li>
-			<li class="dropdown">
-				<a  data-toggle="dropdown" href="#">List</a>
-				<ul class="dropdown-menu">
-					<li><a href="/parts/list">Parts</a></li>
-					<li><a href="/types/list">Types</a></li>
-					<li><a href="/locations/list">Locations</a></li>
-					<li><a href="/actions/list">Actions</a></li>
-					<li><a href="/suppliers/list">Suppliers</a></li>
-					<li><a href="/manufacturers/list">Manufacturers</a></li>
-					<li><a href="/files/list">Files</a></li>
-					<li><a href="/files/list/image">Images</a></li>
-				{{#if admin}}
-					<li><a href="/users/list">Users</a></li>
-				{{/if}}					
-				</ul>
-			</li>
-		{{#if admin}}
-			<li class="dropdown">
-				<a  data-toggle="dropdown" href="#">Register</a>
-				<ul class="dropdown-menu">
-					<li><a href="/parts/register">Part</a></li>
-					<li><a href="/types/register">Type</a></li>
-					<li><a href="/locations/register">Location</a></li>
-					<li><a href="/actions/register">Action</a></li>
-					<li><a href="/suppliers/register">Supplier</a></li>
-					<li><a href="/manufacturers/register">Manufacturer</a></li>
-					<li><a href="/files/register">File</a></li>
-					<li><a href="/files/register/image">Image</a></li>
-				{{#if admin}}
-					<li><a href="/users/register">User</a></li>					
-				{{/if}}
-				</ul>
-			</li>
-		{{/if}}	
-		{{/if}}
-		{{#if user}}
-			<li role="presentation">
-				<a href="/users/profile/{{user._id}}" rel="tooltip" data-placement="bottom" title="Your profile settings">
-					<img src="/images/profile.png" alt="Your profile" style="width:20px;height:20px;">
-				</a>
-			</li>
-			<li role="presentation">
-				<a href="/users/logout"  rel="tooltip" data-placement="bottom" title="Logout from Gudjons Parts">
-					<img src="/images/logout.png" alt="Logout from Gudjons Parts" style="width:20px;height:20px;">
-				</a>
-			</li>
-		{{else}}
-			<li role="presentation"><a href="/users/login">Login</a></li>
-			<li role="presentation"><a href="/users/register">Register</a></li>
-		{{/if}}
-			<li class="dropdown">
-				<a class="dropdown-toggle" data-toggle="dropdown" href="#">?</a>
-				<ul class="dropdown-menu">
-					<li><a href="/about">About the system</a></li>
-					<li><a href="/help"></a></li>
-					
-					<li class="menu-item"><a href="https://github.com/guttih/gparts/blob/master/README.md" target="_blank">Readme.md</a></li>
-					<li><a href="/licence">Licence</a></li>
-				</ul>
-			</li>
-		</ul>
-	</nav>
-	<!--<h3 class="text-muted">VoffCon</h3>-->
-	<a href="/">
-		<img src="/images/logo.png" width="50" height="50"
-		alt  ="An operating system for Arduino" 
-		title="An operating system for Arduino" >
-	</a>
-	</div>
 
-<!-- Modal info -->
-	<div class="modal fade" id="myModal" role="dialog">
-		<div class="modal-dialog">
-			<!-- Modal content-->
-			<div class="modal-content">
-				<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Modal Header</h4>
-				</div>
-			<div class="modal-body">
-				<p>Modal Text</p>
-			</div>
-			<div class="modal-input1">
-				<input type="text"   id="modal-input1"     name="modal-input1" class="form-control hidden" value="" placeholder="">
-			</div>
-			<div class="modal-value2 hidden">
-				<div class="modal-body2">
-					<p>Modal Text2</p>
-				</div>
-				<div class="modal-input2">
-					<input type="text"   id="modal-input2"     name="modal-input2" class="form-control" value="" placeholder="">
-				</div>
-			</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					<button type="button" id="btn-confirm" class="btn btn-danger btn-ok">Confirm</button>
+					{{/if}}
+					{{#if user}}
+					<li class="dropdown">
+						<a data-toggle="dropdown" href="#">Parts </a>
+						<ul class="dropdown-menu">
+							{{#if admin}}
+							<li><a href="/parts/register">Register a new part</a></li>
+							{{/if}}
+							<li><a href="/parts/list">List parts</a></li>
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a data-toggle="dropdown" href="#">List</a>
+						<ul class="dropdown-menu">
+							<li><a href="/parts/list">Parts</a></li>
+							<li><a href="/types/list">Types</a></li>
+							<li><a href="/locations/list">Locations</a></li>
+							<li><a href="/actions/list">Actions</a></li>
+							<li><a href="/suppliers/list">Suppliers</a></li>
+							<li><a href="/manufacturers/list">Manufacturers</a></li>
+							<li><a href="/files/list">Files</a></li>
+							<li><a href="/files/list/image">Images</a></li>
+							{{#if admin}}
+							<li><a href="/users/list">Users</a></li>
+							{{/if}}
+						</ul>
+					</li>
+					{{#if admin}}
+					<li class="dropdown">
+						<a data-toggle="dropdown" href="#">Register</a>
+						<ul class="dropdown-menu">
+							<li><a href="/parts/register">Part</a></li>
+							<li><a href="/types/register">Type</a></li>
+							<li><a href="/locations/register">Location</a></li>
+							<li><a href="/actions/register">Action</a></li>
+							<li><a href="/suppliers/register">Supplier</a></li>
+							<li><a href="/manufacturers/register">Manufacturer</a></li>
+							<li><a href="/files/register">File</a></li>
+							<li><a href="/files/register/image">Image</a></li>
+							{{#if admin}}
+							<li><a href="/users/register">User</a></li>
+							{{/if}}
+						</ul>
+					</li>
+					{{/if}}
+					{{/if}}
+					{{#if user}}
+					<li role="presentation">
+						<a href="/users/profile/{{user._id}}" rel="tooltip" data-placement="bottom"
+							title="Your profile settings">
+							<img src="/images/profile.png" alt="Your profile" style="width:20px;height:20px;">
+						</a>
+					</li>
+					<li role="presentation">
+						<a href="/users/logout" rel="tooltip" data-placement="bottom" title="Logout from Gudjons Parts">
+							<img src="/images/logout.png" alt="Logout from Gudjons Parts"
+								style="width:20px;height:20px;">
+						</a>
+					</li>
+					{{else}}
+					<li role="presentation"><a href="/users/login">Login</a></li>
+					<li role="presentation"><a href="/users/register">Register</a></li>
+					{{/if}}
+					<li class="dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" href="#">?</a>
+						<ul class="dropdown-menu">
+							<li><a href="/about">About the system</a></li>
+							<li><a href="/help"></a></li>
+
+							<li class="menu-item"><a href="https://github.com/guttih/gparts/blob/master/README.md"
+									target="_blank">Readme.md</a></li>
+							<li><a href="/licence">Licence</a></li>
+						</ul>
+					</li>
+				</ul>
+			</nav>
+			<!--<h3 class="text-muted">VoffCon</h3>-->
+			<a href="/">
+				<img src="/images/logo.png" width="50" height="50" alt="An operating system for Arduino"
+					title="An operating system for Arduino">
+			</a>
+		</div>
+
+		<!-- Modal info -->
+		<div class="modal fade" id="myModal" role="dialog">
+			<div class="modal-dialog">
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Modal Header</h4>
+					</div>
+					<div class="modal-body">
+						<p>Modal Text</p>
+					</div>
+					<div class="modal-input1">
+						<input type="text" id="modal-input1" name="modal-input1" class="form-control hidden" value=""
+							placeholder="">
+					</div>
+					<div class="modal-value2 hidden">
+						<div class="modal-body2">
+							<p>Modal Text2</p>
+						</div>
+						<div class="modal-input2">
+							<input type="text" id="modal-input2" name="modal-input2" class="form-control" value=""
+								placeholder="">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" id="btn-confirm" class="btn btn-danger btn-ok">Confirm</button>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
 
-	<div class="row">
-		<div class="col-lg-12">
-			{{#if success_msg}}
-			<div class="alert alert-success">{{success_msg}}</div>
-			{{/if}}
+		<div class="row">
+			<div class="col-lg-12">
+				{{#if success_msg}}
+				<div class="alert alert-success">{{success_msg}}</div>
+				{{/if}}
 
-			{{#if error_msg}}
-			<div class="alert alert-danger">{{error_msg}}</div>
-			{{/if}}
+				{{#if error_msg}}
+				<div class="alert alert-danger">{{error_msg}}</div>
+				{{/if}}
 
-			{{#if error}}
-			<div class="alert alert-danger">{{error}}</div>
-			{{/if}}
-			{{{body}}}
+				{{#if error}}
+				<div class="alert alert-danger">{{error}}</div>
+				{{/if}}
+				{{{body}}}
+			</div>
 		</div>
-	</div>
-	
-	
 
 
-	<footer class="footer">
-	<p>&copy; 2018 Gudjons Parts, Inc.</p>
-	</footer>
 
-</div> <!-- /container -->
-<div id="config" data-settings='{"serverUrl":"http://www.guttih.com:3000"}' />
-<script src="/js/main.js"></script>
+
+		<footer class="footer">
+			<p>&copy; 2018 Gudjons Parts, Inc.</p>
+		</footer>
+
+	</div> <!-- /container -->
+	<div id="config" data-settings='{"serverUrl":"http://www.guttih.com:3000"}' />
+	<script src="/js/main.js"></script>
 
 
 </body>
