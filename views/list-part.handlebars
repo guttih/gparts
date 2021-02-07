@@ -2,30 +2,38 @@
 	<h3 class="page-header" align="right">Parts</h3>
 </div>
 {{#if errors}}
-	<div class="error-container">
-		{{#each errors}}
-			<div class="alert alert-danger">{{msg}}</div>
-		{{/each}}
-	</div>
+<div class="error-container">
+	{{#each errors}}
+	<div class="alert alert-danger">{{msg}}</div>
+	{{/each}}
+</div>
 {{/if}}
 {{#if listBySearch}}
-	{{> partial_list_part_by }}
+{{> partial_list_part_by }}
 {{/if}}
 <div class="row">
 	<div class="list-by">
 		<p class="col-sm-6 col-md-6 col-lg-6 col-xl-6">Ordered by last modified time</p>
-        <button class="btn btn-default btn-xs pull-right" type="button">Order by name</button>
+		<button class="btn btn-default btn-xs pull-right" type="button">Order by name</button>
 	</div>
 </div>
 <div class="row" style="margin-bottom: 10px;">
 	<button id="filter-button" class="btn btn-default btn-xs pull-right" type="button">Filter the list</button>
 </div>
 <div class="row search-inputs hidden">
-	<div class="form-group col-xs-12 col-sm-6">
-		<input type="text" id="searchInput1" class="search-input" placeholder="Filter list by first text" title="Type in your search" class="form-control">
+	<div class="col-xs-12 col-sm-6">
+		<div class="form-group has-feedback">
+			<input type="text" id="searchInput1" class="form-control search-input"
+				placeholder="Filter list by first text" title="Type in your search" class="form-control">
+			<span class="glyphicon glyphicon-search form-control-feedback"></span>
+		</div>
 	</div>
-	<div class="form-group col-xs-12 col-sm-6">
-		<input type="text" id="searchInput2" class="search-input" placeholder="Filter list by second text" title="Type in your search" class="form-control">
+	<div class="col-xs-12 col-sm-6">
+		<div class="form-group has-feedback">
+			<input type="text" id="searchInput2" class="form-control search-input"
+				placeholder="Filter list by second text" title="Type in your search" class="form-control">
+			<span class="glyphicon glyphicon-search form-control-feedback"></span>
+		</div>
 	</div>
 </div>
 <div class="row">

@@ -1,38 +1,55 @@
-table.row-buttons{
-	overflow-y:scroll;
-   height:91px;
-   display:block;
-   width:100%;
+table.row-buttons {
+    overflow-y: scroll;
+    height: 91px;
+    display: block;
+    width: 100%;
 }
-
 
 .list-command-delete {
-	color:red;
+    color: red;
 }
-table.row-buttons .list-command-view,table.row-buttons .list-command-edit,table.row-buttons .list-command-delete {
-	margin-right: 2px;
-	
+
+table.row-buttons .list-command-view,
+table.row-buttons .list-command-edit,
+table.row-buttons .list-command-delete {
+    margin-right: 2px;
 }
+
 table.row-buttons td.commands {
-	float:right;
-	white-space: nowrap;
+    float: right;
+    white-space: nowrap;
 }
+
 table.row-buttons.view.edit.delete td.commands {
-	min-width: 84px;
+    min-width: 84px;
 }
-table.row-buttons{
-	background:#3c763d0f;
+
+table.row-buttons {
+    background: #3c763d0f;
 }
-table.row-buttons.view.edit td.commands, table.row-buttons.view.delete td.commands, table.row-buttons.edit.delete td.commands{
-	min-width: 56px;
+
+table.row-buttons.view.edit td.commands,
+table.row-buttons.view.delete td.commands,
+table.row-buttons.edit.delete td.commands {
+    min-width: 56px;
 }
-table.row-buttons.view td.commands, table.row-buttons.edit td.commands, table.row-buttons.delete td.commands {
-	min-width: 28px;
+
+table.row-buttons.view td.commands,
+table.row-buttons.edit td.commands,
+table.row-buttons.delete td.commands {
+    min-width: 28px;
 }
+
 table.row-buttons td.item {
-	width:98%;
+    width: 100%;
+    padding-left: 8px
 }
-table.row-buttons tr:hover { background:#46a1470f}
+
+table.row-buttons tr:hover {
+    background: #46a1470f
+}
+
+
 /*
 table.row-buttons tr:hover td.item { 
 	text-decoration:underline;

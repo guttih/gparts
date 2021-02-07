@@ -5,13 +5,32 @@
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="/css/bootstrap.css" />
 	<link rel="stylesheet" href="/css/style.css" />
-	
+
 	<script src="/js/jquery-3.1.0.min.js"></script>
 	<script src="/js/bootstrap.min.js"></script>
 	<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=2" />
-	
+
 	<style>
 	{{#if user}}
+		.user-background {
+			background:{{{user.backgroundColor}}};
+		}
+		.user-menufont {
+			color:{{{user.menuFontColor}}};
+		}
+		.user-menubackground {
+			background:{{{user.menuBackgroundColor}}};
+		}
+		.user-font {
+			color:{{{user.fontColor}}};
+		}
+		a {
+			color:{{{user.menuFontColor}}};
+		}
+		a:hover {
+			color:{{{user.menuFontColor}}};
+		}
+		
 		body {
 			background:{{{user.backgroundColor}}};
 			color:{{{user.fontColor}}};
@@ -28,7 +47,7 @@
 		.form-control {
 			color: {{{user.menuFontColor}}};
 		}
-	
+
 		.list-group-item {
 			background-color:{{{user.backgroundColor}}};
 		}
@@ -39,6 +58,86 @@
 			background-color:	{{{user.menuBackgroundColor}}};
 		}
 
+		svg.background-color {
+			background-color:{{{user.backgroundColor}}} 
+		}
+
+		svg .fill-background {
+			fill:{{{user.backgroundColor}}}
+		}
+		svg .fill-menufont {
+			fill:{{{user.menuFontColor}}}
+		}
+		svg .stroke-menufont {
+			stroke:{{{user.menuFontColor}}}
+		}
+
+		svg .stroke-background {
+			stroke:{{{user.backgroundColor}}}
+		}
+		.footer {
+			border-top-color: {{{user.menuFontColor}}}40;
+		}
+		.list-group-item {
+			border-color: {{{user.fontColor}}}40;
+		}
+		option {
+    		background: {{{user.menuBackgroundColor}}}
+		}
+		
+	{{else}}
+		.user-background {
+			background:#ffffff;
+		}
+		.user-menufont {
+			color:#424242;
+		}
+		
+		body {
+			background:#ffffff;
+			color:#333333;
+		}
+		.dropdown {
+			color:#424242;
+		}
+		.dropdown-menu > li > a {
+			color:#424242;
+		}
+		.dropdown a {
+			color:#424242;
+		}
+		.form-control {
+			color: #424242;
+		}
+
+		.list-group-item {
+			background-color:#ffffff;
+		}
+		ul.dropdown-menu {
+			background-color:#f7f7f7
+		}
+		.nav > li > a:hover, .nav > li > a:focus {
+			background-color:#f7f7f7
+		}
+
+		svg.background-color {
+			background-color:#ffffff ;
+		}
+
+		svg .fill-background {
+			fill:#ffffff;
+		}
+		svg .fill-menufont {
+			fill:#424242;
+		}
+		svg .stroke-menufont {
+			stroke:#424242;
+		}
+
+		svg .stroke-background {
+			stroke:#ffffff ;
+		}
+		
 	{{/if}}
 	</style>
 </head>
@@ -48,21 +147,23 @@
 			<div class="row">
 				<div class="col-sx-12 col-sm-1">
 					<a href="/">
-						<svg style="background-color:{{{user.backgroundColor}}};" xmlns:dc="http://purl.org/dc/elements/1.1/"
-							xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+						<svg class="background-color" xmlns:dc="http://purl.org/dc/elements/1.1/"
+							xmlns:cc="http://creativecommons.org/ns#"
+							xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 							xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg"
 							xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-							xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:docname="iconparts.svg"
-							inkscape:version="1.0 (4035a4fb49, 2020-05-01)" id="svg28" version="1.1" viewBox="0 0 12.7 12.7"
-							height="48" width="48">
+							xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+							sodipodi:docname="iconparts.svg" inkscape:version="1.0 (4035a4fb49, 2020-05-01)" id="svg28"
+							version="1.1" viewBox="0 0 12.7 12.7" height="48" width="48">
 							<defs id="defs22" />
 							<sodipodi:namedview showborder="false" inkscape:pagecheckerboard="false" units="px"
 								inkscape:window-maximized="1" inkscape:window-y="-8" inkscape:window-x="3832"
 								inkscape:window-height="1017" inkscape:window-width="1920" inkscape:snap-grids="true"
 								showgrid="false" inkscape:document-rotation="0" inkscape:current-layer="g1405"
 								inkscape:document-units="px" inkscape:cy="14.869344" inkscape:cx="16.104669"
-								inkscape:zoom="11.313709" inkscape:pageshadow="2" inkscape:pageopacity="0.0" borderopacity="1.0"
-								bordercolor="{{{user.menuFontColor}}}" pagecolor="{{{user.backgroundColor}}}" id="base" />
+								inkscape:zoom="11.313709" inkscape:pageshadow="2" inkscape:pageopacity="0.0"
+								borderopacity="1.0" bordercolor="{{{user.menuFontColor}}}"
+								pagecolor="{{{user.backgroundColor}}}" id="base" />
 							<metadata id="metadata25">
 								<rdf:RDF>
 									<cc:Work rdf:about="">
@@ -78,104 +179,108 @@
 									<g style="stroke-width:0.506835"
 										transform="matrix(1.9760013,0,0,1.970059,-99.372472,-0.00702505)" id="g1405">
 										<g style="stroke-width:0.506835" id="g1069">
-											<rect
-												style="fill:{{{user.backgroundColor}}};stroke:{{{user.menuFontColor}}};stroke-width:0.24138026;stroke-miterlimit:4;stroke-dasharray:none"
-												id="rect159" width="5.1306133" height="1.4923427" x="102.43469" y="4.5706172"
-												ry="0.32722467" />
-											<rect
-												style="fill:{{{user.backgroundColor}}};stroke:{{{user.menuFontColor}}};stroke-width:0.24138026;stroke-miterlimit:4;stroke-dasharray:none"
-												id="rect80" width="5.1306152" height="2.0538459" x="102.43469" y="3.0003896" />
-											<rect
-												style="fill:{{{user.backgroundColor}}};stroke:{{{user.backgroundColor}}};stroke-width:0.0836278;stroke-miterlimit:4;stroke-dasharray:none"
-												id="rect1045" width="4.784574" height="0.90295053" x="102.60783" y="4.5706172"
-												ry="0" />
-											<rect ry="0.14300954" y="3.6247528" x="103.19057" height="2.3304033"
-												width="3.6188567" id="rect159-8"
-												style="fill:{{{user.menuFontColor}}};stroke:none;stroke-width:0.1341" />
-											<rect
-												style="fill:{{{user.menuFontColor}}};stroke:none;stroke-width:0.0836278;stroke-miterlimit:4;stroke-dasharray:none"
+											<rect class="fill-background stroke-menufont"
+												style="stroke-width:0.24138026;stroke-miterlimit:4;stroke-dasharray:none"
+												id="rect159" width="5.1306133" height="1.4923427" x="102.43469"
+												y="4.5706172" ry="0.32722467" />
+											<rect class="fill-background stroke-menufont"
+												style="stroke-width:0.24138026;stroke-miterlimit:4;stroke-dasharray:none"
+												id="rect80" width="5.1306152" height="2.0538459" x="102.43469"
+												y="3.0003896" />
+											<rect class="fill-background stroke-background"
+												style="stroke-width:0.0836278;stroke-miterlimit:4;stroke-dasharray:none"
+												id="rect1045" width="4.784574" height="0.90295053" x="102.60783"
+												y="4.5706172" ry="0" />
+											<rect class="fill-menufont" ry="0.14300954" y="3.6247528" x="103.19057"
+												height="2.3304033" width="3.6188567" id="rect159-8"
+												style="stroke:none;stroke-width:0.1341" />
+											<rect class="fill-menufont"
+												style="stroke:none;stroke-width:0.0836278;stroke-miterlimit:4;stroke-dasharray:none"
 												id="rect1062" width="3.618866" height="0.27827471" x="103.19057"
 												y="5.6768813" />
 										</g>
-										<path sodipodi:type="star" style="fill:{{{user.menuFontColor}}};stroke:none;stroke-width:0.0684598"
-											id="path78" sodipodi:sides="3" sodipodi:cx="1.3465402" sodipodi:cy="1.4646577"
-											sodipodi:r1="1.4479882" sodipodi:r2="0.72399414" sodipodi:arg1="2.6179939"
-											sodipodi:arg2="3.6651914" inkscape:flatsided="false" inkscape:rounded="0"
-											inkscape:randomized="0"
+										<path class="fill-menufont" sodipodi:type="star"
+											style="stroke:none;stroke-width:0.0684598" id="path78" sodipodi:sides="3"
+											sodipodi:cx="1.3465402" sodipodi:cy="1.4646577" sodipodi:r1="1.4479882"
+											sodipodi:r2="0.72399414" sodipodi:arg1="2.6179939" sodipodi:arg2="3.6651914"
+											inkscape:flatsided="false" inkscape:rounded="0" inkscape:randomized="0"
 											d="M 0.09254567,2.1886517 0.71954289,1.1026606 1.3465402,0.01666951 1.9735375,1.1026606 l 0.6269972,1.0859912 -1.2539945,0 z"
 											inkscape:transform-center-y="-0.54916464"
 											transform="matrix(2.5292402,0,0,1.517042,101.59428,-0.01804647)"
 											inkscape:transform-center-x="-4.54406e-06" />
 										<g style="stroke-width:0.506835" id="g90">
-											<rect y="0.0077053839" x="104.91261" height="0.09024699" width="0.17109895"
-												id="rect82"
-												style="fill:#{{{user.backgroundColor}}};stroke:none;stroke-width:0.1341;fill-opacity:1" />
-											<circle r="0.10603795" cy="0.15865666" cx="104.99918" id="path86"
-												style="fill:{{{user.menuFontColor}}};stroke:none;stroke-width:0.1341" />
+											<rect class="fill-background" y="0.0077053839" x="104.91261"
+												height="0.09024699" width="0.17109895" id="rect82"
+												style="stroke:none;stroke-width:0.1341;fill-opacity:1" />
+											<circle class="fill-menufont" r="0.10603795" cy="0.15865666" cx="104.99918"
+												id="path86" style="stroke:none;stroke-width:0.1341" />
 										</g>
 										<g style="stroke-width:0.506835" id="g121">
-											<rect y="3.1289406" x="101.81592" height="0.18208654" width="0.26054898"
-												id="rect115"
-												style="fill:{{{user.backgroundColor}}};stroke:none;stroke-width:0.1341" />
-											<circle transform="rotate(-135)"
-												style="fill:{{{user.menuFontColor}}};stroke:none;stroke-width:0.1341" id="path86-5"
-												cx="-74.439934" cy="69.922127" r="0.10603795" />
+											<rect class="fill-background" y="3.1289406" x="101.81592"
+												height="0.18208654" width="0.26054898" id="rect115"
+												style="stroke:none;stroke-width:0.1341" />
+											<circle class="fill-menufont" transform="rotate(-135)"
+												style="stroke:none;stroke-width:0.1341" id="path86-5" cx="-74.439934"
+												cy="69.922127" r="0.10603795" />
 										</g>
 										<g style="stroke-width:0.506835" id="g121-2"
 											transform="matrix(-1,0,0,1,210.00243,0.00146598)">
-											<rect style="fill:{{{user.backgroundColor}}};stroke:none;stroke-width:0.1341"
+											<rect class="fill-background" style="stroke:none;stroke-width:0.1341"
 												id="rect115-6" width="0.26054898" height="0.17318347" x="101.81592"
 												y="3.1289406" />
-											<circle r="0.10603795" cy="69.922127" cx="-74.439934" id="path86-5-2"
-												style="fill:{{{user.menuFontColor}}};stroke:none;stroke-width:0.1341" transform="rotate(-135)" />
+											<circle class="fill-menufont" r="0.10603795" cy="69.922127" cx="-74.439934"
+												id="path86-5-2" style="stroke:none;stroke-width:0.1341"
+												transform="rotate(-135)" />
 										</g>
-										<rect
-											style="fill:{{{user.backgroundColor}}};stroke:{{{user.menuFontColor}}};stroke-width:0.24741477;stroke-miterlimit:4;stroke-dasharray:none"
-											id="rect1279-2" width="0.74930137" height="1.722411" x="105.68605" y="0.49520755"
-											ry="0.069055587" />
-										<path transform="matrix(1.930358,0,0,1.1578316,102.40896,0.45258567)"
+										<rect class="fill-background stroke-menufont"
+											style="stroke-width:0.24741477;stroke-miterlimit:4;stroke-dasharray:none"
+											id="rect1279-2" width="0.74930137" height="1.722411" x="105.68605"
+											y="0.49520755" ry="0.069055587" />
+										<path class="fill-background"
+											transform="matrix(1.930358,0,0,1.1578316,102.40896,0.45258567)"
 											inkscape:transform-center-y="-0.41913155"
 											d="M 0.09254567,2.1886517 0.71954289,1.1026606 1.3465402,0.01666951 1.9735375,1.1026606 l 0.6269972,1.0859912 -1.2539945,0 z"
 											inkscape:randomized="0" inkscape:rounded="0" inkscape:flatsided="false"
 											sodipodi:arg2="3.6651914" sodipodi:arg1="2.6179939" sodipodi:r2="0.72399414"
 											sodipodi:r1="1.4479882" sodipodi:cy="1.4646577" sodipodi:cx="1.3465402"
-											sodipodi:sides="3" id="path78-6"
-											style="fill:{{{user.backgroundColor}}};stroke:none;stroke-width:0.0896987"
+											sodipodi:sides="3" id="path78-6" style="stroke:none;stroke-width:0.0896987"
 											sodipodi:type="star" />
-										<text transform="scale(0.93061009,1.0745639)" id="text1298" y="2.5730484" x="111.38983"
-											style="font-style:normal;font-weight:normal;font-size:7.21331px;line-height:1.25;font-family:sans-serif;fill:{{{user.menuFontColor}}};fill-opacity:1;stroke:none;stroke-width:0.1341"
+										<text class="fill-menufont" transform="scale(0.93061009,1.0745639)"
+											id="text1298" y="2.5730484" x="111.38983"
+											style="font-style:normal;font-weight:normal;font-size:7.21331px;line-height:1.25;font-family:sans-serif;fill-opacity:1;stroke:none;stroke-width:0.1341"
 											xml:space="preserve">
-											<tspan
-												style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:0.961774px;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';fill:{{{user.menuFontColor}}};stroke-width:0.1341"
-												y="2.5730484" x="111.38983" id="tspan1296" sodipodi:role="line">Parts</tspan>
+											<tspan class="fill-menufont"
+												style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:0.961774px;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';stroke-width:0.1341"
+												y="2.5730484" x="111.38983" id="tspan1296" sodipodi:role="line">Parts
+											</tspan>
 										</text>
 										<g style="stroke-width:0.506835" transform="translate(0.01169249,-0.02923276)"
 											id="g1178">
-											<rect
-												style="fill:{{{user.backgroundColor}}};stroke:#333333;stroke-width:0.0152051;stroke-miterlimit:4;stroke-dasharray:none"
-												id="rect1071" width="0.99975497" height="0.49110773" x="104.48843" y="5.4231229"
-												ry="0.056022257" />
-											<rect ry="0.056022257" y="5.4172764" x="103.3542" height="0.49110776"
-												width="0.99975497" id="rect1071-4"
-												style="fill:{{{user.backgroundColor}}};stroke:#333333;stroke-width:0.0152051;stroke-miterlimit:4;stroke-dasharray:none" />
-											<rect ry="0.056022257" y="5.4231229" x="105.62266" height="0.49110776"
-												width="0.99975497" id="rect1071-3"
-												style="fill:{{{user.backgroundColor}}};stroke:#333333;stroke-width:0.0152051;stroke-miterlimit:4;stroke-dasharray:none" />
+											<rect class="fill-background"
+												style="stroke:#333333;stroke-width:0.0152051;stroke-miterlimit:4;stroke-dasharray:none"
+												id="rect1071" width="0.99975497" height="0.49110773" x="104.48843"
+												y="5.4231229" ry="0.056022257" />
+											<rect class="fill-background" ry="0.056022257" y="5.4172764" x="103.3542"
+												height="0.49110776" width="0.99975497" id="rect1071-4"
+												style="stroke:#333333;stroke-width:0.0152051;stroke-miterlimit:4;stroke-dasharray:none" />
+											<rect class="fill-background" ry="0.056022257" y="5.4231229" x="105.62266"
+												height="0.49110776" width="0.99975497" id="rect1071-3"
+												style="stroke:#333333;stroke-width:0.0152051;stroke-miterlimit:4;stroke-dasharray:none" />
 										</g>
 										<g style="stroke-width:0.506835" id="g1178-9"
 											transform="translate(0.01169249,-0.66322153)">
-											<rect ry="0.056022257" y="5.4231229" x="104.48843" height="0.49110773"
-												width="0.99975497" id="rect1071-7"
-												style="fill:{{{user.backgroundColor}}};stroke:#333333;stroke-width:0.0152051;stroke-miterlimit:4;stroke-dasharray:none" />
-											<rect
-												style="fill:{{{user.backgroundColor}}};stroke:#333333;stroke-width:0.0152051;stroke-miterlimit:4;stroke-dasharray:none"
+											<rect class="fill-background" ry="0.056022257" y="5.4231229" x="104.48843"
+												height="0.49110773" width="0.99975497" id="rect1071-7"
+												style="stroke:#333333;stroke-width:0.0152051;stroke-miterlimit:4;stroke-dasharray:none" />
+											<rect class="fill-background"
+												style="stroke:#333333;stroke-width:0.0152051;stroke-miterlimit:4;stroke-dasharray:none"
 												id="rect1071-4-0" width="0.99975497" height="0.49110776" x="103.3542"
 												y="5.4172764" ry="0.056022257" />
 										</g>
 										<g style="stroke-width:0.506835" id="g1178-4"
 											transform="translate(0.01169249,-1.2972097)">
-											<rect
-												style="fill:{{{user.backgroundColor}}};stroke:#333333;stroke-width:0.0152051;stroke-miterlimit:4;stroke-dasharray:none"
+											<rect class="fill-background"
+												style="stroke:#333333;stroke-width:0.0152051;stroke-miterlimit:4;stroke-dasharray:none"
 												id="rect1071-4-1" width="0.99975497" height="0.49110776" x="103.3542"
 												y="5.4172764" ry="0.056022257" />
 										</g>
@@ -197,15 +302,18 @@
 								<ul class="dropdown-menu">
 									<li class="menu-item dropdown dropdown-submenu"><a href="#">Users</a>
 										<ul class="dropdown-menu">
+											{{#ifCond allowUserRegistration "checked"}}
 											<li><a href="/users/register">Register a new user</a></li>
+											{{/ifCond}}
 											<li><a href="/users/list">List users</a></li>
-		
+
 											<li class="menu-item dropdown dropdown-submenu"><a href="#">Settings</a>
 												<ul class="dropdown-menu">
 													<li class="menu-item {{allowUserRegistration}}"
 														id="allow-user-registration"><a
 															href="javascript:changeServerSettingsUsersCanRegister()"><span
-																class="glyphicon glyphicon-ok"></span>New users can register</a>
+																class="glyphicon glyphicon-ok"></span>New users can
+															register</a>
 													</li>
 												</ul>
 											</li>
@@ -216,11 +324,12 @@
 											{{fileSizeLimitText}}</a></li>
 									<li class="menu-item" id="change-list-description-max-length"
 										data-maxlength="{{listDescriptionMaxLength}}"><a
-											href="javascript:changeListDescriptionMaxLength()">Change maximum part description
+											href="javascript:changeListDescriptionMaxLength()">Change maximum part
+											description
 											length in a list from {{listDescriptionMaxLength}}</a></li>
 								</ul>
 							</li>
-		
+
 							{{/if}}
 							{{#if user}}
 							<li class="dropdown">
@@ -261,7 +370,9 @@
 									<li><a href="/files/register">File</a></li>
 									<li><a href="/files/register/image">Image</a></li>
 									{{#if admin}}
+									{{#ifCond allowUserRegistration "checked"}}
 									<li><a href="/users/register">User</a></li>
+									{{/ifCond}}
 									{{/if}}
 								</ul>
 							</li>
@@ -271,30 +382,34 @@
 							<li role="presentation">
 								<a href="/users/profile/{{user._id}}" rel="tooltip" data-placement="bottom"
 									title="Your profile settings">
-									<div style="color:{{{user.menuFontColor}}}">
-								<span class="glyphicon glyphicon-user"></span>
-								</div>
+									<div class="user-menufont">
+										<span class="glyphicon glyphicon-user"></span>
+									</div>
 								</a>
 							</li>
 							<li role="presentation">
-								<a href="/users/logout" rel="tooltip" data-placement="bottom" title="Logout from Gudjons Parts">
-									
-								<div style="color:{{{user.menuFontColor}}}">
-								<span class="glyphicon glyphicon-log-out"></span>
-								</div>
+								<a href="/users/logout" rel="tooltip" data-placement="bottom"
+									title="Logout from Gudjons Parts">
+
+									<div class="user-menufont">
+										<span class="glyphicon glyphicon-log-out"></span>
+									</div>
 								</a>
 							</li>
 							{{else}}
 							<li role="presentation"><a href="/users/login">Login</a></li>
+							{{#ifCond allowUserRegistration "checked"}}
 							<li role="presentation"><a href="/users/register">Register</a></li>
+							{{/ifCond}}
 							{{/if}}
 							<li class="dropdown">
 								<a class="dropdown-toggle" data-toggle="dropdown" href="#">?</a>
 								<ul class="dropdown-menu">
 									<li><a href="/about">About the system</a></li>
 									<li><a href="/help"></a></li>
-		
-									<li class="menu-item"><a href="https://github.com/guttih/gparts/blob/master/README.md"
+
+									<li class="menu-item"><a
+											href="https://github.com/guttih/gparts/blob/master/README.md"
 											target="_blank">Readme.md</a></li>
 									<li><a href="/licence">Licence</a></li>
 								</ul>
@@ -302,8 +417,6 @@
 						</ul>
 					</nav>
 				</div>
-				<!--<h3 class="text-muted">VoffCon</h3>-->
-				
 			</div>
 		</div>
 
@@ -311,7 +424,7 @@
 		<div class="modal fade" id="myModal" role="dialog">
 			<div class="modal-dialog">
 				<!-- Modal content-->
-				<div class="modal-content">
+				<div class="modal-content user-menubackground user-menufont">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
 						<h4 class="modal-title">Modal Header</h4>
@@ -340,7 +453,6 @@
 			</div>
 		</div>
 
-
 		<div class="row">
 			<div class="col-lg-12">
 				{{#if success_msg}}
@@ -358,9 +470,6 @@
 			</div>
 		</div>
 
-
-
-
 		<footer class="footer">
 			<p>&copy; 2018 Gudjons Parts, Inc.</p>
 		</footer>
@@ -368,7 +477,6 @@
 	</div> <!-- /container -->
 	<div id="config" data-settings='{"serverUrl":"http://www.guttih.com:3000"}' />
 	<script src="/js/main.js"></script>
-
 
 </body>
 </html>
