@@ -11,141 +11,27 @@
 	<link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=2" />
 
 	<style>
-	{{#if user}}
-		.user-background {
-			background:{{{user.backgroundColor}}};
-		}
-		.user-menufont {
-			color:{{{user.menuFontColor}}};
-		}
-		.user-menubackground {
-			background:{{{user.menuBackgroundColor}}};
-		}
-		.user-font {
-			color:{{{user.fontColor}}};
-		}
-		a {
-			color:{{{user.menuFontColor}}};
-		}
-		a:hover {
-			color:{{{user.menuFontColor}}};
-		}
-		
-		body {
-			background:{{{user.backgroundColor}}};
-			color:{{{user.fontColor}}};
-		}
-		.dropdown {
-			color: {{{user.menuFontColor}}};
-		}
-		.dropdown-menu > li > a {
-			color: {{{user.menuFontColor}}};
-		}
-		.dropdown a {
-			color: {{{user.menuFontColor}}};
-		}
-		.form-control {
-			color: {{{user.menuFontColor}}};
-		}
-
-		.list-group-item {
-			background-color:{{{user.backgroundColor}}};
-		}
-		ul.dropdown-menu {
-			background-color:{{{user.menuBackgroundColor}}};
-		}
-		.nav > li > a:hover, .nav > li > a:focus {
-			background-color:	{{{user.menuBackgroundColor}}};
-		}
-
-		svg.background-color {
-			background-color:{{{user.backgroundColor}}} 
-		}
-
-		svg .fill-background {
-			fill:{{{user.backgroundColor}}}
-		}
-		svg .fill-menufont {
-			fill:{{{user.menuFontColor}}}
-		}
-		svg .stroke-menufont {
-			stroke:{{{user.menuFontColor}}}
-		}
-
-		svg .stroke-background {
-			stroke:{{{user.backgroundColor}}}
+	{{#if user}}	
+		:root {
+			--user-font:{{{user.fontColor}}};
+			--user-background: {{{user.backgroundColor}}};
+			--user-menufont: {{{user.menuFontColor}}};
+			--user-menubackground:{{{user.menuBackgroundColor}}};
 		}
 		.footer {
-			border-top-color: {{{user.menuFontColor}}}40;
+    		border-top-color: {{{user.menuFontColor}}}40;
 		}
 		.list-group-item {
-			border-color: {{{user.fontColor}}}40;
+    		border-color: {{{user.fontColor}}}40;
 		}
-		option {
-    		background: {{{user.menuBackgroundColor}}}
-		}
-		
-	{{else}}
-		.user-background {
-			background:#ffffff;
-		}
-		.user-menufont {
-			color:#424242;
-		}
-		
-		body {
-			background:#ffffff;
-			color:#333333;
-		}
-		.dropdown {
-			color:#424242;
-		}
-		.dropdown-menu > li > a {
-			color:#424242;
-		}
-		.dropdown a {
-			color:#424242;
-		}
-		.form-control {
-			color: #424242;
-		}
-
-		.list-group-item {
-			background-color:#ffffff;
-		}
-		ul.dropdown-menu {
-			background-color:#f7f7f7
-		}
-		.nav > li > a:hover, .nav > li > a:focus {
-			background-color:#f7f7f7
-		}
-
-		svg.background-color {
-			background-color:#ffffff ;
-		}
-
-		svg .fill-background {
-			fill:#ffffff;
-		}
-		svg .fill-menufont {
-			fill:#424242;
-		}
-		svg .stroke-menufont {
-			stroke:#424242;
-		}
-
-		svg .stroke-background {
-			stroke:#ffffff ;
-		}
-		
 	{{/if}}
 	</style>
 </head>
 <body>
 	<div class="container">
-		<div class="header clearfix">
+		<div class="header">
 			<div class="row">
-				<div class="col-sx-12 col-sm-1">
+				<div class="col-xs-3">
 					<a href="/">
 						<svg class="background-color" xmlns:dc="http://purl.org/dc/elements/1.1/"
 							xmlns:cc="http://creativecommons.org/ns#"
@@ -290,9 +176,9 @@
 						</svg>
 					</a>
 				</div>
-				<div class="col-sx-12 col-sm-9 pull-right">
-					<nav>
-						<ul class="nav nav-pills pull-right">
+				<div class="col-xs-9">
+					<nav class="navbar">
+						<ul class="nav navbar-nav ">
 							{{#if user}}
 							<!-- <li role="presentation"><a href="/">Dashboard</a></li> -->
 							{{/if}}
