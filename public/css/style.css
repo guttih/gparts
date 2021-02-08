@@ -1,3 +1,19 @@
+:root {
+    --user-font: #333333;
+    --user-background: #ffffff;
+    --user-menufont: #424242;
+    --user-menubackground: #f7f7f7;
+}
+
+.footer {
+    border-top-color: #42424240;
+}
+
+.list-group-item {
+    border-color: #33333340;
+}
+
+
 /* Space out content a bit */
 
 body {
@@ -531,4 +547,93 @@ a.temp-image.text>p {
 
 .search-input {
     background-color: #3c763d0f;
+}
+
+.navbar-nav {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.user-background {
+    background: var(--user-background);
+}
+
+.user-menufont {
+    color: var(--user-menufont);
+}
+
+.user-menubackground {
+    background: var(--user-menubackground);
+}
+
+.user-font {
+    color: var(--user-font);
+}
+
+a {
+    color: var(--user-menufont);
+}
+
+a:hover {
+    color: var(--user-menufont);
+}
+
+body {
+    background: var(--user-background);
+    color: var(--user-font);
+}
+
+.dropdown {
+    color: var(--user-menufont);
+}
+
+.dropdown-menu>li>a {
+    color: var(--user-menufont);
+}
+
+.dropdown a {
+    color: var(--user-menufont);
+}
+
+.form-control {
+    color: var(--user-menufont);
+}
+
+.list-group-item {
+    background-color: var(--user-background);
+}
+
+ul.dropdown-menu {
+    background-color: var(--user-menubackground);
+}
+
+.nav>li>a:hover,
+.nav>li>a:focus {
+    background-color: var(--user-menubackground);
+}
+
+svg.background-color {
+    background-color: var(--user-background);
+}
+
+svg .fill-background {
+    fill: var(--user-background);
+}
+
+svg .fill-menufont {
+    fill: var(--user-menufont);
+}
+
+svg .stroke-menufont {
+    stroke: var(--user-menufont);
+}
+
+svg .stroke-background {
+    stroke: var(--user-background);
+}
+
+option {
+    background: var(--user-menubackground);
 }

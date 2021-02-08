@@ -20,7 +20,6 @@ var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/gparts')
     .then(function(db) { // <- db as first argument
         console.log('Connected to gparts');
-        //console.log(db)
     })
     .catch(function(err) {
         console.log('error connecting to gparts');
@@ -64,10 +63,8 @@ app.set('view engine', 'handlebars');
 var hbs = exphbs.create({});
 hbs.handlebars.registerHelper('ifCond', function(v1, v2, options) {
     if (v1 === v2) {
-        console.log('registerHelper true')
         return options.fn(this);
     }
-    console.log('registerHelper false')
     return options.inverse(this);
 });
 
