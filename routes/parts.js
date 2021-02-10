@@ -66,13 +66,67 @@ router.get('/list', lib.authenticateUrl, function(req, res) {
     res.render('list-part');
 });
 
-router.post('/search', function(req, res) {
-    //
-    res.json({
-        code: 400,
-        message: 'function not implemented yet! Visit this page for implementation: ' +
-            'https://www.codementor.io/@arpitbhayani/fast-and-efficient-pagination-in-mongodb-9095flbqr'
-    });
+
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+
+const makeRegExFromSpaceDelimitedString = (str, multilineSearch, regexOptions) => {
+
+    if (multilineSearch === undefined) throw new Error('makeRegExFromSpaceDelimitedString -> multilineSearch is missing')
+    if (regexOptions === undefined) regexOptions = "i"
+
+    //remove white spaces and escape all regex characters. 
+    const noWhiteSpaces = escapeRegExp(str.replace(/\s\s+/g, ' '))
+
+    //  ([\s\S]*?) or (.*?)       \s is slow
+    const lineToken = multilineSearch ? '[\\s\\S]' : '.';
+    //array of all words with no dublications and no empty strings
+    const words = Array.from(new Set((noWhiteSpaces.split(' ').filter(e => { if (e) { return e } }))));
+    let expr = words.map(e => `(?=${lineToken}*${e})`).join(''); //search in multiline string
+    expr = `${expr}`
+    return new RegExp(expr, regexOptions)
+}
+
+/*listing all parts and return them as a json array*/
+// router.get('/part-list', lib.authenticateRequest, function(req, res) {
+
+//     Part.search(null, null, 10, lib.getConfig().listDescriptionMaxLength)
+//         .then(result => {
+//             res.json(result);
+//         })
+//         .catch(err => {
+//             res.status(err.code ? err.code : 400).json(err);
+//         })
+
+// });
+
+router.post('/search', lib.authenticateRequest, function(req, res) {
+
+    const query = {}
+
+    if (req.body.name) {
+        query.name = { $regex: makeRegExFromSpaceDelimitedString(req.body.name, false) }
+    }
+
+    if (req.body.category) {
+        query.category = { $regex: makeRegExFromSpaceDelimitedString(req.body.category, false) }
+    }
+
+    if (req.body.description) {
+        query.description = { $regex: makeRegExFromSpaceDelimitedString(req.body.description, true) }
+    }
+
+    //https://www.codementor.io/@arpitbhayani/fast-and-efficient-pagination-in-mongodb-9095flbqr
+    //{ '_id': { '$gt': last_id } }, 10
+
+    Part.search(query, null, 50, req.body.page, lib.getConfig().listDescriptionMaxLength)
+        .then(result => {
+            res.json(result);
+        })
+        .catch(err => {
+            res.status(err.code ? err.code : 400).json(err);
+        })
 });
 
 
@@ -177,13 +231,6 @@ router.get('/list/manufacturer/:ID', lib.authenticateUrl, function(req, res) {
     });
 });
 
-/*listing all parts and return them as a json array*/
-router.get('/part-list', lib.authenticateRequest, function(req, res) {
-
-    Part.list(null, lib.getConfig().listDescriptionMaxLength, function(err, list) {
-        res.json(list);
-    });
-});
 
 router.get('/part-list/type/:ID', lib.authenticateRequest, function(req, res) {
 
