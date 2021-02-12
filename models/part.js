@@ -327,7 +327,7 @@ module.exports.search = function(query, sort, itemsPerPage, page, descriptionMax
                 if (err || !list) {
                     reject(err)
                 } else {
-                    Part.count(query).exec(function(err, count) {
+                    Part.countDocuments(query).exec(function(err, count) {
                         if (err || !list) {
                             reject(err);
                         }

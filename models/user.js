@@ -56,7 +56,7 @@ function _createUser(newUser, callback) {
 }
 module.exports.createUser = function(newUser, callback) {
     if (newUser._doc.level === 0) {
-        User.find().count(function(err, count) {
+        User.find().countDocuments(function(err, count) {
             if (err || count === 0) {
                 newUser._doc.level = 2; //the first user will become admin
             }
