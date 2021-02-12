@@ -651,28 +651,42 @@ option {
     border-width: 1px;
     border-radius: 5px;
     border-color: var(--user-menufont);
+    background-color: var(--user-menubackground);
     padding: 0px;
     height: 45px;
     margin: 10px;
     width: 150px;
 }
 
+.dropdown-menu>li>a:hover,
+.dropdown-menu>li>a:focus {
+    border-color: var(--user-menufont);
+    background-color: var(--user-menufont);
+}
+
+.dashboard .summary:hover {
+    border-color: var(--user-font);
+    background-color: var(--user-menufont);
+}
+
+.dashboard .summary:hover div div.text {
+    color: var(--user-menubackground);
+}
+
+.dashboard .summary:hover .count {
+    color: var(--user-menufont);
+    background-color: var(--user-menubackground);
+}
+
 .dashboard .summary div {
     height: 100%;
-    /* display: -webkit-box;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-    align-items: center; */
 }
 
 .dashboard .summary .text {
     border-radius: 5px;
     height: 100%;
-    width: 101px;
+    width: 105px;
     padding-left: 8px;
-    background: var(--user-menubackground);
     display: flex;
     align-items: center;
 }
@@ -693,4 +707,8 @@ option {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.dashboard .summary a:hover {
+    text-decoration: none;
 }
