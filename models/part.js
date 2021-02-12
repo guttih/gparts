@@ -8,7 +8,6 @@ var Supplier = require('./supplier');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 var Utils = require('./modelUtility');
-
 var PartSchema = mongoose.Schema({
     name: { type: String, index: true },
     description: { type: String },
@@ -26,6 +25,8 @@ var PartSchema = mongoose.Schema({
 });
 
 var Part = module.exports = mongoose.model('Part', PartSchema);
+
+module.exports.Utils = Utils;
 
 /**
  * @callback requestCallbackWithError

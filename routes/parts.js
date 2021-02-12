@@ -1,18 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-var request = require('request');
 var lib = require('../utils/glib');
-
 var Part = require('../models/part');
-var modelUtils = require('../models/modelUtility');
-
-//todo: færa allt File.functions í Part function
-var File = require('../models/file');
-
-var config = lib.getConfig();
-
 
 // Register
 router.get('/register', lib.authenticateRequest, function(req, res) {
@@ -67,58 +56,21 @@ router.get('/list', lib.authenticateUrl, function(req, res) {
 });
 
 
-function escapeRegExp(string) {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-}
-
-const makeRegExFromSpaceDelimitedString = (str, multilineSearch, regexOptions) => {
-
-    if (multilineSearch === undefined) throw new Error('makeRegExFromSpaceDelimitedString -> multilineSearch is missing')
-    if (regexOptions === undefined) regexOptions = "i"
-
-    //remove white spaces and escape all regex characters. 
-    const noWhiteSpaces = escapeRegExp(str.replace(/\s\s+/g, ' '))
-
-    //  ([\s\S]*?) or (.*?)       \s is slow
-    const lineToken = multilineSearch ? '[\\s\\S]' : '.';
-    //array of all words with no dublications and no empty strings
-    const words = Array.from(new Set((noWhiteSpaces.split(' ').filter(e => { if (e) { return e } }))));
-    let expr = words.map(e => `(?=${lineToken}*${e})`).join(''); //search in multiline string
-    expr = `${expr}`
-    return new RegExp(expr, regexOptions)
-}
-
-/*listing all parts and return them as a json array*/
-// router.get('/part-list', lib.authenticateRequest, function(req, res) {
-
-//     Part.search(null, null, 10, lib.getConfig().listDescriptionMaxLength)
-//         .then(result => {
-//             res.json(result);
-//         })
-//         .catch(err => {
-//             res.status(err.code ? err.code : 400).json(err);
-//         })
-
-// });
-
 router.post('/search', lib.authenticateRequest, function(req, res) {
 
     const query = {}
 
     if (req.body.name) {
-        query.name = { $regex: makeRegExFromSpaceDelimitedString(req.body.name, false) }
+        query.name = { $regex: Part.Utils.makeRegExFromSpaceDelimitedString(req.body.name, false) }
     }
 
     if (req.body.category) {
-        query.category = { $regex: makeRegExFromSpaceDelimitedString(req.body.category, false) }
+        query.category = { $regex: Part.Utils.makeRegExFromSpaceDelimitedString(req.body.category, false) }
     }
 
     if (req.body.description) {
-        query.description = { $regex: makeRegExFromSpaceDelimitedString(req.body.description, true) }
+        query.description = { $regex: Part.Utils.makeRegExFromSpaceDelimitedString(req.body.description, true) }
     }
-
-    //https://www.codementor.io/@arpitbhayani/fast-and-efficient-pagination-in-mongodb-9095flbqr
-    //{ '_id': { '$gt': last_id } }, 10
 
     Part.search(query, null, 50, req.body.page, lib.getConfig().listDescriptionMaxLength)
         .then(result => {
@@ -231,7 +183,6 @@ router.get('/list/manufacturer/:ID', lib.authenticateUrl, function(req, res) {
     });
 });
 
-
 router.get('/part-list/type/:ID', lib.authenticateRequest, function(req, res) {
 
     var id = req.params.ID;
@@ -264,6 +215,7 @@ router.get('/part-list/manufacturer/:ID', lib.authenticateRequest, function(req,
 
 
 });
+
 router.get('/part-list/supplier/:ID', lib.authenticateRequest, function(req, res) {
     var id = req.params.ID;
     if (id === undefined || id.length < 24) {
@@ -273,8 +225,6 @@ router.get('/part-list/supplier/:ID', lib.authenticateRequest, function(req, res
         res.json(list);
     });
 });
-
-
 
 // Register Part
 router.post('/register', lib.authenticateAdminRequest, function(req, res) {

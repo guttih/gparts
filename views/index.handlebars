@@ -1,10 +1,83 @@
- <h2 class="page-header" align="right">Dashboard</h2>
-<p>Welcome {{{user.name}}}</p>  
+<h2 class="page-header" align="right">Dashboard</h2>
+<p>Welcome {{{user.name}}}</p>
 
-Some shortcuts:
-<ul>
-    <li><a href="/parts/list">List parts</a></li>
-    <li><a href="/parts/register">Add a new part</a></li>
-    <li><a href="/types/list">List part types</a></li>
-    <li><a href="/locations/list">List locations</a></li>
-</ul>
+<div class="containerx">
+    <div class="dashboard">
+        <div class="summary">
+            <a href="/parts/list">
+                <div class="item">
+                    <div class="text">Parts </div>
+                    <div class="count">{{partCount}} </div>
+                </div>
+            </a>
+        </div>
+        <div class=" summary">
+            <a href="/locations/list">
+                <div class="item">
+                    <div class="text">Locations </div>
+                    <div class="count">{{locationCount}} </div>
+                </div>
+            </a>
+        </div>
+        <div class=" summary">
+            <a href="/types/list">
+                <div class="item">
+                    <div class="text">Types </div>
+                    <div class="count">{{typeCount}} </div>
+                </div>
+            </a>
+        </div>
+        <div class=" summary">
+            <a href="/actions/list">
+                <div class="item">
+                    <div class="text">Actions </div>
+                    <div class="count">{{actionCount}} </div>
+                </div>
+            </a>
+        </div>
+        <div class=" summary">
+            <a href="/suppliers/list">
+                <div class="item">
+                    <div class="text">Suppliers </div>
+                    <div class="count">{{supplierCount}} </div>
+                </div>
+            </a>
+        </div>
+        <div class=" summary">
+
+            <a href="/manufacturers/list">
+                <div class="item">
+                    <div class="text">Manufacturers</div>
+                    <div class="count">{{manufacturerCount}}</div>
+                </div>
+            </a>
+        </div>
+        <div class=" summary">
+            <a href="/files/list">
+                <div class="item">
+                    <div class="text">Files </div>
+                    <div class="count">{{fileCount}} </div>
+                </div>
+            </a>
+        </div>
+        <div class=" summary">
+            <a href="/files/list/image">
+                <div class="item">
+                    <div class="text">Images </div>
+                    <div class="count">{{imageCount}} </div>
+                </div>
+            </a>
+        </div>
+        {{#if admin}}
+        <div class=" summary">
+            <a href="/users/list">
+                <div class="item">
+                    <div class="text">Users </div>
+                    <div class="count">{{userCount}} </div>
+                </div>
+            </a>
+        </div>
+        {{/if}}
+
+    </div>
+</div>
