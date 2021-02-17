@@ -1,14 +1,13 @@
 "use strict";
-var mongoose = require('mongoose');
-var File = require('./file');
-var Type = require('./type');
-var Location = require('./location');
-var Manufacturer = require('./manufacturer');
-var Supplier = require('./supplier');
-var Schema = mongoose.Schema;
-var ObjectId = Schema.ObjectId;
-var Utils = require('./modelUtility');
-var PartSchema = mongoose.Schema({
+const mongoose = require('mongoose');
+const File = require('./file');
+const Type = require('./type');
+const Location = require('./location');
+const Manufacturer = require('./manufacturer');
+const Supplier = require('./supplier');
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
+const PartSchema = mongoose.Schema({
     name: { type: String, index: true },
     description: { type: String },
     category: { type: String },
@@ -24,9 +23,8 @@ var PartSchema = mongoose.Schema({
     supplier: ObjectId
 });
 
-var Part = module.exports = mongoose.model('Part', PartSchema);
 
-module.exports.Utils = Utils;
+const Part = module.exports = mongoose.model('Part', PartSchema);
 
 /**
  * @callback requestCallbackWithError
@@ -43,6 +41,9 @@ function errorToUser(msg, statusCode) {
     }
     return obj;
 }
+
+module.exports.Utils = require('./modelUtility');
+module.exports.validSearchCollections = ['type', 'location', 'manufacturer', 'supplier']
 
 module.exports.delete = function(id, callback) {
     Part.findById(id, function(err, part) {
@@ -142,7 +143,7 @@ module.exports.toJsonList = function(item, descriptionMaxLength) {
     var ret = {
         id: item.id,
         name: item.name,
-        description: Utils.maxStringLength(item.description, descriptionMaxLength),
+        description: module.exports.Utils.maxStringLength(item.description, descriptionMaxLength),
         image: (item.image !== undefined && item.image !== null) ? item.image.toString() : null
     };
     return ret;
@@ -234,6 +235,8 @@ module.exports.queryLocation = function(query, callback) {
 module.exports.listByLocation = function(locationId, maxDescriptionLength, callback) {
     Part.list({ location: locationId }, maxDescriptionLength, callback);
 };
+
+
 
 module.exports.LocationToJson = function(item) {
 

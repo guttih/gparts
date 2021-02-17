@@ -156,6 +156,14 @@ function getWhenServerStarted() {
     });
 }
 
+/**
+ * Capitalizes the first letter of a string.
+ * @param {string} str 
+ */
+function capitalize(str) {
+    if (!str) return str;
+    return str.charAt(0).toUpperCase() + str.slice(1)
+}
 
 /*routeText is the element type to be deleted 'cards', 'controls' or 'devices'*/
 function createListItem(id, name, description, routeText, bAddRunButton, bAddListByButton, bAddEditButton, bAddDeleteButton, imageSrc) {
@@ -260,7 +268,7 @@ function deleteItem(routeText, id, deleteSuccessCallback) {
                     } else {
                         console.log(data);
                         $('#listItem' + id).remove();
-                        updateListCount();
+                        listFactory.updateListCount();
                     }
                 },
                 error: function(res) {
@@ -785,39 +793,6 @@ function getUrlFirstPath(href, removeLastChar) {
     return ret;
 }
 
-function setListByButtonUrlAndText() {
-    var listBy = getUrlParameter('listBy');
-    var queryStr = "?listBy=name";
-    var btnText = "Order by name";
-    var desText = "Ordered by creation time";
-    var page = getUrlFirstPath(window.location.href);
-    if (page !== undefined && page === 'parts') {
-        desText = "Ordered by last modified time";
-    }
-
-    if (listBy === 'name') {
-        var queryStr = ""
-        var btnText = "Order by creation order";
-        if (page !== undefined && page === 'parts') {
-            btnText = "Order by last modified";
-        }
-        desText = "Ordered by name";
-    }
-
-    var btn = $('.list-by button');
-    var par = $('.list-by p');
-    btn.unbind();
-    btn.text(btnText);
-    par.text(desText);
-
-
-    btn.bind('click tap', function() {
-        //var page = 'parts';
-        var url = SERVER + '/' + page + '/list' + queryStr;
-        window.location.href = url;
-    });
-}
-
 function getUrlParameter(name) {
     name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
     var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -867,18 +842,6 @@ function RegisterViewButtonClick() {
     });
 }
 
-function updateListCount(newCount, prefix) {
-    if (newCount === undefined || newCount === null) {
-        newCount = $('.list-group-item-heading').length;
-    }
-    var e = $('.list-count');
-    var strItem = e.attr('data-name');
-    strItem += (newCount > 1) ? 's' : '';
-    e.find('.text').text(strItem);
-    e.find('.number').text(newCount); {
-        e.find('.prefix').text(prefix ? prefix : '');
-    }
-}
 
 $(function() {
     /* this is the $( document ).ready(function( $ ) but jshint does not like that*/

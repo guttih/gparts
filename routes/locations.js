@@ -1,16 +1,10 @@
 var express = require('express');
 var router = express.Router();
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-
+const helper = require('../utils/routeCollectionHelper');
 var Location = require('../models/location');
+var Part = require('../models/part');
 var Action = require('../models/action');
-
-
-var request = require('request');
 var lib = require('../utils/glib');
-
-var config = lib.getConfig();
 
 // Register
 router.get('/register', lib.authenticateUrl, function(req, res) {
@@ -25,8 +19,6 @@ router.get('/register', lib.authenticateUrl, function(req, res) {
 
     });
 });
-
-
 
 router.get('/clone/:ID', lib.authenticateRequest, function(req, res) {
     var id = req.params.ID;
@@ -61,6 +53,7 @@ router.get('/clone/:ID', lib.authenticateRequest, function(req, res) {
 // modify page
 router.get('/register/:ID', lib.authenticateRequest, function(req, res) {
     var id = req.params.ID;
+
     if (id !== undefined) {
         //todo: call Location.getByIdPromise and delete Location.getById
         Location.getById(id, function(err, location) {
@@ -75,16 +68,33 @@ router.get('/register/:ID', lib.authenticateRequest, function(req, res) {
                     data: location.data,
                     action: location.action
                 };
-                var str = JSON.stringify(obj);
-                Action.listAsJson(function(err, list) {
-                    if (err || list === null) {
-                        res.render('register-location', { item: str });
-                    } else {
-                        //There are some actions
-                        res.render('register-location', { item: str, actions: JSON.stringify(list) });
-                    }
 
-                });
+
+                //get the count
+                Part.count({ location: id })
+                    .then(count => {
+                        obj.partCount = count;
+                        var str = JSON.stringify(obj);
+                        Action.listAsJson(function(err, list) {
+                            if (err || list === null) {
+                                res.render('register-location', { item: str });
+                            } else {
+                                //There are some actions
+                                res.render('register-location', { item: str, actions: JSON.stringify(list) });
+                            }
+
+                        });
+
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        req.flash('error', 'Could count parts.');
+                        res.redirect('/result');
+                    })
+
+
+
+
             }
         });
 
@@ -107,7 +117,10 @@ router.get('/item/:ID', lib.authenticateRequest, function(req, res) {
 
 //returns a location list page
 router.get('/list', lib.authenticateUrl, function(req, res) {
-    res.render('list-location');
+    res.render('list-location', {
+        title: 'Locations',
+        dataName: 'location'
+    });
 });
 
 /*listing all parts and return them as a json array*/
@@ -130,6 +143,44 @@ router.get('/location-list', lib.authenticateRequest, function(req, res) {
         }
         res.json(arr);
     });
+});
+
+router.post('/search', lib.authenticateRequest, async function(req, res) {
+    console.log(`--Body: ${JSON.stringify(req.body, null, 4)}`)
+
+    const query = {}
+
+    if (req.body.name) {
+        query.name = { $regex: helper.makeRegExFromSpaceDelimitedString(req.body.name, false) }
+    }
+
+    if (req.body.data) {
+        query.data = { $regex: helper.makeRegExFromSpaceDelimitedString(req.body.data, false) }
+    }
+
+    if (req.body.description) {
+        query.description = { $regex: helper.makeRegExFromSpaceDelimitedString(req.body.description, true) }
+    }
+
+    let sorting = helper.makeSortingObject(req.body.sortingMethod);
+
+    console.log(`--query: ${JSON.stringify(query, null, 4)}`)
+    console.log(`--sorting: ${JSON.stringify(sorting, null, 4)}`)
+
+    try {
+        const ret = await Location.search(query, sorting, 50, req.body.page, lib.getConfig().listDescriptionMaxLength);
+        res.json(ret);
+    } catch (err) {
+        res.status(err.code ? err.code : 400).json(err);
+    }
+
+    // Location.search(query, sorting, 50, req.body.page, lib.getConfig().listDescriptionMaxLength)
+    //     .then(result => {
+    //         res.json(result);
+    //     })
+    //     .catch(err => {
+    //         res.status(err.code ? err.code : 400).json(err);
+    //     })
 });
 
 router.get('/run-action/:ID', lib.authenticateRequest, function(req, res) {

@@ -27,29 +27,31 @@ function runItem(id){
 }*/
 
 
-var setUserlistValues = function setUserlistValues(list){
-	var id, name, description;
-	
-	var listBy = getUrlParameter('listBy');
-	switch (listBy) {
-		case 'name' : list.sort(compareNames); break;
-	}
-	setListByButtonUrlAndText();
-	for(var i = 0; i < list.length; i++){
-		id 		= list[i].id;
-		name 		= list[i].name;
-		description = list[i].description;
-		
-		var str =  createListItem(id, name, description, 'users', false, false, true, true);
-		$("#user-list").append(str);
-	}
-	updateListCount(list.length);
+var setUserlistValues = function setUserlistValues(list) {
+    var id, name, description;
+
+    var listBy = getUrlParameter('listBy');
+    switch (listBy) {
+        case 'name':
+            list.sort(compareNames);
+            break;
+    }
+    setListByButtonUrlAndText();
+    for (var i = 0; i < list.length; i++) {
+        id = list[i].id;
+        name = list[i].name;
+        description = list[i].description;
+
+        var str = createListItem(id, name, description, 'users', false, false, true, true);
+        $("#user-list").append(str);
+    }
+    listFactory.updateListCount(list.length);
 };
 
-$(function () {  
-	/* this is the *$( document ).ready(function( $ ) but jshint does not like that*/
-	SERVER = getServer();
-	
-	getUserUserList(setUserlistValues, true);
-	
+$(function() {
+    /* this is the *$( document ).ready(function( $ ) but jshint does not like that*/
+    SERVER = getServer();
+
+    getUserUserList(setUserlistValues, true);
+
 });
