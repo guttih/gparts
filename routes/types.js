@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var Type = require('../models/type');
-var Part = require('../models/part');
+const helper = require('../utils/routeCollectionHelper');
+const Type = require('../models/type');
 var lib = require('../utils/glib');
 
 
@@ -11,42 +11,16 @@ router.get('/register', lib.authenticateRequest, function(req, res) {
 });
 
 // modify page
-router.get('/register/:typeID', lib.authenticateRequest, function(req, res) {
-    var id = req.params.typeID;
-    if (id !== undefined) {
-        Type.getById(id, function(err, type) {
-            if (err || type === null) {
-                req.flash('error', 'Could not find type.');
-                res.redirect('/result');
-            } else {
-                var obj = {
-                    id: id,
-                    name: type.name,
-                    description: type.description
-                };
-
-                Part.count({ type: id })
-                    .then(count => {
-                        obj.partCount = count;
-                        res.render('register-type', { item: JSON.stringify(obj) });
-                    })
-                    .catch(err => {
-                        console.log(err);
-                        req.flash('error', 'Could count parts.');
-                        res.redirect('/result');
-                    })
-
-
-            }
-        });
-
-    }
-
+router.get('/register/:typeID', lib.authenticateRequest, async function(req, res) {
+    await helper.getRouterRegisterCollectionId('type', req, res)
 });
 
 //returns a type list page
 router.get('/list', lib.authenticateUrl, function(req, res) {
-    res.render('list-type');
+    res.render('list-type', {
+        title: 'Types',
+        dataName: 'type'
+    });
 });
 
 /*listing all parts and return them as a json array*/
@@ -54,7 +28,6 @@ router.get('/type-list', lib.authenticateRequest, function(req, res) {
     Type.list(function(err, list) {
 
         var arr = [];
-        var isOwner;
         var item;
         for (var i = 0; i < list.length; i++) {
             item = list[i];
@@ -106,13 +79,9 @@ router.post('/register', lib.authenticateAdminRequest, function(req, res) {
             console.log(type);
             res.redirect('/types/register/' + type.id);
         });
-
-
-        //res.redirect('/types/list');
     }
 });
 
-//todo: type change profile
 router.post('/register/:typeID', lib.authenticateAdminRequest, function(req, res) {
     //type modify
     var id = req.params.typeID;
@@ -155,6 +124,33 @@ router.delete('/:typeID', lib.authenticateAdminRequest, function(req, res) {
             res.status(200).send('Type deleted.');
         }
     });
+
+});
+
+router.post('/search', lib.authenticateRequest, async function(req, res) {
+    console.log(`--Body: ${JSON.stringify(req.body, null, 4)}`)
+
+    const query = {}
+
+    if (req.body.name) {
+        query.name = { $regex: helper.makeRegExFromSpaceDelimitedString(req.body.name, false) }
+    }
+
+    if (req.body.description) {
+        query.description = { $regex: helper.makeRegExFromSpaceDelimitedString(req.body.description, true) }
+    }
+
+    let sorting = helper.makeSortingObject(req.body.sortingMethod);
+
+    console.log(`--query: ${JSON.stringify(query, null, 4)}`)
+    console.log(`--sorting: ${JSON.stringify(sorting, null, 4)}`)
+
+    try {
+        const ret = await Type.search(query, sorting, 50, req.body.page, lib.getConfig().listDescriptionMaxLength);
+        res.json(ret);
+    } catch (err) {
+        res.status(err.code ? err.code : 400).json(err);
+    }
 
 });
 
