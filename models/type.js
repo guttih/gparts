@@ -1,5 +1,6 @@
 "use strict";
 var mongoose = require('mongoose');
+const routeCollectionHelper = require('../utils/routeCollectionHelper');
 var TypeSchema = mongoose.Schema({
     name: { type: String, index: true },
     description: { type: String }
@@ -119,59 +120,6 @@ module.exports.toJsonList = function(item, descriptionMaxLength) {
     return module.exports.toJson(item, descriptionMaxLength)
 }
 
-module.exports.itemListToClientList = function(list, descriptionMaxLength, attachListToThisObject) {
-    return new Promise((resolve, reject) => {
-        if (!list) {
-            reject({ code: 400, message: "List is missing!" })
-        } else {
-            const arr = [];
-            let i, item;
-            for (i = 0; i < list.length; i++) {
-                item = Type.toJsonList(list[i], descriptionMaxLength);
-                arr.push(item);
-            }
-            attachListToThisObject.result = arr;
-            resolve(attachListToThisObject)
-        }
-    })
-}
-
-/**
- * List types.
- *
- * @param {Object} query Query object to search for.  Pass null to list all types.
- * @param {Number} maxDescriptionLength How long can Type.descriptions. pass null for no length restriction
- * @param {requestCallbackWithError} callback callback function where fist parameter is err and second is result
- */
-
 module.exports.search = function(query, sort, itemsPerPage, page, descriptionMaxLength) {
-    const sortedBy = sort ? sort : { lastModified: -1 };
-    page = Math.max(0, page);
-    return new Promise((resolve, reject) => {
-        Type
-            .find(query)
-            .limit(itemsPerPage)
-            .skip(itemsPerPage * page)
-            .sort(sortedBy)
-            .exec(function(err, list) {
-                if (err || !list) {
-                    reject(err)
-                } else {
-                    Type.countDocuments(query).exec(function(err, count) {
-                        if (err || !list) {
-                            reject(err);
-                        }
-                        const rootObject = {
-                            page: page,
-                            itemsPerPage: itemsPerPage,
-                            pages: Math.ceil(count / itemsPerPage),
-                            count: count
-                        }
-                        Type.itemListToClientList(list, descriptionMaxLength, rootObject)
-                            .then(newList => resolve(newList))
-                            .catch(err => reject(err));
-                    })
-                }
-            })
-    })
+    return routeCollectionHelper.collectionSearch('type', query, sort, itemsPerPage, page, descriptionMaxLength);
 };

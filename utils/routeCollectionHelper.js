@@ -107,6 +107,69 @@ module.exports = {
         }
 
         res.render('result', { title: pageTitle, errors: errors });
+    },
+
+    /**
+     * Search a Collection (Part|Type|Location|Manufacturer:Supplier)
+     *
+     * @param {string} collection - name of the collection valid strings are 'part', 'type', 'location', 'manufacturer' and 'supplier'
+     * @param {object} query - the search query.  If you want to list all pass an empty object like this {}
+     * @param {object} sort - how should the list be ordered? pass null for a default order
+     * @param {number} itemsPerPage - how many items should be in a responce
+     * @param {number} page - Items on what page should be returned
+     * @param {number} descriptionMaxLength - what is the maximum length of the item description string.
+     */
+    collectionSearch: (collection, query, sort, itemsPerPage, page, descriptionMaxLength) => {
+        const Collection = module.exports.getValidCollection(collection);
+        if (!Collection) {
+            throw new Error('collectionSearch => collection is incorrect')
+        }
+
+        const sortedBy = sort ? sort : { $natural: -1 };
+        page = Math.max(0, page);
+        return new Promise((resolve, reject) => {
+            Collection
+                .find(query)
+                .limit(itemsPerPage)
+                .skip(itemsPerPage * page)
+                .sort(sortedBy)
+                .exec(function(err, list) {
+                    if (err || !list) {
+                        reject(err)
+                    } else {
+                        Collection.countDocuments(query).exec(function(err, count) {
+                            if (err || !list) {
+                                reject(err);
+                            }
+                            const rootObject = {
+                                page: page,
+                                itemsPerPage: itemsPerPage,
+                                pages: Math.ceil(count / itemsPerPage),
+                                count: count
+                            }
+                            module.exports.collectionItemListToClientList(Collection, list, descriptionMaxLength, rootObject)
+                                .then(newList => resolve(newList))
+                                .catch(err => reject(err));
+                        })
+                    }
+                })
+        })
+    },
+    collectionItemListToClientList: (Collection, list, descriptionMaxLength, attachListToThisObject) => {
+        return new Promise((resolve, reject) => {
+            if (!list) {
+                reject({ code: 400, message: "List is missing!" })
+            } else {
+                const arr = [];
+                let i, item;
+                for (i = 0; i < list.length; i++) {
+                    item = Collection.toJsonList(list[i], descriptionMaxLength);
+                    arr.push(item);
+                }
+                attachListToThisObject.result = arr;
+                resolve(attachListToThisObject)
+            }
+        })
     }
 
 };

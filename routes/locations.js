@@ -139,8 +139,6 @@ router.get('/location-list', lib.authenticateRequest, function(req, res) {
 });
 
 router.post('/search', lib.authenticateRequest, async function(req, res) {
-    console.log(`--Body: ${JSON.stringify(req.body, null, 4)}`)
-
     const query = {}
 
     if (req.body.name) {
