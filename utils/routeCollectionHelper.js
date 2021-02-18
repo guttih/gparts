@@ -69,7 +69,7 @@ module.exports = {
         return null;
     },
     getRouterRegisterCollectionId: async(collection, req, res) => {
-        var id = req.params.typeID;
+        var id = req.params.id;
         if (!id) {
             return module.exports.renderResultViewErrors(res, `${collection} Id is missing from url`)
         }

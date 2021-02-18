@@ -10,7 +10,7 @@ router.get('/register', lib.authenticateRequest, function(req, res) {
 });
 
 // modify page
-router.get('/register/:typeID', lib.authenticateRequest, async function(req, res) {
+router.get('/register/:id', lib.authenticateRequest, async function(req, res) {
     await helper.getRouterRegisterCollectionId('type', req, res)
 });
 
