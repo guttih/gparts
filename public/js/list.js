@@ -112,7 +112,7 @@ var listFactory = {
                 .fail(function(err) {
                     listFactory.showLoading(false)
                     console.log(`Failed ${JSON.stringify(err, null, 4)}`)
-                    showModalErrorMsg('Error updating settings for user registration', err);
+                    showModalErrorMsg('Error retriving list', err);
                     reject(err);
                 });
         })

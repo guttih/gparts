@@ -310,24 +310,32 @@ function showModalErrorText(title, errorMessage) {
 
 function showModalErrorMsg(title, response) {
     var text = {};
-    if (typeof response === 'object' && response !== null)
+    if (typeof response === 'object' && response !== null) {
         try {
             obj = JSON.parse(response.responseText);
-            if (obj.msg !== undefined && obj.msg.length > 0) {
-                text = obj.msg;
-            }
-            if (obj.message !== undefined && obj.message.length > 0) {
-                text = obj.message;
-            }
-            if (obj.text !== undefined && obj.text.length > 0) {
-                text = obj.text;
+            if (Object.keys(obj).length > 0) {
+                if (obj.msg !== undefined && obj.msg.length > 0) {
+                    text = obj.msg;
+                }
+                if (obj.message !== undefined && obj.message.length > 0) {
+                    text = obj.message;
+                }
+                if (obj.text !== undefined && obj.text.length > 0) {
+                    text = obj.text;
+                }
+                if (typeof text !== 'string') {
+                    text = '<pre>' + JSON.stringify(obj, null, 4) + '</pre>';
+                }
+            } else {
+                text = "";
             }
         } catch (e) {
             text = response.statusText;
         }
+    }
     showModal(title,
         'Error ' + response.status + ' : ' + response.statusText +
-        '\n\n<p class="error-response-text">' + text + '</p>');
+        (text ? ('\n\n<p class="error-response-text">' + text + '</p>') : ""));
 }
 
 function showModal(title, message) {

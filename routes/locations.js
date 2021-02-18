@@ -164,9 +164,6 @@ router.post('/search', lib.authenticateRequest, async function(req, res) {
 
     let sorting = helper.makeSortingObject(req.body.sortingMethod);
 
-    console.log(`--query: ${JSON.stringify(query, null, 4)}`)
-    console.log(`--sorting: ${JSON.stringify(sorting, null, 4)}`)
-
     try {
         const ret = await Location.search(query, sorting, 50, req.body.page, lib.getConfig().listDescriptionMaxLength);
         res.json(ret);

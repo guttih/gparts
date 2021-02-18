@@ -67,16 +67,46 @@ module.exports = {
                 return require('../models/part');
         }
 
-        /*
-        const File =         require('../models/file');
-        const Type =         require('../models/type');
-        const Location =     require('../models/location');
-        const Manufacturer = require('../models/manufacturer');
-        const Supplier =     require('../models/supplier');
-        const Part =         require('../models/part');
-        */
-
         return null;
+    },
+    getRouterRegisterCollectionId: async(collection, req, res) => {
+        var id = req.params.typeID;
+        if (!id) {
+            return module.exports.renderResultViewErrors(res, `${collection} Id is missing from url`)
+        }
+
+        const obj = await module.exports.getValidCollection(collection).getByIdAsJson(id, true);
+        if (obj) {
+            return res.render(`register-${collection}`, { item: JSON.stringify(obj) });
+        } else {
+            return module.exports.renderResultViewErrors(res, `Could not get ${collection}.`)
+        }
+    },
+    /**
+     * 
+     * @param {Responce} res - the responce to render the result page to
+     * @param {string|string[]} errorStringOrArrayOfErrorStrings - one string or array of string containing error message(s).
+     * @param {string} [pageTitle='Error']  - If provided result page title will changed from 'Error' to what is provided in this param.
+     */
+    renderResultViewErrors: (res, errorStringOrArrayOfErrorStrings, pageTitle) => {
+        pageTitle = pageTitle ? pageTitle : "Error";
+        if (errorStringOrArrayOfErrorStrings === undefined) {
+            throw new Error('renderResultViewErrors -> error text undefined, did yo forget to add the res?')
+        }
+        const errors = [];
+        const theType = typeof errorStringOrArrayOfErrorStrings;
+
+        if (theType === 'object' && Array.isArray(errorStringOrArrayOfErrorStrings)) {
+            errorStringOrArrayOfErrorStrings.forEach(e => {
+                errors.push({ msg: e })
+            });
+        } else if (theType === 'string') { //just a string
+            errors.push({ msg: errorStringOrArrayOfErrorStrings })
+        } else {
+            errors.push({ msg: "Unhandled error!!!!" })
+        }
+
+        res.render('result', { title: pageTitle, errors: errors });
     }
 
 };

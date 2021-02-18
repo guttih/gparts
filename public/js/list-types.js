@@ -1,13 +1,6 @@
 var setListValues = function setListValues(list) {
     var id, name, description;
 
-    var listBy = getUrlParameter('listBy');
-    switch (listBy) {
-        case 'name':
-            list.sort(compareNames);
-            break;
-    }
-    setListByButtonUrlAndText();
     for (var i = 0; i < list.length; i++) {
         id = list[i].id;
         name = list[i].name;
@@ -21,7 +14,5 @@ var setListValues = function setListValues(list) {
 
 $(document).ready(function() {
 
-
-    getList(setListValues, '/types/type-list');
 
 });
