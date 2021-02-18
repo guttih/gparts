@@ -1,65 +1,71 @@
-{{#if item}} <!-- if you want to modify -->
-      <h2 class="page-header" align="right">Modify Location</h2>
-			<script type="text/javascript">
-			var item = {{{item}}};
-		</script>
+{{#if item}}
+<!-- if you want to modify -->
+<h2 class="page-header" align="right">Modify Location</h2>
+<script type="text/javascript">
+  var item = {{{ item }}};
+</script>
 {{else}}
-      <h2 class="page-header" align="right">Register a new Location</h2>
+<h2 class="page-header" align="right">Register a new Location</h2>
 {{/if}}
 
-{{#if actions}} <!-- if you want to modify -->
-			<script type="text/javascript">
-			var actions = {{{actions}}};
-		</script>
+{{#if actions}}
+<!-- if you want to modify -->
+<script type="text/javascript">
+  var actions = {{{ actions }}};
+</script>
 {{/if}}
 
 {{#if errors}}
-    <div class="error-container"> 
-        {{#each errors}}
-          <div class="alert alert-danger">{{msg}}</div>
-        {{/each}}
-    </div>
+<div class="error-container">
+  {{#each errors}}
+  <div class="alert alert-danger">{{msg}}</div>
+  {{/each}}
+</div>
 {{/if}}
-<form method="post" id="register-form" action ="/locations/register">
-    <div class="row row-padd">
-		<label>Name</label>
-			<p>Give the location a descriptive name, but not to long.</p>
-		<input type="text"   id="name"     name="name" form="register-form" class="form-control" value="" placeholder="Provide name">
-	</div>
-	
+<form method="post" id="register-form" action="/locations/register">
+  <div class="row row-padd">
+    <label>Name</label>
+    <p>Give the location a descriptive name, but not to long.</p>
+    <input type="text" id="name" name="name" form="register-form" class="form-control" value=""
+      placeholder="Provide name">
+  </div>
+
   <div class="form-horizontal">
     <label>Description</label>
-    <p>Describe where this location is and how to find it. You could also say what kind of parts are kept at this location.</p>
+    <p>Describe where this location is and how to find it. You could also say what kind of parts are kept at this
+      location.</p>
     <div class="form-group">
       <div class="col-md-12">
-        <textarea id="description" name="description" form="register-form" class="form-control" rows="3" placeholder="Describe this location."></textarea>
+        <textarea id="description" name="description" form="register-form" class="form-control" rows="3"
+          placeholder="Describe this location."></textarea>
       </div>
     </div>
   </div>
   <div class="row row-padd">
-		<label>Data</label>
-			<p>Additional data with this location.  Usually used with actions.</p>
-		<input type="text"   id="data"     name="data" form="register-form" class="form-control" value="" placeholder="Provide data">
-	</div>
-  
+    <label>Data</label>
+    <p>Additional data with this location. Usually used with actions.</p>
+    <input type="text" id="data" name="data" form="register-form" class="form-control" value=""
+      placeholder="Provide data">
+  </div>
+
   <div class="form-group type action-related">
-        <label>Action</label>
-        <select id="item_action" name="item_action" form="register-form" class="form-control access-select">
-          <option value=""  title="No action selected"   selected=""      >No action selected</option>
-        </select>
+    <label>Action</label>
+    <select id="item_action" name="item_action" form="register-form" class="form-control access-select">
+      <option value="" title="No action selected" selected="">No action selected</option>
+    </select>
   </div>
   <div class="row row-padd action-related url">
-        <p>Action url in combination with Data </p>
-      <p id="url" class="form-control"></p>
+    <p>Action url in combination with Data </p>
+    <p id="url" class="form-control"></p>
   </div>
-{{#if admin}}
-    <button id="btnSave" type="button" class="btn btn-success pull-right">Save</button>
-    {{#if item}}
-    <button id="btnClone" type="button" class="btn btn-info pull-right">Clone</button>
-    <button id="btnView" type="button" class="btn btn-default pull-right">View parts</button>
-    <button id="btnDelete" type="button" class="btn btn-danger pull-right">Delete</button>
-    {{/if}}
-{{/if}}
+  {{#if admin}}
+  <button id="btnSave" type="button" class="btn btn-success pull-right">Save</button>
+  {{#if item}}
+  <button id="btnClone" type="button" class="btn btn-info pull-right">Clone</button>
+  <button id="btnView" type="button" class="btn btn-default pull-right">View parts</button>
+  <button id="btnDelete" type="button" class="btn btn-danger pull-right">Delete</button>
+  {{/if}}
+  {{/if}}
 </form>
 
 

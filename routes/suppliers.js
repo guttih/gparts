@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var Supplier = require('../models/supplier');
-var Part = require('../models/part');
 var lib = require('../utils/glib');
 
 // Register
@@ -43,7 +42,6 @@ router.get('/supplier-list', lib.authenticateRequest, function(req, res) {
     Supplier.list(function(err, list) {
 
         var arr = [];
-        var isOwner;
         var item;
         for (var i = 0; i < list.length; i++) {
             item = list[i];
@@ -74,15 +72,14 @@ router.get('/item/:ID', lib.authenticateRequest, function(req, res) {
 
 // Register Supplier
 router.post('/register', lib.authenticateAdminRequest, function(req, res) {
+
     var name = req.body.name;
     var description = req.body.description;
     var url = req.body.url;
 
     // Validation
     req.checkBody('name', 'Name is required').notEmpty();
-
     var errors = req.validationErrors();
-
     if (errors) {
         res.render('register-supplier', {
             errors: errors
@@ -99,18 +96,15 @@ router.post('/register', lib.authenticateAdminRequest, function(req, res) {
             req.flash('success_msg', 'You successfully created the \"' + newSupplier._doc.name + '\" supplier.');
             res.redirect('/suppliers/register/' + supplier.id);
         });
-
-
     }
 });
 
+//supplier modify
 router.post('/register/:ID', lib.authenticateAdminRequest, function(req, res) {
-    //supplier modify
-    var id = req.params.ID;
 
+    var id = req.params.ID;
     req.checkBody('name', 'Name is required').notEmpty();
     var errors = req.validationErrors();
-
     if (errors) {
         res.render('register-supplier', { errors: errors });
     } else {
@@ -119,7 +113,6 @@ router.post('/register/:ID', lib.authenticateAdminRequest, function(req, res) {
             description: req.body.description,
             url: req.body.url
         };
-
 
         Supplier.modify(id, values, function(err, result) {
             if (err || result === null || result.ok !== 1) {
@@ -133,7 +126,6 @@ router.post('/register/:ID', lib.authenticateAdminRequest, function(req, res) {
             }
             res.redirect('/suppliers/register/' + id);
         });
-
     }
 });
 

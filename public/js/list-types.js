@@ -14,5 +14,4 @@ var setListValues = function setListValues(list) {
 
 $(document).ready(function() {
 
-
 });

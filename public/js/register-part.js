@@ -26,9 +26,7 @@ function setFormValues(fetchPartImage) {
                         break;
 
                     default:
-
                 }
-
 
                 var $elm = $('#register-form [name="' + key + '"]');
                 if ($elm.length > 0) {
@@ -248,9 +246,9 @@ function validatePartImageOrFile(inputId) {
     var file = input.files[0];
     var enableButton = false;
     /*if (file && file.type !== undefined && file.type.length > 0) {
-		var arr = ['image/jpeg', 'image/svg+xml', 'image/png', 'image/gif', 'image/bmp', 'image/webp'];
-		enableButton = (arr.indexOf(file.type) > -1);
-	}*/
+        var arr = ['image/jpeg', 'image/svg+xml', 'image/png', 'image/gif', 'image/bmp', 'image/webp'];
+        enableButton = (arr.indexOf(file.type) > -1);
+    }*/
     if (file && file.name) {
         $('#' + formId + ' input.fileName').val(file.name);
     }
@@ -404,9 +402,6 @@ function setupImageFunctionsAndButtons() {
         $('.part-additional-values').addClass('hidden');
         $('#part-values').removeClass("hidden");
     });
-
-
-
     showImageCommands(false);
 }
 
@@ -419,7 +414,6 @@ function setupUrlCommands() {
         //var elmData = $elm.data("elm");
         var url = $elm.data("elm").url;
         openUrlInNewTab(url);
-
     });
 
     // Edit button for url item
@@ -440,7 +434,6 @@ function setupUrlCommands() {
                 urlsToView();
             }
         );
-
     });
 
     // View button for url item
@@ -462,7 +455,6 @@ function setupFileCommands() {
         //var elmData = $elm.data("elm");
         var fileName = extractFileNameFromObject($elm.data("elm"));
         openUrlInNewTab('/files/' + fileName);
-
     });
 
     // Edit button for url item
@@ -497,8 +489,6 @@ function setupFileCommands() {
                 item.files.splice(iFound, 1);
                 filesToView();
             }
-
-
         }).fail(function(data) {
             if (data.status === 401) {
                 showModal("You need to be logged in!", data.responseText);
@@ -511,7 +501,6 @@ function setupFileCommands() {
 function urlsToView() {
     var $table = $('#urls');
     $table.empty();
-
     tempValues.urls.forEach(function(element, index) {
         $table.append("<tr data-index='" + index + "' data-elm='" + JSON.stringify(element) + "'><td>" + element.name + "</td></tr>");
     });

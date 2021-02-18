@@ -16,7 +16,6 @@ router.get('/register', lib.authenticateUrl, function(req, res) {
             //There are some actions
             res.render('register-location', { actions: JSON.stringify(list) });
         }
-
     });
 });
 
@@ -91,15 +90,9 @@ router.get('/register/:ID', lib.authenticateRequest, function(req, res) {
                         req.flash('error', 'Could count parts.');
                         res.redirect('/result');
                     })
-
-
-
-
             }
         });
-
     }
-
 });
 
 router.get('/item/:ID', lib.authenticateRequest, function(req, res) {
@@ -170,14 +163,6 @@ router.post('/search', lib.authenticateRequest, async function(req, res) {
     } catch (err) {
         res.status(err.code ? err.code : 400).json(err);
     }
-
-    // Location.search(query, sorting, 50, req.body.page, lib.getConfig().listDescriptionMaxLength)
-    //     .then(result => {
-    //         res.json(result);
-    //     })
-    //     .catch(err => {
-    //         res.status(err.code ? err.code : 400).json(err);
-    //     })
 });
 
 router.get('/run-action/:ID', lib.authenticateRequest, function(req, res) {

@@ -69,18 +69,6 @@ var rowButtons = {
                 $(this).find('td.commands').append('<span class="list-command-delete btn btn-default glyphicon glyphicon-remove"></span>');
             }
         });
-        /*
-        		$('#files > tbody tr').mouseover(function(){
-        			$( this ).find('.commands.item').removeClass('hidden');
-        		});
-        		$('#files > tbody tr').mouseout(function(){
-        			$( this ).find('.commands.item').addClass('hidden');
-        		});*/
-
-
-
-
-
     },
     addItem: function addItem($table, textToAdd, dataToSave) {
         var $elm;

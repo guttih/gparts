@@ -1,10 +1,6 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcryptjs');
 
-
-const fs = require('fs');
-
-// User Schema
 // 	Info on Schema types: http://mongoosejs.com/docs/schematypes.html
 var UserSchema = mongoose.Schema({
     username: {

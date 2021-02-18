@@ -26,7 +26,6 @@ module.exports = {
     escapeRegExp: (string) => {
         return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
     },
-
     makeRegExFromSpaceDelimitedString: (str, multilineSearch, regexOptions) => {
 
         if (multilineSearch === undefined) throw new Error('makeRegExFromSpaceDelimitedString -> multilineSearch is missing')
@@ -82,6 +81,7 @@ module.exports = {
             return module.exports.renderResultViewErrors(res, `Could not get ${collection}.`)
         }
     },
+
     /**
      * 
      * @param {Responce} res - the responce to render the result page to

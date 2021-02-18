@@ -130,10 +130,8 @@ module.exports.itemListToClientList = function(list, descriptionMaxLength, attac
                 item = Type.toJsonList(list[i], descriptionMaxLength);
                 arr.push(item);
             }
-
             attachListToThisObject.result = arr;
             resolve(attachListToThisObject)
-
         }
     })
 }

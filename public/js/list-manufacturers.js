@@ -20,8 +20,5 @@ var setListValues = function setListValues(list) {
 };
 
 $(document).ready(function() {
-
-
     getList(setListValues, '/manufacturers/manufacturer-list');
-
 });

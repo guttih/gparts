@@ -29,7 +29,6 @@ function setFormValues(item) {
             $('#btnView').text(`${oldText} (${item.partCount})`)
         }
 
-
         document.getElementById('register-form').action = action;
         RegisterViewButtonClick();
         onDataChange();
@@ -54,8 +53,7 @@ var onDataChange = function onDataChange() {
     var data = $('#data').val();
     if (data === undefined) { data = ""; }
     var actionFiltered = (typeof actions !== 'undefined' && actions !== 'undefined' && actions.length > 0) ?
-        actions.filter(item => item.id === actionId) :
-        [];
+        actions.filter(item => item.id === actionId) : [];
 
     if (actionFiltered.length > 0 && actionId.length > 0) {
         url = actionFiltered[0].url.replace("<<DATA>>", data);
@@ -112,6 +110,4 @@ $(document).ready(function() {
     $('#data').on('keyup change', function() {
         onDataChange();
     });
-
-
 });

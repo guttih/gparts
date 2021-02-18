@@ -4,7 +4,6 @@ const helper = require('../utils/routeCollectionHelper');
 const Type = require('../models/type');
 var lib = require('../utils/glib');
 
-
 // Register
 router.get('/register', lib.authenticateRequest, function(req, res) {
     res.render('register-type');
@@ -54,16 +53,16 @@ router.get('/item/:typeID', lib.authenticateRequest, function(req, res) {
         });
     }
 });
+
 // Register Type
 router.post('/register', lib.authenticateAdminRequest, function(req, res) {
+
     var name = req.body.name;
     var description = req.body.description;
 
     // Validation
     req.checkBody('name', 'Name is required').notEmpty();
-
     var errors = req.validationErrors();
-
     if (errors) {
         res.render('register-type', {
             errors: errors
@@ -82,13 +81,12 @@ router.post('/register', lib.authenticateAdminRequest, function(req, res) {
     }
 });
 
+//type modify
 router.post('/register/:typeID', lib.authenticateAdminRequest, function(req, res) {
-    //type modify
-    var id = req.params.typeID;
 
+    var id = req.params.typeID;
     req.checkBody('name', 'Name is required').notEmpty();
     var errors = req.validationErrors();
-
     if (errors) {
         //todo: type must type all already typed values again, fix that
         res.render('register-type', { errors: errors });
@@ -97,7 +95,6 @@ router.post('/register/:typeID', lib.authenticateAdminRequest, function(req, res
             name: req.body.name,
             description: req.body.description,
         };
-
 
         Type.modify(id, values, function(err, result) {
             if (err || result === null || result.ok !== 1) {
@@ -128,10 +125,8 @@ router.delete('/:typeID', lib.authenticateAdminRequest, function(req, res) {
 });
 
 router.post('/search', lib.authenticateRequest, async function(req, res) {
-    console.log(`--Body: ${JSON.stringify(req.body, null, 4)}`)
 
     const query = {}
-
     if (req.body.name) {
         query.name = { $regex: helper.makeRegExFromSpaceDelimitedString(req.body.name, false) }
     }
@@ -142,16 +137,12 @@ router.post('/search', lib.authenticateRequest, async function(req, res) {
 
     let sorting = helper.makeSortingObject(req.body.sortingMethod);
 
-    console.log(`--query: ${JSON.stringify(query, null, 4)}`)
-    console.log(`--sorting: ${JSON.stringify(sorting, null, 4)}`)
-
     try {
         const ret = await Type.search(query, sorting, 50, req.body.page, lib.getConfig().listDescriptionMaxLength);
         res.json(ret);
     } catch (err) {
         res.status(err.code ? err.code : 400).json(err);
     }
-
 });
 
 module.exports = router;

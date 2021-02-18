@@ -2,21 +2,21 @@
 	<h3 class="page-header" align="right">Users</h3>
 </div>
 {{#if errors}}
-    <div class="error-container"> 
-		{{#each errors}}
-			<div class="alert alert-danger">{{msg}}</div>
-		{{/each}}
-    </div>
+<div class="error-container">
+	{{#each errors}}
+	<div class="alert alert-danger">{{msg}}</div>
+	{{/each}}
+</div>
 {{/if}}
 <div class="row">
 	<div class="list-by">
 		<p class="col-sm-6 col-md-6 col-lg-6 col-xl-6">Ordered by creation time</p>
-        <button class="btn btn-default btn-xs pull-right" type="button">Order by name</button>
+		<button class="btn btn-default btn-xs pull-right" type="button">Order by name</button>
 	</div>
 </div>
 <div class="row">
-	<div id = "user-list" class="user-list list-group">
-	<!-- listItems will be added here-->
+	<div id="user-list" class="user-list list-group">
+		<!-- listItems will be added here-->
 	</div>
 </div>
 <div class="row">
@@ -26,5 +26,5 @@
 	</div>
 </div>
 
-<script src="/js/bootstrap.min.js"></script>	
-<script src="/js/list-users.js"></script>	
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/list-users.js"></script>

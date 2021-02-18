@@ -1,8 +1,6 @@
 var listBy = null;
 var page = 0;
 
-
-
 function filterDomList() {
     var inputs = document.querySelectorAll('.search-input');
     const queryWords = []
@@ -40,16 +38,4 @@ function filterDomList() {
     listFactory.updateListCount(list.length, `${visibleItemCount} of`);
 }
 
-
-
-$(document).ready(function() {
-
-
-    // if (listBy !== undefined && listBy !== null && listBy.search !== undefined && listBy.id !== undefined) {
-    //     var url = SERVER + '/' + listBy.search + 's/register/' + listBy.id;
-    //     $listBy.find('a').attr("href", url)
-    //     getList(listFactory.setListValues, '/parts/list/' + listBy.search + '/' + listBy.id);
-    // } else {
-    //     listFactory.postSearch(listFactory.getQueryDomValues(0));
-    // }
-});
+$(document).ready(function() {});

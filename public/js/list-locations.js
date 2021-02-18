@@ -12,17 +12,4 @@ var setListValues = function setListValues(list) {
     listFactory.updateListCount(list.length);
 };
 
-$(document).ready(function() {
-
-    //getList(setListValues, '/locations/location-list');
-    // if (listBy !== undefined && listBy !== null && listBy.search !== undefined && listBy.id !== undefined) {
-    //     var url = SERVER + '/' + listBy.search + 's/register/' + listBy.id;
-    //     $listBy.find('a').attr("href", url)
-    //     console.log('todo: from here')
-    //     getList(listFactory.setListValues, '/locations/list/' + listBy.search + '/' + listBy.id);
-    // } else {
-    //     console.log('insert search')
-    //     listFactory.postSearch(listFactory.getQueryDomValues(0));
-    // }
-
-});
+$(document).ready(function() {});

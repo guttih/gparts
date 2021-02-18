@@ -22,8 +22,6 @@ function setFormValues(item) {
         document.getElementById('register-form').action = action;
         RegisterViewButtonClick();
     }
-
-
 }
 
 //use this function to validate the form values

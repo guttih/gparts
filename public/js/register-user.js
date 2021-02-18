@@ -78,10 +78,7 @@ function init() {
     registerUserInput($('#email'));
     registerUserInput($('#password'));
     registerUserInput($('#password2'));
-
-    refreshPickerEvents()
-
-
+    refreshPickerEvents();
 }
 
 //enables the save button if all requered values are ok.
@@ -160,7 +157,6 @@ function getUser(id) {
         }
     });
 }
-
 
 $(function() {
     init();

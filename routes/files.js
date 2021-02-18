@@ -304,8 +304,6 @@ router.post('/register', lib.authenticateAdminRequest, function(req, res, next) 
             File.addOwner(id, ownerId, function(err, item) {
                 res.redirect('/files/register/' + id);
             });
-
-
         }
     });
 
@@ -630,8 +628,6 @@ router.delete('/part/:pardID/:ID', lib.authenticateAdminRequest, function(req, r
                                 res.status(200).send('Did not need to delete file from disk because it did not exist.');
                             }
                         });
-
-
                     }
                 });
             }

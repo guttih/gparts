@@ -1,8 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var Manufacturer = require('../models/manufacturer');
-var Part = require('../models/part');
-
 var lib = require('../utils/glib');
 // Register
 router.get('/register', lib.authenticateRequest, function(req, res) {
@@ -28,9 +26,7 @@ router.get('/register/:ID', lib.authenticateRequest, function(req, res) {
                 res.render('register-manufacturer', { item: str });
             }
         });
-
     }
-
 });
 
 
@@ -57,7 +53,6 @@ router.get('/manufacturer-list', lib.authenticateRequest, function(req, res) {
     Manufacturer.list(function(err, list) {
 
         var arr = [];
-        var isOwner;
         var item;
         for (var i = 0; i < list.length; i++) {
             item = list[i];
@@ -101,8 +96,6 @@ router.post('/register', lib.authenticateAdminRequest, function(req, res) {
             req.flash('success_msg', 'You successfully created the \"' + newManufacturer._doc.name + '\" manufacturer.');
             res.redirect('/manufacturers/register/' + manufacturer.id);
         });
-
-
     }
 });
 
@@ -122,7 +115,6 @@ router.post('/register/:ID', lib.authenticateAdminRequest, function(req, res) {
             url: req.body.url
         };
 
-
         Manufacturer.modify(id, values, function(err, result) {
             if (err || result === null || result.ok !== 1) {
                 req.flash('error', ' unable to update');
@@ -135,7 +127,6 @@ router.post('/register/:ID', lib.authenticateAdminRequest, function(req, res) {
             }
             res.redirect('/manufacturers/register/' + id);
         });
-
     }
 });
 

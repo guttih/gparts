@@ -7,10 +7,7 @@ var expressValidator = require('express-validator');
 var flash = require('connect-flash');
 var session = require('express-session');
 var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
 var lib = require('./utils/glib');
-var addresses = lib.getAddresses(true);
-var subnets = lib.getSubnets(true);
 var config = lib.getConfig();
 
 
