@@ -170,6 +170,59 @@ module.exports = {
                 resolve(attachListToThisObject)
             }
         })
+    },
+
+    /**
+     * Finds a Collection schema object and converts it to a raw JSON object
+     * @param {string} id 
+     * @param {any|} countHowManyParts - if true, a count of parts beloning to 
+     * this collection item will be added to the returned object.
+     * You can also provied the Part collection object to save memory.
+     * @returns Success: a json object containing only object properties.
+     *             Fail: null if an error or collection item was not found.
+     */
+    collectionGetByIdAsJson: async(collection, id, countHowManyParts) => {
+        const Collection = module.exports.getValidCollection(collection);
+        if (!Collection) {
+            throw new Error('collectionSearch => collection is incorrect')
+        }
+
+        let item;
+        try {
+            item = await Collection.findById(id);
+        } catch (err) {
+            console.log(err)
+            return null;
+        }
+
+        let itemAsJson = Collection.toJson(item);
+        if (!countHowManyParts || !itemAsJson) {
+            return itemAsJson;
+        }
+
+        //Use part if provided
+        const useProvidedPart = typeof countHowManyParts === 'function' &&
+            typeof countHowManyParts.countDocuments === 'function';
+
+        console.log(`useProvidedPart: ${useProvidedPart}`)
+
+        const Part = useProvidedPart ?
+            countHowManyParts :
+            require('../models/part');
+        let partCount;
+        try {
+            const countQuery = {};
+            countQuery[collection] = id;
+            partCount = await Part.countDocuments(countQuery);
+        } catch (err) {
+            console.warn('error while couting parts of type');
+            console.log(err);
+            return null;
+        }
+
+        itemAsJson.partCount = partCount;
+        return itemAsJson;
+
     }
 
 };

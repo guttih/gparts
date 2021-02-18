@@ -51,40 +51,8 @@ module.exports.create = function(newType, callback) {
  * @returns Success: a json object containing only object properties.
  *             Fail: null if an error or type was not found.
  */
-module.exports.getByIdAsJson = async function(id, CountThisObject) {
-    let item;
-    try {
-        item = await Type.findById(id);
-    } catch (err) {
-        console.log(err)
-        return null;
-    }
-
-    let itemAsJson = Type.toJson(item);
-    if (!CountThisObject || !itemAsJson) {
-        return itemAsJson;
-    }
-
-    //Use part if provided
-    const useProvidedPart = typeof CountThisObject === 'function' &&
-        typeof CountThisObject.countDocuments === 'function';
-
-    console.log(`useProvidedPart: ${useProvidedPart}`)
-
-    const Part = useProvidedPart ?
-        CountThisObject :
-        require('../models/part');
-    let partCount;
-    try {
-        partCount = await Part.countDocuments({ type: id });
-    } catch (err) {
-        console.warn('error while couting parts of type');
-        console.log(err);
-        return null;
-    }
-
-    itemAsJson.partCount = partCount;
-    return itemAsJson;
+module.exports.getByIdAsJson = async function(id, countHowManyParts) {
+    return routeCollectionHelper.collectionGetByIdAsJson('type', id, countHowManyParts);
 
 };
 
