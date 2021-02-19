@@ -1,27 +1,8 @@
-/*
-		VoffCon is a system for controlling devices and appliances from anywhere.
-		It consists of two programs.  A “node server” and a “device server”.
-		Copyright (C) 2016  Gudjon Holm Sigurdsson
-
-		This program is free software: you can redistribute it and/or modify
-		it under the terms of the GNU General Public License as published by
-		the Free Software Foundation, version 3 of the License.
-
-		This program is distributed in the hope that it will be useful,
-		but WITHOUT ANY WARRANTY; without even the implied warranty of
-		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-		GNU General Public License for more details.
-
-		You should have received a copy of the GNU General Public License
-		along with this program.  If not, see <http://www.gnu.org/licenses/>. 
-	    
-You can contact the author by sending email to gudjonholm@gmail.com or 
-by regular post to the address Haseyla 27, 260 Reykjanesbar, Iceland.
-*/
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+const helper = require('../utils/routeCollectionHelper');
 var User = require('../models/user');
 var lib = require('../utils/glib');
 
@@ -43,8 +24,16 @@ router.get('/register', function(req, res) {
     res.render('register-user');
 });
 
+router.get('/register/:id', lib.authenticateRequest, async function(req, res) {
+    await helper.getRouterRegisterCollectionId('user', req, res)
+});
+
 router.get('/list', lib.authenticateAdminUrl, function(req, res) {
-    res.render('list-user');
+    res.render('list-user', {
+        title: 'Users',
+        dataName: 'user',
+        searchUrl: '/users/search'
+    });
 });
 
 /*listing all devices and return them as a json array*/
@@ -83,24 +72,7 @@ router.get('/user-list', lib.authenticateRequest, function(req, res) {
     });
 });
 
-router.get('/register/:userID', lib.authenticateAdminUrl, function(req, res) {
-    var id = req.params.userID;
-    if (id !== undefined) {
-        User.getById(id, function(err, user) {
-            if (err || user === null) {
-                req.flash('error', 'Could not find user.');
-                res.redirect('/result');
-            } else {
-                var obj = {
-                    id: id,
-                    name: user.name
-                };
-                var str = JSON.stringify(obj);
-                res.render('register-user', { item: str });
-            }
-        });
-    }
-});
+
 
 router.get('/profile/:userID', lib.authenticateUrl, function(req, res) {
     var id = req.params.userID;
@@ -350,6 +322,31 @@ router.delete('/:userID', lib.authenticateAdminRequest, function(req, res) {
         }
     });
 
+});
+
+router.post('/search', lib.authenticateRequest, async function(req, res) {
+
+    const query = {}
+    if (req.body.name) {
+        query.name = { $regex: helper.makeRegExFromSpaceDelimitedString(req.body.name, false) }
+    }
+
+    if (req.body.email) {
+        query.email = { $regex: helper.makeRegExFromSpaceDelimitedString(req.body.email, false) }
+    }
+
+    if (req.body.level) {
+        query.level = { $gte: req.body.level }
+    }
+
+    let sorting = helper.makeSortingObject(req.body.sortingMethod);
+
+    try {
+        const ret = await User.search(query, sorting, 50, req.body.page, lib.getConfig().listDescriptionMaxLength);
+        res.json(ret);
+    } catch (err) {
+        res.status(err.code ? err.code : 400).json(err);
+    }
 });
 
 

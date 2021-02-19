@@ -1,5 +1,8 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcryptjs');
+const helper = require('../utils/routeCollectionHelper');
+
+module.exports.Utils = require('./modelUtility');
 
 // 	Info on Schema types: http://mongoosejs.com/docs/schematypes.html
 var UserSchema = mongoose.Schema({
@@ -41,6 +44,7 @@ var UserSchema = mongoose.Schema({
 });
 
 var User = module.exports = mongoose.model('User', UserSchema);
+module.exports.Utils = require('./modelUtility');
 
 function _createUser(newUser, callback) {
     bcrypt.genSalt(10, function(err, salt) {
@@ -105,3 +109,41 @@ module.exports.delete = function(id, callback) {
 
     User.findByIdAndRemove(id, callback);
 };
+
+module.exports.toJson = function(item, includePassword) {
+
+    var ret = {
+        id: item.id,
+        username: item.username,
+        email: item.email,
+        name: item.name,
+        backgroundColor: item.backgroundColor,
+        fontColor: item.fontColor,
+        menuBackgroundColor: item.menuBackgroundColor,
+        menuFontColor: item.menuFontColor,
+        level: item.level
+    };
+    if (includePassword && includePassword === true)
+        ret.password = item.password;
+
+    return ret;
+};
+
+module.exports.toJsonList = function(item) {
+    return {
+        id: item.id,
+        username: item.username,
+        email: item.email,
+        name: item.name,
+        level: item.level
+    };
+}
+
+module.exports.search = function(query, sort, itemsPerPage, page) {
+    return helper.collectionSearch('user', query, sort, itemsPerPage, page);
+};
+
+module.exports.getByIdAsJson = async function(id) {
+    return await helper.collectionGetByIdAsJson('user', id, false);
+
+}

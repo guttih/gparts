@@ -131,18 +131,26 @@ var listFactory = {
         var dataName = $('.search-inputs').attr('data-name') + 's';
         console.log('setting list values for ' + dataName);
         var id, name, description;
+
         if (!data.page) {
             $("#list").empty();
         }
         page = data.page;
         list = data.result;
-        for (var i = 0; i < list.length; i++) {
-            id = list[i].id;
-            name = list[i].name;
-            description = list[i].description,
-                src = list[i].src;
-            var str = createListItem(id, name, description, dataName, false, false, true, true, src);
-            $("#list").append(str);
+        if (list.length) {
+            const keys = Object.keys(list[0]);
+            //todo: what is the best way to select replacement for description
+            const descKey = keys.includes('description') ? 'description' : keys[2];
+
+            for (var i = 0; i < list.length; i++) {
+                const item = list[i];
+                id = item.id;
+                name = item.name;
+                description = item[descKey],
+                    src = item.src;
+                var str = createListItem(id, name, description, dataName, false, false, true, true, src);
+                $("#list").append(str);
+            }
         }
 
         var itemCount = (data.page + 1) * data.itemsPerPage;

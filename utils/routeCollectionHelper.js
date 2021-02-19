@@ -43,7 +43,7 @@ module.exports = {
         return new RegExp(expr, regexOptions)
     },
     capitalizeFirst: (str) => str.charAt(0).toUpperCase() + str.slice(1),
-    validSearchCollections: () => { return ['action', 'part', 'type', 'location', 'manufacturer', 'supplier']; },
+    validSearchCollections: () => { return ['action', 'part', 'type', 'location', 'manufacturer', 'supplier', 'user']; },
     isValidCollection: (collectionString) => { return this.validSearchCollections().includes(collectionString) },
     getValidCollection: (collectionString, excludeCollection) => {
 
@@ -54,6 +54,8 @@ module.exports = {
         switch (collectionString) {
             case 'action':
                 return require('../models/action');
+            case 'user':
+                return require('../models/user');
             case 'file':
                 return require('../models/file');
             case 'type':
@@ -114,7 +116,7 @@ module.exports = {
     /**
      * Search a Collection (Part|Type|Location|Manufacturer:Supplier)
      *
-     * @param {string} collection - name of the collection valid strings are 'part', 'type', 'location', 'manufacturer' and 'supplier'
+     * @param {string} collection - name of the collection valid strings are 'part', 'type', 'location', 'manufacturer', 'supplier', 'action', 'user'
      * @param {object} query - the search query.  If you want to list all pass an empty object like this {}
      * @param {object} sort - how should the list be ordered? pass null for a default order
      * @param {number} itemsPerPage - how many items should be in a responce

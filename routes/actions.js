@@ -40,7 +40,6 @@ router.get('/action-list', lib.authenticateRequest, function(req, res) {
     Action.list(function(err, list) {
 
         var arr = [];
-        var isOwner;
         var item;
         for (var i = 0; i < list.length; i++) {
             item = list[i];
