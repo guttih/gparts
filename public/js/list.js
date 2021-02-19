@@ -95,8 +95,8 @@ var listFactory = {
     postSearch: function(query) {
         console.log('posting')
         const sendObj = query ? query : {};
-        var path = `/${$('.search-inputs').attr('data-name')}s/search`
-
+        var path = $('.search-inputs').attr('data-url');
+        path = path ? decodeURIComponent(path) : `/${$('.search-inputs').attr('data-name')}s/search`;
         this.SERVER = SERVER;
         return new Promise((resolve, reject) => {
             var url = listFactory.SERVER + path;

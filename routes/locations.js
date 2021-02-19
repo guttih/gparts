@@ -138,6 +138,37 @@ router.get('/location-list', lib.authenticateRequest, function(req, res) {
     });
 });
 
+
+router.get('/list/action/:id', lib.authenticateRequest, async function(req, res) {
+
+    const id = req.params.id;
+    let collectionItem;
+    try {
+        collectionItem = await helper.collectionGetByIdAsJson('action', id, false);
+    } catch (err) {
+        console.log(`Error: ${JSON.stringify(err, null, 4)}`)
+        req.flash('error', 'Cound not search locations for this action');
+        return res.redirect('/result');
+    }
+
+    const collection = 'action'
+
+    const obj = {
+        title: 'Locations',
+        dataName: 'location',
+        searchUrl: '/locations/search',
+        listBy: {
+            collection: collection,
+            collectionId: id,
+            title: helper.capitalizeFirst(collection),
+            name: collectionItem.name,
+            tooltip: `Only locations of this ${collection} are shown in the list`
+        }
+    }
+
+    res.render('list-location', obj);
+});
+
 router.post('/search', lib.authenticateRequest, async function(req, res) {
     const query = {}
 
@@ -153,6 +184,12 @@ router.post('/search', lib.authenticateRequest, async function(req, res) {
         query.description = { $regex: helper.makeRegExFromSpaceDelimitedString(req.body.description, true) }
     }
 
+    if (req.body.collectionName && req.body.collectionId) {
+        query[req.body.collectionName] = {
+            '_id': req.body.collectionId
+        }
+    }
+
     let sorting = helper.makeSortingObject(req.body.sortingMethod);
 
     try {
@@ -162,6 +199,8 @@ router.post('/search', lib.authenticateRequest, async function(req, res) {
         res.status(err.code ? err.code : 400).json(err);
     }
 });
+
+
 
 router.get('/run-action/:ID', lib.authenticateRequest, function(req, res) {
     var id = req.params.ID;

@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const helper = require('../utils/routeCollectionHelper');
 var Action = require('../models/action');
 var lib = require('../utils/glib');
 
@@ -9,30 +10,8 @@ router.get('/register', lib.authenticateUrl, function(req, res) {
 });
 
 // modify page
-router.get('/register/:ID', lib.authenticateRequest, function(req, res) {
-    var id = req.params.ID;
-    if (id !== undefined) {
-        Action.getById(id, function(err, action) {
-            if (err || action === null) {
-                req.flash('error', 'Could not find action.');
-                res.redirect('/result');
-            } else {
-                var obj = {
-                    id: id,
-                    name: action.name,
-                    description: action.description,
-                    type: action.type,
-                    url: action.url,
-                    body: action.body,
-
-                };
-                var str = JSON.stringify(obj);
-                res.render('register-action', { item: str });
-            }
-        });
-
-    }
-
+router.get('/register/:id', lib.authenticateRequest, async function(req, res) {
+    await helper.getRouterRegisterCollectionId('action', req, res)
 });
 
 router.get('/item/:ID', lib.authenticateRequest, function(req, res) {
@@ -50,7 +29,10 @@ router.get('/item/:ID', lib.authenticateRequest, function(req, res) {
 
 //returns a action list page
 router.get('/list', lib.authenticateUrl, function(req, res) {
-    res.render('list-action');
+    res.render('list-action', {
+        title: 'Actions',
+        dataName: 'action'
+    });
 });
 
 /*listing all parts and return them as a json array*/
@@ -162,6 +144,27 @@ router.delete('/:ID', lib.authenticateAdminRequest, function(req, res) {
         }
     });
 
+});
+
+router.post('/search', lib.authenticateRequest, async function(req, res) {
+
+    const query = {}
+    if (req.body.name) {
+        query.name = { $regex: helper.makeRegExFromSpaceDelimitedString(req.body.name, false) }
+    }
+
+    if (req.body.description) {
+        query.description = { $regex: helper.makeRegExFromSpaceDelimitedString(req.body.description, true) }
+    }
+
+    let sorting = helper.makeSortingObject(req.body.sortingMethod);
+
+    try {
+        const ret = await Action.search(query, sorting, 50, req.body.page, lib.getConfig().listDescriptionMaxLength);
+        res.json(ret);
+    } catch (err) {
+        res.status(err.code ? err.code : 400).json(err);
+    }
 });
 
 module.exports = router;

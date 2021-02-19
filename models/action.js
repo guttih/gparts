@@ -1,6 +1,6 @@
 "use strict";
 var mongoose = require('mongoose');
-
+const helper = require('../utils/routeCollectionHelper');
 //Type can be HTTP_POST or HTTP_GET  //todo: set to enum
 // 0 == HTTP_GET request
 // 1 == HTTP_POST request
@@ -27,12 +27,14 @@ var ActionSchema = mongoose.Schema({
 
 var Action = module.exports = mongoose.model('Action', ActionSchema);
 
-module.exports.toJson = function(item) {
+module.exports.Utils = require('./modelUtility');
+
+module.exports.toJson = function(item, descriptionMaxLength) {
 
     var ret = {
         id: item.id,
         name: item.name,
-        description: item.description,
+        description: descriptionMaxLength ? module.exports.Utils.maxStringLength(item.description, descriptionMaxLength) : item.description,
         type: item.type,
         url: item.url,
         body: item.body
@@ -63,6 +65,22 @@ module.exports.list = function(callback) {
     var query = {};
     Action.find(query, callback);
 };
+
+module.exports.toJsonList = function(item, descriptionMaxLength) {
+    return module.exports.toJson(item, descriptionMaxLength)
+}
+
+module.exports.search = function(query, sort, itemsPerPage, page, descriptionMaxLength) {
+    return helper.collectionSearch('action', query, sort, itemsPerPage, page, descriptionMaxLength);
+};
+
+module.exports.getByIdAsJson = async function(id, count) {
+    if (count)
+        return await helper.collectionGetByIdAsJson('action', id, helper.getValidCollection('location'));
+    else
+        return await helper.collectionGetByIdAsJson('action', id, false);
+
+}
 
 //get all records as a Json object
 module.exports.listAsJson = function(callback) {

@@ -43,7 +43,7 @@ module.exports = {
         return new RegExp(expr, regexOptions)
     },
     capitalizeFirst: (str) => str.charAt(0).toUpperCase() + str.slice(1),
-    validSearchCollections: () => { return ['part', 'type', 'location', 'manufacturer', 'supplier']; },
+    validSearchCollections: () => { return ['action', 'part', 'type', 'location', 'manufacturer', 'supplier']; },
     isValidCollection: (collectionString) => { return this.validSearchCollections().includes(collectionString) },
     getValidCollection: (collectionString, excludeCollection) => {
 
@@ -52,6 +52,8 @@ module.exports = {
         }
 
         switch (collectionString) {
+            case 'action':
+                return require('../models/action');
             case 'file':
                 return require('../models/file');
             case 'type':
@@ -177,7 +179,7 @@ module.exports = {
      * @param {string} id 
      * @param {any|} countHowManyParts - if true, a count of parts beloning to 
      * this collection item will be added to the returned object.
-     * You can also provied the Part collection object to save memory.
+     * You can also provied the collection object to search in a different object.
      * @returns Success: a json object containing only object properties.
      *             Fail: null if an error or collection item was not found.
      */
@@ -195,6 +197,9 @@ module.exports = {
             return null;
         }
 
+        if (!item)
+            return null;
+
         let itemAsJson = Collection.toJson(item);
         if (!countHowManyParts || !itemAsJson) {
             return itemAsJson;
@@ -204,16 +209,14 @@ module.exports = {
         const useProvidedPart = typeof countHowManyParts === 'function' &&
             typeof countHowManyParts.countDocuments === 'function';
 
-        console.log(`useProvidedPart: ${useProvidedPart}`)
-
-        const Part = useProvidedPart ?
+        const SearchCollection = useProvidedPart ?
             countHowManyParts :
             require('../models/part');
         let partCount;
         try {
-            const countQuery = {};
+            let countQuery = {};
             countQuery[collection] = id;
-            partCount = await Part.countDocuments(countQuery);
+            partCount = await SearchCollection.countDocuments(countQuery);
         } catch (err) {
             console.warn('error while couting parts of type');
             console.log(err);

@@ -827,7 +827,8 @@ function cloneButtonClickRegister(collection) {
     });
 }
 
-function RegisterViewButtonClick() {
+function RegisterViewButtonClick(listPath) {
+    listPath = listPath ? listPath : '/parts/list/';
     var $button = $("#btnView");
     var $form = $('#register-form');
     if ($form.length < 1 || $button.length < 1) {
@@ -842,7 +843,7 @@ function RegisterViewButtonClick() {
     if (collection === null) {
         return;
     }
-    var url = SERVER + '/parts/list/' + collection + '/' + item.id;
+    var url = SERVER + listPath + collection + '/' + item.id;
 
     $("#btnView").click(function() {
         var win = window.open(url, '_blank');

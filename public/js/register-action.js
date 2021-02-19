@@ -21,8 +21,14 @@ function setFormValues(item) {
         if (item.id !== undefined) {
             action += '/' + item.id;
         }
+
+        if (item.partCount) {
+            const oldText = $('#btnView').text();
+            $('#btnView').text(`${oldText} (${item.partCount})`)
+        }
+
         document.getElementById('register-form').action = action;
-        RegisterViewButtonClick();
+        RegisterViewButtonClick('/locations/list/');
     }
 
 }
