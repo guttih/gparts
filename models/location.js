@@ -71,6 +71,10 @@ module.exports.getByIdPromise = function(id) {
     })
 };
 
+module.exports.getByIdAsJson = async function(id, countHowManyParts) {
+    return routeCollectionHelper.collectionGetByIdAsJson('location', id, countHowManyParts);
+};
+
 module.exports.getActionUrlByLocationId = function(id, callback) {
     Location.findById(id, function(err, location) {
         if (err || location === null) {

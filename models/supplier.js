@@ -39,7 +39,6 @@ module.exports.create = function(newSupplier, callback) {
  */
 module.exports.getByIdAsJson = async function(id, countHowManyParts) {
     return routeCollectionHelper.collectionGetByIdAsJson('supplier', id, countHowManyParts);
-
 };
 
 //get all records

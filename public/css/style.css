@@ -737,3 +737,7 @@ option {
 .listby .filter {
     font-size: 18px;
 }
+
+.view.part .property {
+    padding-top: 12px;
+}

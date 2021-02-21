@@ -207,6 +207,11 @@ module.exports.listByOwnerId = function listByOwnerId(ownerId, callback) {
     File.find(query, callback);
 };
 
+module.exports.listByOwnerIdPromise = async(ownerId) => {
+    var query = { owners: { $elemMatch: { _id: ownerId } } };
+    return File.find(query);
+};
+
 /**
  *	Finds all files that have only one owner and that owner is ownerId
  *
@@ -395,12 +400,20 @@ module.exports.toJson = function(item, descriptionMaxLength, addSrcPath) {
         description: descriptionMaxLength ? module.exports.Utils.maxStringLength(item.description, descriptionMaxLength) : item.description,
         fileName: item.fileName,
         size: item.size,
-        owners: Object.assign(item.owners),
+        owners: [] //Object.assign(item.owners),
     };
+    if (item.owners) {
+        item.owners.forEach(e => ret.owners.push(e.id.toString()))
+    }
 
     if (addSrcPath) {
         ret.src = module.exports.getFullFileNameOnDisk(item).replace('./public', '')
     }
+    return ret;
+}
+module.exports.toViewModel = function(item, descriptionMaxLength) {
+    var ret = module.exports.toJson(item, descriptionMaxLength, true);
+    size: this.listByOwnerId.item.size
     return ret;
 }
 

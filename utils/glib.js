@@ -962,3 +962,34 @@ module.exports.runRequest = function runRequest(method, url, body, callback) {
         }
     });
 };
+
+
+/**
+ * Creates a prefixed string from a number.
+ *
+ * @private
+ * @param {number} number - The value to be formatted
+ * @param {number} width - how many characters   should the returned string be
+ * @param {string} [prefix='0'] - the prefix character
+ * @returns {string}
+ * @example
+ *   Statement                    Returns
+ *   leadingZero(10, 4);          0010
+ *   leadingZero(9, 4);           0009
+ *   leadingZero(123, 4);         0123
+ *   leadingZero(10, 4, '-');     --10
+ */
+module.exports.leadingZero = (number, width, prefix) => {
+    prefix = prefix ? prefix : '0';
+    const n = String(number);
+    return n.length >= width ?
+        n :
+        new Array(Number(width) - n.length + 1).join(prefix) + n
+}
+
+module.exports.DateToYYYY_MM_DD_String = (date, delimiter) => {
+    const X = delimiter ? delimiter : '';
+    return (
+        `${date.getFullYear()}${X}${this.leadingZero(date.getMonth() + 1,2)}${X}${this.leadingZero(date.getDate(), 2)}`
+    )
+}
