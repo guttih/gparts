@@ -3,7 +3,7 @@ var router = express.Router();
 var lib = require('../utils/glib');
 var Part = require('../models/part');
 const helper = require('../utils/routeCollectionHelper');
-
+const marked = require("marked");
 
 // Register
 router.get('/register', lib.authenticateRequest, function(req, res) {
@@ -11,8 +11,8 @@ router.get('/register', lib.authenticateRequest, function(req, res) {
 });
 
 // modify page
-router.get('/register/:ID', lib.authenticateRequest, function(req, res) {
-    var id = req.params.ID;
+router.get('/register/:id', lib.authenticateRequest, function(req, res) {
+    var id = req.params.id;
     if (id !== undefined) {
         Part.getById(id, function(err, part) {
             if (err || part === null) {
@@ -25,14 +25,91 @@ router.get('/register/:ID', lib.authenticateRequest, function(req, res) {
                         req.flash('error', 'Could not find part.');
                     } else {
                         var str = JSON.stringify(obj);
-                        res.render('register-part', { item: str });
+                        res.render('register-part', { item: str, descriptionMd: marked(obj.description) });
                     }
                 });
-
-
             }
         });
+    }
+});
 
+const partToMarkdownText = (part) => {
+    var ret = '';
+    // ret += `Aquired: ${acquired}\n\n`;
+    // ret += `Last modified: ${modified}\n\n`;
+    // ret += ` Stock count: ${part.stockCount}\n\n`;
+    // if (part.category) ret += ` Category: ${part.category}\n\n`;
+    ret += `## Description \n\n ${part.description}`;
+    // if (part.urls && part.urls.length) {
+    //     ret += `\n\n### Links \n\n`;
+    //     part.urls.forEach(l => ret += ` - [${l.name}](${l.url}) \n`);
+    // }
+
+    // if (part.files && part.files.length) {
+    //     ret += `\n\n### Files \n\n`;
+    //     part.files.forEach(l => {
+    //         ret += `#### ${l.name} \n`
+    //         if (l.description) ret += `${l.description} \n\n`
+    //         ret += `[Size ${lib.bytesToUnitString(l.size)}](${l.src})\n\n\n`
+    //     });
+    // }
+
+    // if (part.location) {
+    //     ret += `\n#### Location\n\n [${part.location.name}](/supplier/register/${part.location.id} "${part.location.description}") \n\n`;
+    // }
+
+    // ret += `\n#### Type\n\n\n [${part.type.name}](/types/register/${part.type.id} "${part.type.description}") \n\n`;
+
+    // if (part.supplier) {
+    //     ret += `\n#### Supplier\n\n [${part.supplier.name}](/supplier/register/${part.supplier.id} "${part.supplier.description}") \n\n`;
+    // }
+    // if (part.manufacturer) {
+    //     ret += `\n#### Manufacturer\n\n [${part.manufacturer.name}](/supplier/register/${part.manufacturer.id} "${part.manufacturer.description}") \n\n`;
+    // }
+
+    return marked(ret);
+}
+
+router.get('/view/:id', lib.authenticateRequest, async function(req, res) {
+    req.checkParams('id', 'Id is required').notEmpty();
+    req.checkParams('id', 'Id is not valid').isLength({ min: 24, max: 24 })
+    var errors = req.validationErrors();
+    if (errors) {
+        return res.render('result', { errors: errors });
+    }
+
+    try {
+        var part = await Part.getByIdAsJson(req.params.id);
+        var str = JSON.stringify(part);
+        var viewObject = await Part.fetchViewValuesForPart(part, false)
+        var markdown = partToMarkdownText(viewObject);
+        var viewModel = {
+            image: viewObject.image,
+            name: viewObject.name,
+            markdown: markdown,
+            firstAcquired: lib.DateToYYYY_MM_DD_String(new Date(viewObject.lastModified), '-'),
+            lastModified: lib.DateToYYYY_MM_DD_String(new Date(viewObject.firstAcquired), '-'),
+            stock: viewObject.stockCount,
+            category: viewObject.category,
+            type: viewObject.type,
+            location: viewObject.location,
+            manufacturer: viewObject.manufacturer,
+            supplier: viewObject.supplier,
+            files: viewObject.files.map(file => {
+                file.size = lib.bytesToUnitString(file.size);
+                return file;
+            }),
+            urls: viewObject.urls,
+        }
+        res.render('view-part', { item: str, viewModel: viewModel });
+    } catch (err) {
+        errors = [{ msg: "Unable to show part" }];
+        if (err && err.message) {
+            errors.push({ msg: err.message })
+        } else {
+            console.warn(err)
+        }
+        return res.render('result', { errors: errors });
     }
 
 });
@@ -78,8 +155,6 @@ router.get('/list/:collection/:collectionId', lib.authenticateUrl, async functio
         return reportListByError(req, res, collection + ' not found');
     }
 
-
-
     //get name and id
     const obj = {
         title: 'Parts',
@@ -93,8 +168,6 @@ router.get('/list/:collection/:collectionId', lib.authenticateUrl, async functio
         }
     }
 
-    console.log(`obj ------------------------${JSON.stringify(obj, null, 4)}`)
-    console.log(`collectionItem -------------${JSON.stringify(collectionItem, null, 4)}`)
     res.render('list-part', obj);
 
 });
@@ -124,7 +197,6 @@ router.post('/search', lib.authenticateRequest, function(req, res) {
 
     let sorting = helper.makeSortingObject(req.body.sortingMethod);
 
-    console.log(query);
     Part.search(query, sorting, 50, req.body.page, lib.getConfig().listDescriptionMaxLength)
         .then(result => {
             res.json(result);
@@ -133,7 +205,6 @@ router.post('/search', lib.authenticateRequest, function(req, res) {
             res.status(err.code ? err.code : 400).json(err);
         })
 });
-
 
 function reportListByError(req, res, errorString) {
 
@@ -166,95 +237,6 @@ router.get('/list/type/:ID', lib.authenticateUrl, function(req, res) {
 
 
 });
-
-// router.get('/list/supplier/:ID', lib.authenticateUrl, function(req, res) {
-//     var id = req.params.ID;
-//     var collection = 'supplier';
-//     if (id === undefined || typeof id !== 'string' || id.length < 24) {
-//         return reportListByError(req, res, collection);
-//     }
-
-//     Part.querySupplier({ _id: id }, function(err, result) {
-//         if (err || result === null || !Array.isArray(result) || result.length < 1) {
-//             console.log(err);
-//             return;
-//         }
-//         var listBy = Part.SupplierToJson(result[0]);
-//         listBy.search = collection;
-//         res.render('list-part', {
-//             listById: listBy.id,
-//             listByName: listBy.name,
-//             listBySearch: listBy.search,
-//             listByObj: JSON.stringify(listBy)
-//         });
-//     });
-// });
-
-// router.get('/list/manufacturer/:ID', lib.authenticateUrl, function(req, res) {
-//     var id = req.params.ID;
-//     var collection = 'manufacturer';
-//     if (id === undefined || typeof id !== 'string' || id.length < 24) {
-//         return reportListByError(req, res, collection);
-//     }
-
-//     Part.queryManufacturer({ _id: id }, function(err, result) {
-//         if (err || result === null || !Array.isArray(result) || result.length < 1) {
-//             console.log(err);
-//             return;
-//         }
-//         var listBy = Part.ManufacturerToJson(result[0]);
-//         listBy.search = collection;
-//         res.render('list-part', {
-//             listById: listBy.id,
-//             listByName: listBy.name,
-//             listBySearch: listBy.search,
-//             listByObj: JSON.stringify(listBy)
-//         });
-//     });
-// });
-
-// router.get('/part-list/type/:ID', lib.authenticateRequest, function(req, res) {
-
-//     var id = req.params.ID;
-//     if (id === undefined || id.length < 24) {
-//         return res.status(400).send('Id "' + id + '" invalid.');
-//     }
-//     Part.listByType(id, lib.getConfig().listDescriptionMaxLength, function(err, list) {
-//         res.json(list);
-//     });
-// });
-// router.get('/part-list/location/:ID', lib.authenticateRequest, function(req, res) {
-//     var id = req.params.ID;
-//     if (id === undefined || id.length < 24) {
-//         return res.status(400).send('Id "' + id + '" invalid.');
-//     }
-//     Part.listByLocation(id, lib.getConfig().listDescriptionMaxLength, function(err, list) {
-//         res.json(list);
-//     });
-// });
-// router.get('/part-list/manufacturer/:ID', lib.authenticateRequest, function(req, res) {
-//     var id = req.params.ID;
-//     if (id === undefined || id.length < 24) {
-//         return res.status(400).send('Id "' + id + '" invalid.');
-//     }
-
-//     Part.listByManufacturer(id, lib.getConfig().listDescriptionMaxLength, function(err, list) {
-//         res.json(list);
-//     });
-
-
-
-// });
-
-// router.get('/part-list/supplier/:ID', lib.authenticateRequest, function(req, res) {
-//     var id = req.params.ID;
-//     if (id === undefined || id.length < 24) {
-//         return res.status(400).send('Id "' + id + '" invalid.');
-//     }
-//     Part.listBySupplier(id, lib.getConfig().listDescriptionMaxLength, function(err, list) {
-//         res.json(list);
-//     });
-// });
 
 // Register Part
 router.post('/register', lib.authenticateAdminRequest, function(req, res) {

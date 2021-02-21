@@ -133,8 +133,6 @@ module.exports.getById = function(id, callback) {
 
 
 
-
-
 module.exports.query = function(query, callback) {
     Part.find(query, callback);
 };
@@ -167,6 +165,7 @@ module.exports.toJson = function(item) {
         image: (item.image !== undefined && item.image !== null) ? item.image.toString() : null
 
     };
+
     return ret;
 }
 module.exports.toJsonCallback = function(item, callback) {
@@ -348,3 +347,29 @@ module.exports.search = function(query, sort, itemsPerPage, page, descriptionMax
             })
     })
 };
+
+module.exports.getByIdAsJson = function(id, countHowManyParts) {
+    return module.exports.findById(id)
+        .then(item => module.exports.toJson(item));
+};
+
+module.exports.fetchViewValuesForPart = async(part) => {
+    const ret = {
+        id: part.id,
+        name: part.name,
+        description: part.description,
+        category: part.category,
+        urls: JSON.parse(part.urls),
+        image: await File.getByIdAsJson(part.image).then(e => File.getFullFileNameOnDisk(e).replace('./public', '')),
+        files: await File.listByOwnerIdPromise(part.id).then(e => e.map(x => File.toJson(x, null, true))),
+        stockCount: part.stockCount,
+        firstAcquired: part.firstAcquired,
+        lastModified: part.lastModified,
+        type: await Type.getByIdAsJson(part.type),
+        location: await Location.getByIdAsJson(part.location),
+        manufacturer: await Manufacturer.getByIdAsJson(part.manufacturer),
+        supplier: await Supplier.getByIdAsJson(part.supplier),
+    };
+
+    return ret;
+}
