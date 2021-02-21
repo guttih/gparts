@@ -39,6 +39,7 @@
     {{#if item}}
     <p>Uploaded file (file name on disk)</p>
     <input type="text" id="fileName" name="fileName" class="form-control fileName" value="" readonly />
+    <div>Size: <span class="size"></span></div>
     {{else}}
     <p>The file to upload</p>
     <input type="file" name="file" id="file" class="btn-file" placeholder="Select the file you want to upload"

@@ -14,7 +14,10 @@ var config = lib.getConfig();
 ///////////////////// start mongo /////////////////////////
 var mongo = require('mongodb');
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/gparts')
+mongoose.connect('mongodb://localhost/gparts', {
+        useCreateIndex: true,
+        useNewUrlParser: true
+    })
     .then(function(db) { // <- db as first argument
         console.log('Connected to gparts');
     })

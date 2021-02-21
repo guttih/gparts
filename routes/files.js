@@ -3,6 +3,7 @@ const STORAGE_FOLDER_IMAGE = './public/files/images';
 
 var express = require('express');
 var router = express.Router();
+const helper = require('../utils/routeCollectionHelper');
 var File = require('../models/file');
 var Part = require('../models/part');
 var lib = require('../utils/glib');
@@ -17,17 +18,15 @@ var storageFile = multer.diskStorage({
         var name = req.body.name;
         var description = req.body.description;
         var filename = STORAGE_FOLDER_FILE + '/' + file.originalname;
-
         var newFile = new File({
             name: name,
             description: description,
-            fileName: filename
+            fileName: filename,
         });
 
         File.create(newFile, function(err, file) {
 
             if (err) throw err;
-
             var fileNameOnDisk = File.getFileNameOnDisk(file);
             req.body.fileObjectId = file.id;
             cb(null, fileNameOnDisk);
@@ -43,17 +42,15 @@ var storageImage = multer.diskStorage({
         var name = req.body.name;
         var description = req.body.description;
         var filename = STORAGE_FOLDER_IMAGE + '/' + file.originalname;
-
         var newFile = new File({
             name: name,
             description: description,
-            fileName: filename
+            fileName: filename,
         });
 
         File.create(newFile, function(err, file) {
 
             if (err) throw err;
-
             var fileNameOnDisk = File.getFileNameOnDisk(file);
             req.body.fileObjectId = file.id;
             cb(null, fileNameOnDisk);
@@ -148,7 +145,12 @@ router.get('/item/:ID', lib.authenticateRequest, function(req, res) {
 
 //returns a file list page
 router.get('/list', lib.authenticateUrl, function(req, res) {
-    res.render('list-file');
+
+    res.render('list-file', {
+        title: 'Files',
+        dataName: 'file',
+        searchUrl: '/files/search'
+    });
 });
 
 router.get('/list/image', lib.authenticateUrl, function(req, res) {
@@ -205,50 +207,36 @@ router.get('/image-list', lib.authenticateRequest, function(req, res) {
 });
 
 // modify page
-router.get('/register/:ID', lib.authenticateRequest, function(req, res) {
-    var id = req.params.ID;
-    if (id !== undefined) {
-        File.getById(id, function(err, file) {
-            if (err || file === null) {
-                req.flash('error', 'Could not find file.');
-                res.render('register-file');
-            } else {
-                var obj = {
-                    id: id,
-                    name: file.name,
-                    description: file.description,
-                    fileName: file.fileName,
-                    owners: file.owners,
-                    src: File.getFullFileNameOnDisk(file).replace('./public', '')
-                };
-                var str = JSON.stringify(obj);
-                res.render('register-file', { item: str });
-            }
-        });
+router.get('/register/:id', lib.authenticateRequest, async function(req, res) {
+
+    const collection = 'file';
+    var id = req.params.id;
+    if (!id) {
+        return helper.renderResultViewErrors(res, `${collection} Id is missing from url`)
+    }
+
+    const obj = await File.getByIdAsJsonWithPath(id, false, true);
+    if (obj) {
+        return res.render(`register-${collection}`, { item: JSON.stringify(obj) });
+    } else {
+        return helper.renderResultViewErrors(res, `Could not get ${collection}.`)
     }
 
 });
 
-router.get('/register/image/:ID', lib.authenticateRequest, function(req, res) {
-    var id = req.params.ID;
-    if (id !== undefined) {
-        File.getById(id, function(err, file) {
-            if (err || file === null) {
-                req.flash('error', 'Could not find file.');
-                res.render('register-file');
-            } else {
-                var obj = {
-                    id: id,
-                    name: file.name,
-                    description: file.description,
-                    fileName: file.fileName,
-                    owners: file.owners,
-                    src: File.getFullFileNameOnDisk(file).replace('./public', '')
-                };
-                var str = JSON.stringify(obj);
-                res.render('register-image', { item: str });
-            }
-        });
+router.get('/register/image/:id', lib.authenticateRequest, async function(req, res) {
+
+    const collection = 'file';
+    var id = req.params.id;
+    if (!id) {
+        return helper.renderResultViewErrors(res, `${collection} Id is missing from url`)
+    }
+
+    const obj = await File.getByIdAsJsonWithPath(id);
+    if (obj) {
+        return res.render(`register-${collection}`, { item: JSON.stringify(obj) });
+    } else {
+        return helper.renderResultViewErrors(res, `Could not get ${collection}.`)
     }
 
 });
@@ -257,7 +245,7 @@ router.get('/register/image/:ID', lib.authenticateRequest, function(req, res) {
 router.get('/addowner/:ownerID/:ID', lib.authenticateAdminRequest, function(req, res) {
     var id = req.params.ID;
     var ownerId = req.params.ownerID;
-    File.addOwner(id, ownerId, function(err, result) {
+    File.addOrUpdateOwnerAndSize(id, ownerId, null, function(err, result) {
         if (err) {
             res.status(404).send('Could not add owner.');
         } else {
@@ -267,9 +255,14 @@ router.get('/addowner/:ownerID/:ID', lib.authenticateAdminRequest, function(req,
     });
 });
 
+router.get('/orphans', lib.authenticateAdminRequest, async function(req, res) {
+    const list = await File.listOrphans([STORAGE_FOLDER_FILE, STORAGE_FOLDER_IMAGE]);
+    res.json(list);
+});
+
+
 router.post('/register', lib.authenticateAdminRequest, function(req, res, next) {
-    // req.file is the `avatar` file
-    // req.body will hold the text fields, if there were any
+
     uploading.update();
     uploading.uploadFile(req, res, function(err) {
         if (err) {
@@ -286,7 +279,6 @@ router.post('/register', lib.authenticateAdminRequest, function(req, res, next) 
             File.delete(req.body.fileObjectId, function(err) { if (err === null) { console.log("deleted File object because upload failed") } });
             return;
         }
-        var name = req.body.name;
         var id = req.body.fileObjectId;
         var ownerId = req.user._id;
         if (req.body.partId !== undefined) {
@@ -301,7 +293,7 @@ router.post('/register', lib.authenticateAdminRequest, function(req, res, next) 
             res.render('register-file', { errors: errors });
         } else {
             req.flash('success_msg', 'File uploaded and created!');
-            File.addOwner(id, ownerId, function(err, item) {
+            File.addOrUpdateOwnerAndSize(id, ownerId, req.file.size, function(err, item) {
                 res.redirect('/files/register/' + id);
             });
         }
@@ -343,7 +335,7 @@ router.post('/register/image', lib.authenticateAdminRequest, function(req, res, 
             res.render('register-image', { errors: errors });
         } else {
             req.flash('success_msg', 'File uploaded and created!');
-            File.addOwner(id, ownerId, function(err, item) {
+            File.addOrUpdateOwnerAndSize(id, ownerId, req.file.size, function(err, item) {
                 res.redirect('/files/register/image/' + id);
             });
 
@@ -381,7 +373,7 @@ router.post('/register/part/image', lib.authenticateAdminRequest, function(req, 
             res.statusCode = 400;
             return res.json({ text: (errors.length > 0) ? errors[0].msg : "Could not upload image!" });
         } else {
-            File.addOwner(id, ownerId, function(err, item) {
+            File.addOrUpdateOwnerAndSize(id, ownerId, null, function(err, item) {
                 if (err !== null) {
                     res.statusCode = 404;
                     var obj = { text: 'Error 404: Could not add owner!' };
@@ -432,7 +424,7 @@ router.post('/register/part/file', lib.authenticateAdminRequest, function(req, r
             res.statusCode = 400;
             return res.json({ text: (errors.length > 0) ? errors[0].msg : "Could not upload file!" });
         } else {
-            File.addOwner(id, ownerId, function(err, item) {
+            File.addOrUpdateOwnerAndSize(id, ownerId, null, function(err, item) {
                 if (err !== null) {
                     res.statusCode = 404;
                     var obj = { text: 'Error 404: Could not add owner!' };
@@ -632,6 +624,31 @@ router.delete('/part/:pardID/:ID', lib.authenticateAdminRequest, function(req, r
                 });
             }
         });
+    }
+});
+
+router.post('/search', lib.authenticateRequest, async function(req, res) {
+
+    const query = {}
+    if (req.body.name) {
+        query.name = { $regex: helper.makeRegExFromSpaceDelimitedString(req.body.name, false) }
+    }
+
+    if (req.body.description) {
+        query.description = { $regex: helper.makeRegExFromSpaceDelimitedString(req.body.description, true) }
+    }
+
+    if (req.body.fileSize) {
+        query.fileSize = { $gte: Number(req.body.fileSize) }
+    }
+
+    let sorting = helper.makeSortingObject(req.body.sortingMethod);
+
+    try {
+        const ret = await File.search(query, sorting, 50, req.body.page, lib.getConfig().listDescriptionMaxLength);
+        res.json(ret);
+    } catch (err) {
+        res.status(err.code ? err.code : 400).json(err);
     }
 });
 

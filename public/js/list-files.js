@@ -1,4 +1,4 @@
-function createListItemFiles(id, name, description, owners, routeText, bAddRunButton, bAddAccessButton, bAddEditButton, bAddDeleteButton, imageSrc) {
+function createListItemFiles(id, name, description, owners, topLeft, routeText, bAddRunButton, bAddAccessButton, bAddEditButton, bAddDeleteButton, imageSrc) {
     var url = SERVER + '/' + routeText + '/register/' + id;
 
     if (imageSrc !== undefined) {
@@ -10,9 +10,10 @@ function createListItemFiles(id, name, description, owners, routeText, bAddRunBu
             strOwners += element + ' ';
         });
     }
+    var topLeft = !topLeft ? '' : `<div class="list-top-left">${topLeft}</div>`
     var strElm =
         '<div id="listItem' + id + '" class="list-group-item clearfix">' +
-        '<p class="list-group-item-heading">' + name + '</p>' +
+        '<p class="list-group-item-heading">' + name + topLeft + '</p>' +
         '<span class="list-group-item-text">' + description + '</span>' +
         '<div class="list-group-item-owner">' + strOwners + '</div>' +
         '<span class="pull-right">';
@@ -38,31 +39,21 @@ function createListItemFiles(id, name, description, owners, routeText, bAddRunBu
 
     return strElm;
 }
+
 var setListValues = function setListValues(list) {
     var id, name, description;
 
-    var listBy = getUrlParameter('listBy');
-    switch (listBy) {
-        case 'name':
-            list.sort(compareNames);
-            break;
-    }
-    setListByButtonUrlAndText();
     for (var i = 0; i < list.length; i++) {
         id = list[i].id;
         name = list[i].name;
-        description = list[i].description,
-            owners = list[i].owners;
+        description = list[i].description;
 
-        var str = createListItemFiles(id, name, description, owners, 'files', false, false, true, true);
+        var str = createListItem(id, name, description, null, 'files', false, true, true, true);
         $("#list").append(str);
     }
     listFactory.updateListCount(list.length);
 };
 
 $(document).ready(function() {
-
-
-    getList(setListValues, '/files/file-list');
 
 });

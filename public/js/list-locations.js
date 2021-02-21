@@ -6,7 +6,7 @@ var setListValues = function setListValues(list) {
         name = list[i].name;
         description = list[i].description;
 
-        var str = createListItem(id, name, description, 'locations', false, true, true, true);
+        var str = createListItem(id, name, description, null, 'locations', false, true, true, true);
         $("#list").append(str);
     }
     listFactory.updateListCount(list.length);

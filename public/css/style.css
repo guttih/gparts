@@ -156,11 +156,6 @@ footer {
     margin-right: 0px;
 }
 
-
-/*.list-group-item > span > a:first-child {
-	margin-left:0px;
-}*/
-
 .dropdown:hover .dropdown-menu {
     display: block !important;
     margin-top: 0;
@@ -192,6 +187,10 @@ footer {
     top: 0px;
     font-size: 7px;
     left: 5px;
+}
+
+.list-group-item .top-left {
+    float: right;
 }
 
 .error-response-text {

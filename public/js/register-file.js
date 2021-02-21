@@ -41,6 +41,9 @@ function setFormValues(item) {
         if (item.fileName !== undefined) {
             $("#fileName").val(item.fileName);
         }
+        if (item.size !== undefined) {
+            $(".size").text(bytesToUnitString(item.size, 2));
+        }
         if (item.src !== undefined) {
             var $elm = $('#image-container');
             if ($elm.length > 0) {

@@ -14,7 +14,7 @@ var setListValues = function setListValues(list) {
         description = list[i].description;
         src = list[i].src;
 
-        var str = createListItem(id, name, description, 'files', false, false, true, true, src);
+        var str = createListItem(id, name, description, null, 'files', false, false, true, true, src);
         $("#list").append(str);
     }
     listFactory.updateListCount(list.length);

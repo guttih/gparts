@@ -166,15 +166,16 @@ function capitalize(str) {
 }
 
 /*routeText is the element type to be deleted 'cards', 'controls' or 'devices'*/
-function createListItem(id, name, description, routeText, bAddRunButton, bAddListByButton, bAddEditButton, bAddDeleteButton, imageSrc) {
+function createListItem(id, name, description, topLeft, routeText, bAddRunButton, bAddListByButton, bAddEditButton, bAddDeleteButton, imageSrc) {
     var url = SERVER + '/' + routeText + '/register/' + id;
 
     if (imageSrc !== undefined && routeText === 'files') {
         url = SERVER + '/' + routeText + '/register/image/' + id;
     }
+    var topLeft = !topLeft ? '' : `<span class="top-left">${topLeft}</span>`;
     var strElm =
         '<div id="listItem' + id + '" class="list-group-item clearfix">' +
-        '<p class="list-group-item-heading">' + name + '</p>' +
+        '<p class="list-group-item-heading">' + name + topLeft + '</p>' +
         '<span class="list-group-item-text">' + description + '</span>' +
         '<span class="pull-right">';
     //window.location.href = '/cards/useraccess/'+ card.id;
@@ -266,7 +267,6 @@ function deleteItem(routeText, id, deleteSuccessCallback) {
                     if (deleteSuccessCallback !== undefined) {
                         deleteSuccessCallback(data);
                     } else {
-                        console.log(data);
                         $('#listItem' + id).remove();
                         listFactory.updateListCount();
                     }

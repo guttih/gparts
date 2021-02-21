@@ -1,8 +1,10 @@
 "use strict";
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+const helper = require('../utils/routeCollectionHelper');
+const validator = require('../utils/validator');
 var ObjectId = Schema.ObjectId;
-
+const fs = require('fs');
 var FileSchema = mongoose.Schema({
     name: { type: String, index: true },
     description: String,
@@ -13,19 +15,20 @@ var FileSchema = mongoose.Schema({
     //    then ObjectId will be UserId
     // If added from /files/register/part or "/files/register/partimage" 
     //     then ObjectId will be partId 
-    owners: [{ ObjectId }]
-
+    owners: [{ ObjectId }],
+    //size of file
+    size: Number
 });
 
 var File = module.exports = mongoose.model('File', FileSchema);
+
+module.exports.Utils = require('./modelUtility');
 
 /**
  * @callback requestCallbackWithError
  * @param {object} if success null if not an err object
  * @param {object} usually a object but can be a string too
  */
-
-
 module.exports.delete = function(id, callback) {
 
     File.findByIdAndRemove(id, callback);
@@ -101,7 +104,7 @@ module.exports.modify = function(id, newValues, callback) {
 };
 
 // adds a ownerId to the owners array.  If it already exists, nothing is added
-module.exports.addOwner = function(id, ownerIdToAdd, callback) {
+module.exports.addOrUpdateOwnerAndSize = function(id, ownerIdToAdd, size, callback) {
     //$set
     File.findById(id, function(err, file) {
         if (err || file === null) {
@@ -114,8 +117,16 @@ module.exports.addOwner = function(id, ownerIdToAdd, callback) {
 
         } else {
             // file is found
+            let modify = false;
+            if (size) {
+                file.size = size;
+                modify = true;
+            }
             if (file.owners[ownerIdToAdd] === undefined) {
                 file.owners.push(ownerIdToAdd);
+                modify = true;
+            }
+            if (modify) {
                 File.modify(file.id, file, callback);
             } else {
                 if (callback !== undefined) {
@@ -125,6 +136,7 @@ module.exports.addOwner = function(id, ownerIdToAdd, callback) {
         }
     });
 };
+
 
 /**
  *	Removes a owner from a File if owner does not exist, that is considered a success also.
@@ -158,6 +170,17 @@ module.exports.create = function(newFile, callback) {
 };
 module.exports.getById = function(id, callback) {
     File.findById(id, callback);
+};
+
+module.exports.getByIdAsJsonWithPath = async function(id, descriptionMaxLength) {
+
+    try {
+        let file = await File.findById(id)
+        return File.toJson(file, descriptionMaxLength, true);
+
+    } catch (err) {
+        return err;
+    }
 };
 
 //get all records
@@ -325,8 +348,23 @@ module.exports.getFilePathOnDisk = function(FileObject) {
 module.exports.getFullFileNameOnDisk = function(FileObject) {
     var ret = _getFilePath(FileObject.fileName, true) + module.exports.getFileNameOnDisk(FileObject);
     return ret;
-}
+};
 
+module.exports.getFileSizeOnDisk = (filePath) => {
+    try {
+        return fs.statSync(filePath).size;
+    } catch (err) {
+        return false;
+    }
+}
+module.exports.removeFileNameExtendion = (fileNameWithExtendion) => {
+    const pos = fileNameWithExtendion.lastIndexOf('.')
+    if (pos < 1) {
+        return fileNameWithExtendion;
+    }
+    return fileNameWithExtendion.substr(0, pos);
+
+}
 module.exports.imageCount = async function() {
     var query = {
         fileName: new RegExp("^./public/files/images/")
@@ -346,3 +384,100 @@ var findObjectIdInArray = function findObjectIdInArray(arrayOfObjectIds, stringI
 
     return -1;
 }
+
+module.exports.toJson = function(item, descriptionMaxLength, addSrcPath) {
+    if (!item)
+        return item;
+
+    var ret = {
+        id: item.id,
+        name: item.name,
+        description: descriptionMaxLength ? module.exports.Utils.maxStringLength(item.description, descriptionMaxLength) : item.description,
+        fileName: item.fileName,
+        size: item.size,
+        owners: Object.assign(item.owners),
+    };
+
+    if (addSrcPath) {
+        ret.src = module.exports.getFullFileNameOnDisk(item).replace('./public', '')
+    }
+    return ret;
+}
+
+module.exports.toJsonList = function(item, descriptionMaxLength) {
+    return module.exports.toJson(item, descriptionMaxLength, true)
+}
+
+module.exports.search = function(query, sort, itemsPerPage, page, descriptionMaxLength) {
+    return helper.collectionSearch('file', query, sort, itemsPerPage, page, descriptionMaxLength);
+};
+
+module.exports.getByIdAsJson = async function(id, countHowManyParts) {
+    return helper.collectionGetByIdAsJson('file', id, countHowManyParts);
+}
+
+
+/**
+ * searches trhough the database for files that are not connected to any parts
+ * or owners.  Or just exist on disk not in db.
+ * @param {string[]} directories - directories which could contain files in db
+ */
+module.exports.listOrphans = async function(directories) {
+
+    const allFiles = await File.find({});
+    const existInCollectionButNotOnDisk = allFiles.filter(e => {
+        if (!validator.fileExists(File.getFullFileNameOnDisk(e))) {
+            return e;
+        }
+    })
+
+    var partIds = await helper.getValidCollection('part').find({}).then(list => {
+        return list.map(e => e.id);
+    })
+
+    var userIds = await helper.getValidCollection('user').find({}).then(list => {
+        return list.map(e => e.id)
+    })
+
+    var filesWithNoOwners = allFiles.filter(file => {
+        const ownerIds = file.owners.map(e => e._id.toString());
+        if (!userIds.some(a => ownerIds.includes(a)) && !partIds.some(a => ownerIds.includes(a)))
+            return file;
+    });
+
+    if (existInCollectionButNotOnDisk.length) {
+        console.warn(`${existInCollectionButNotOnDisk.length} files exist in database but not on disk.`)
+    }
+
+    const dirSearch = directories.map(e => {
+        return {
+            path: e,
+            orphans: []
+        }
+    })
+
+    const allFileIds = allFiles.map(e => e.id)
+    dirSearch.forEach(directory => {
+        const openedDir = fs.opendirSync(directory.path);
+        let fileDirent = true;
+        while (fileDirent) {
+            fileDirent = openedDir.readSync();
+            if (fileDirent != null) {
+                if (fileDirent.isFile()) {
+                    const id = module.exports.removeFileNameExtendion(fileDirent.name);
+                    if (!allFileIds.includes(id)) {
+                        directory.orphans.push(fileDirent.name);
+                    }
+                }
+            }
+        }
+    });
+
+    return {
+        result: {
+            existInCollectionWithNoOwners: filesWithNoOwners,
+            existOnDiskButNotInCollection: dirSearch,
+            existInCollectionButNotOnDisk: existInCollectionButNotOnDisk
+        }
+    };
+};

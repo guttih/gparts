@@ -9,7 +9,9 @@ var listFactory = {
         var ret = [];
         $('.search-input').each(function() {
             var $el = $(this)
-            ret.push({ name: $el.attr('name'), value: $el.val() })
+            var name = $el.attr('data-property-name');
+            if (!name) name = $el.attr('name');
+            ret.push({ name: name, value: $el.val() })
         });
         return ret;
     },
@@ -129,8 +131,7 @@ var listFactory = {
     setListValues: function(data) {
 
         var dataName = $('.search-inputs').attr('data-name') + 's';
-        console.log('setting list values for ' + dataName);
-        var id, name, description;
+        var id, name, description, topLeft;
 
         if (!data.page) {
             $("#list").empty();
@@ -146,9 +147,10 @@ var listFactory = {
                 const item = list[i];
                 id = item.id;
                 name = item.name;
-                description = item[descKey],
-                    src = item.src;
-                var str = createListItem(id, name, description, dataName, false, false, true, true, src);
+                description = item[descKey];
+                src = item.src;
+                topLeft = item.size ? bytesToUnitString(item.size, 2) : '';
+                var str = createListItem(id, name, description, topLeft, dataName, false, false, true, true, src);
                 $("#list").append(str);
             }
         }
@@ -189,5 +191,4 @@ $(document).ready(function() {
     $('.button-get-more').on('click tap', () => {
         listFactory.postSearch(listFactory.getQueryDomValues(page + 1));
     })
-    console.log('list.js')
 });
