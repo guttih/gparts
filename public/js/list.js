@@ -1,6 +1,11 @@
 var listBy = null;
 var page = 0;
 
+var PageProperties = {
+    addViewButton: false,
+    removeEditButton: false,
+}
+
 var listFactory = {
     getServer: function() {
         return window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '');

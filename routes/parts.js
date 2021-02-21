@@ -25,7 +25,7 @@ router.get('/register/:id', lib.authenticateRequest, function(req, res) {
                         req.flash('error', 'Could not find part.');
                     } else {
                         var str = JSON.stringify(obj);
-                        res.render('register-part', { item: str, descriptionMd: marked(obj.description) });
+                        res.render('register-part', { item: str, viewModel: { id: obj.id } });
                     }
                 });
             }
@@ -35,11 +35,11 @@ router.get('/register/:id', lib.authenticateRequest, function(req, res) {
 
 const partToMarkdownText = (part) => {
     var ret = '';
+    ret += `## Description \n\n ${part.description}`;
     // ret += `Aquired: ${acquired}\n\n`;
     // ret += `Last modified: ${modified}\n\n`;
     // ret += ` Stock count: ${part.stockCount}\n\n`;
     // if (part.category) ret += ` Category: ${part.category}\n\n`;
-    ret += `## Description \n\n ${part.description}`;
     // if (part.urls && part.urls.length) {
     //     ret += `\n\n### Links \n\n`;
     //     part.urls.forEach(l => ret += ` - [${l.name}](${l.url}) \n`);
@@ -82,11 +82,11 @@ router.get('/view/:id', lib.authenticateRequest, async function(req, res) {
         var part = await Part.getByIdAsJson(req.params.id);
         var str = JSON.stringify(part);
         var viewObject = await Part.fetchViewValuesForPart(part, false)
-        var markdown = partToMarkdownText(viewObject);
         var viewModel = {
+            id: viewObject.id,
             image: viewObject.image,
             name: viewObject.name,
-            markdown: markdown,
+            markdown: partToMarkdownText(viewObject),
             firstAcquired: lib.DateToYYYY_MM_DD_String(new Date(viewObject.lastModified), '-'),
             lastModified: lib.DateToYYYY_MM_DD_String(new Date(viewObject.firstAcquired), '-'),
             stock: viewObject.stockCount,

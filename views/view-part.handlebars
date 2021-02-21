@@ -1,6 +1,5 @@
 <link rel="stylesheet" href="/css/row-buttons.css" />
-
-<h2 class="page-header" align="right">{{viewModel.name}}</h2>
+<link rel="stylesheet" href="/css/view.css" />
 <script type="text/javascript">
     var item = {{{ item }}};
 </script>
@@ -13,12 +12,30 @@
 </div>
 {{/if}}
 
-
 <div class="view part">
+    <div class="row vertical-align hidden-xs"> {{!-- Title desktop --}}
+        <div class="col-xs-10">
+            <h2 class="">{{viewModel.name}}</h2>
+        </div>
+        <div class="col-xs-2">
+            <a href="/parts/register/{{viewModel.id}}" class="btn btn-xs btn-default pull-right"> <span
+                    class="glyphicon glyphicon-edit"></span>&nbsp;Edit </a>
+        </div>
+    </div>
+    <div class="row visible-xs"> {{!-- Title mobile --}}
+        <div class="col-xs-12">
+            <h2 class="">Mobile {{viewModel.name}}</h2>
+        </div>
+        <div class="col-xs-12">
+            <a href="/parts/register/{{viewModel.id}}" class="btn btn btn-default"> <span
+                    class="glyphicon glyphicon-edit"></span>&nbsp;Edit </a>
+        </div>
+    </div>
     <div class="image">
         <img src="{{viewModel.image}}" style="max-width:160px;max-height:160px;min-height:160px;margin-top:20px;"
             class="center-block temp-image">
     </div>
+
     <div class="first-acquired">Acquired: {{viewModel.firstAcquired}}</div>
     <div class="last-modified">Modified: {{viewModel.lastModified}}</div>
     <div class="stock">Stock: {{viewModel.stock}}</div>
@@ -68,6 +85,18 @@
     <div class="markdown document description">
         {{{viewModel.markdown}}}
     </div>
+
+    {{#if admin}}
+    <div class="row">
+        <div class="col-md-12" style="margin-top:10px">
+            {{#if viewModel.id}}
+            <a href="/parts/register/{{viewModel.id}}" class="btn btn-xs btn-default"> <span
+                    class="glyphicon glyphicon-edit"></span>&nbsp;Edit </a>
+            {{/if}}
+        </div>
+    </div>
+    {{/if}}
 </div>
+
 <script src="/js/row-buttons.js"></script>
 <script src="/js/view.js" type="text/javascript" charset="utf-8"></script>

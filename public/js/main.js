@@ -172,13 +172,19 @@ function createListItem(id, name, description, topLeft, routeText, bAddRunButton
     if (imageSrc !== undefined && routeText === 'files') {
         url = SERVER + '/' + routeText + '/register/image/' + id;
     }
+
+
     var topLeft = !topLeft ? '' : `<span class="top-left">${topLeft}</span>`;
-    var strElm =
-        '<div id="listItem' + id + '" class="list-group-item clearfix">' +
-        '<p class="list-group-item-heading">' + name + topLeft + '</p>' +
+    var strElm = '<div id="listItem' + id + '" class="list-group-item clearfix">';
+
+    if (imageSrc) {
+        strElm += '<a target="_blank" href="' + imageSrc + '"><img class="list-item-image" src="' + imageSrc + '"></a>';
+    }
+    strElm += '<p class="list-group-item-heading">' + name + topLeft + '</p>' +
         '<span class="list-group-item-text">' + description + '</span>' +
         '<span class="pull-right">';
     //window.location.href = '/cards/useraccess/'+ card.id;
+
     if (bAddRunButton) {
         strElm += '<button onclick="runItem(\'' + id + '\');" class="btn btn-xs btn-success"> <span class="glyphicon glyphicon-play"></span>&nbsp;Run </button>';
     }
@@ -187,17 +193,21 @@ function createListItem(id, name, description, topLeft, routeText, bAddRunButton
         var listPartByUrl = SERVER + '/parts/list/' + singular + '/' + id;
         strElm += '<a href="' + listPartByUrl + '" class="btn btn-xs btn-info"> <span class="glyphicon glyphicon-list-alt"></span>&nbsp;List Parts by</a>';
     }
-    if (bAddEditButton) {
+
+
+    if (bAddEditButton && !PageProperties.removeEditButton) {
         strElm += '<a href="' + url + '" class="btn btn-xs btn-warning"> <span class="glyphicon glyphicon-edit"></span>&nbsp;Edit </a>';
+    }
+    console.log(PageProperties);
+    if (PageProperties.addViewButton) {
+        console.log("adding")
+        strElm += '<a href="' + url.replace('/register/', '/view/') + '" class="btn btn-xs btn-default"> <span class="glyphicon glyphicon-sunglasses"></span>&nbsp;View </a>';
     }
 
     if (bAddDeleteButton) {
         strElm += '<button onclick="deleteItem(\'' + routeText + '\', \'' + id + '\');" class="btn btn-xs btn-danger"> <span class="glyphicon glyphicon-trash"></span> Delete </button>';
     }
     strElm += '</span>';
-    if (imageSrc) {
-        strElm += '<a target="_blank" href="' + imageSrc + '"><img class="pull-right" src="' + imageSrc + '"></a>';
-    }
     strElm += '</div>';
 
     return strElm;

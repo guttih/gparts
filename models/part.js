@@ -360,16 +360,17 @@ module.exports.fetchViewValuesForPart = async(part) => {
         description: part.description,
         category: part.category,
         urls: JSON.parse(part.urls),
-        image: await File.getByIdAsJson(part.image).then(e => File.getFullFileNameOnDisk(e).replace('./public', '')),
-        files: await File.listByOwnerIdPromise(part.id).then(e => e.map(x => File.toJson(x, null, true))),
         stockCount: part.stockCount,
         firstAcquired: part.firstAcquired,
         lastModified: part.lastModified,
-        type: await Type.getByIdAsJson(part.type),
-        location: await Location.getByIdAsJson(part.location),
-        manufacturer: await Manufacturer.getByIdAsJson(part.manufacturer),
-        supplier: await Supplier.getByIdAsJson(part.supplier),
     };
+    //Doing this is this order to be able to see where things are failing if they do.
+    if (part.image) ret.image = await File.getByIdAsJson(part.image).then(e => File.getFullFileNameOnDisk(e, true));
+    ret.files = await File.listByOwnerIdPromise(part.id).then(e => e.map(x => File.toJson(x, null, true)));
+    ret.type = await Type.getByIdAsJson(part.type);
+    ret.location = await Location.getByIdAsJson(part.location);
+    ret.manufacturer = await Manufacturer.getByIdAsJson(part.manufacturer);
+    ret.supplier = await Supplier.getByIdAsJson(part.supplier);
 
     return ret;
 }

@@ -176,6 +176,9 @@
             <div class="col-md-12" style="margin-top:10px">
                 <button id="btnSave" type="button" class="btn btn-success pull-right">Save</button>
                 {{#if item}}
+                <a href="/parts/view/{{viewModel.id}}" class="btnView btn btn-default pull-right"> 
+                    <span class="glyphicon glyphicon-glasses"></span>&nbsp;View
+                </a>
                 <button id="btnDelete" type="button" class="btn btn-danger pull-right">Delete</button>
                 {{/if}}
             </div>

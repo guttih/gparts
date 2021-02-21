@@ -38,4 +38,7 @@ function filterDomList() {
     listFactory.updateListCount(list.length, `${visibleItemCount} of`);
 }
 
-$(document).ready(function() {});
+$(document).ready(function() {
+    PageProperties.addViewButton = true;
+    PageProperties.removeEditButton = true;
+});
