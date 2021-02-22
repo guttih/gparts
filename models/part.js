@@ -366,7 +366,12 @@ module.exports.fetchViewValuesForPart = async(part) => {
     };
     //Doing this is this order to be able to see where things are failing if they do.
     if (part.image) ret.image = await File.getByIdAsJson(part.image).then(e => File.getFullFileNameOnDisk(e, true));
-    ret.files = await File.listByOwnerIdPromise(part.id).then(e => e.map(x => File.toJson(x, null, true)));
+
+    ret.files = await File.listByOwnerIdPromise(part.id).then(e => e.map(x => {
+        const fileViewModel = File.toJson(x, null, true);
+        fileViewModel.isPartImage = part.image && part.image === fileViewModel.id;
+        return fileViewModel;
+    }));
     ret.type = await Type.getByIdAsJson(part.type);
     ret.location = await Location.getByIdAsJson(part.location);
     ret.manufacturer = await Manufacturer.getByIdAsJson(part.manufacturer);

@@ -21,7 +21,9 @@
     <div class="row desktop-image-props hidden-xs"> {{!-- Desktop --}}
         <div class="col-xs-3"> {{!-- Image --}}
             <div class="image">
-                <img src="{{viewModel.image}}" class="center-block temp-image">
+                <a href="{{viewModel.image}}" target="_blank">
+                    <img src="{{viewModel.image}}" class="center-block temp-image">
+                </a>
             </div>
         </div>
         <div class="col-xs-offset-1 col-xs-8"> {{!-- long Properties --}}
@@ -102,10 +104,17 @@
                 {{#each viewModel.files}}
                 <div class="row property-container lg">
                     <div class="flex-space-between">
-                        <div class="name"><a href="{{this.src}}">{{this.name}}</a></div>
+                        <div class="name">
+                            <a 
+                                {{#ifCond this.isPartImage true}} 
+                                    class="file-is-part-image" 
+                                    title="This is the part image you see above" rel="tooltip" data-placement="bottom"
+                                {{/ifCond}}
+                                target="_blank" href="{{this.src}}">{{this.name}} 
+                            </a>
+                        </div>
                         <div class="size">{{this.size}} </div>
                     </div>
-                    
                     <div class="description">{{this.description}}</div>
                 </div>
                 {{/each}}

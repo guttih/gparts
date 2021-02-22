@@ -56,3 +56,7 @@
 .view.part .size {
     white-space: nowrap;
 }
+
+.file-is-part-image {
+    font-weight: 700;
+}

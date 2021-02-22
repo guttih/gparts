@@ -198,9 +198,7 @@ function createListItem(id, name, description, topLeft, routeText, bAddRunButton
     if (bAddEditButton && !PageProperties.removeEditButton) {
         strElm += '<a href="' + url + '" class="btn btn-xs btn-warning"> <span class="glyphicon glyphicon-edit"></span>&nbsp;Edit </a>';
     }
-    console.log(PageProperties);
     if (PageProperties.addViewButton) {
-        console.log("adding")
         strElm += '<a href="' + url.replace('/register/', '/view/') + '" class="btn btn-xs btn-default"> <span class="glyphicon glyphicon-sunglasses"></span>&nbsp;View </a>';
     }
 

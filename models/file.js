@@ -351,7 +351,6 @@ module.exports.getFilePathOnDisk = function(FileObject) {
 
 //get the file path and filename on disk which includes the Id + the file extension
 module.exports.getFullFileNameOnDisk = function(FileObject, removePublicFromPath) {
-    console.log(FileObject)
     var ret = _getFilePath(FileObject.fileName, true) + module.exports.getFileNameOnDisk(FileObject);
     if (removePublicFromPath)
         return ret.replace('./public', '');
