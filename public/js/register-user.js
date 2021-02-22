@@ -52,8 +52,18 @@ function registerUserInput($el) {
         .change(function() { updateEditState(this.id, $.trim($(this).val()), buttonID); });
 }
 
+function refreshPickerEvents() {
+    console.log('todo: find the for styles')
+    let root = document.documentElement;
+
+    $(".color-picker").off();
+    $(".color-picker").on("input", (event) => {
+        const varName = document.querySelector(`#${event.target.id}`).getAttribute("data-stylename");
+        root.style.setProperty(varName, event.target.value);
+    });
+}
+
 function init() {
-    var buttonID = 'btnSaveUser';
 
     $('#btnSaveUser').click(function() {
         saveUser();
@@ -68,6 +78,7 @@ function init() {
     registerUserInput($('#email'));
     registerUserInput($('#password'));
     registerUserInput($('#password2'));
+    refreshPickerEvents();
 }
 
 //enables the save button if all requered values are ok.
@@ -146,7 +157,6 @@ function getUser(id) {
         }
     });
 }
-
 
 $(function() {
     init();

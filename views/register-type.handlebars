@@ -1,44 +1,45 @@
-
-{{#if item}} <!-- if you want to modify -->
-      <h2 class="page-header" align="right">Modify Type</h2>
-			<script type="text/javascript">
-			var item = {{{item}}};
-		</script>
+{{#if item}}
+<!-- if you want to modify -->
+<h2 class="page-header" align="right">Modify Type</h2>
+<script type="text/javascript">
+  var item = {{{ item }}};
+</script>
 {{else}}
-      <h2 class="page-header" align="right">Register a new Type</h2>
+<h2 class="page-header" align="right">Register a new Type</h2>
 {{/if}}
 
 {{#if errors}}
-    <div class="error-container"> 
-      {{#each errors}}
-        <div class="alert alert-danger">{{msg}}</div>
-      {{/each}}
-    </div>
+<div class="error-container">
+  {{#each errors}}
+  <div class="alert alert-danger">{{msg}}</div>
+  {{/each}}
+</div>
 {{/if}}
 
-<form method="post" id="register-form" action ="/types/register">
-    <div class="row row-padd">
-		<label>Name</label>
-			<p>Give the type a descriptive name, but not to long.</p>
-		<input type="text"   id="name"     name="name" form="register-form" class="form-control" value="" placeholder="Type name">
-	</div>
-	
+<form method="post" id="register-form" action="/types/register">
+  <div class="row row-padd">
+    <label>Name</label>
+    <p>Give the type a descriptive name, but not to long.</p>
+    <input type="text" id="name" name="name" form="register-form" class="form-control" value="" placeholder="Type name">
+  </div>
+
   <div class="form-horizontal">
     <label>Description</label>
     <p>Describe what kind of type this is. What kind of parts will belong to this type.</p>
     <div class="form-group">
       <div class="col-md-12">
-        <textarea id="description" name="description" form="register-form" class="form-control" rows="3" placeholder="Describe this type."></textarea>
+        <textarea id="description" name="description" form="register-form" class="form-control" rows="3"
+          placeholder="Describe this type."></textarea>
       </div>
     </div>
   </div>
-{{#if admin}}
+  {{#if admin}}
   <button id="btnSave" type="button" class="btn btn-success pull-right">Save</button>
   {{#if item}}
   <button id="btnView" type="button" class="btn btn-default pull-right">View parts</button>
   <button id="btnDelete" type="button" class="btn btn-danger pull-right">Delete</button>
   {{/if}}
-{{/if}}
+  {{/if}}
 </form>
 
 

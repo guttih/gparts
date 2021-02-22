@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<title>Gudjons Parts</title>
 	<meta charset="utf-8">
@@ -206,13 +206,13 @@
 										</ul>
 									</li>
 									<li class="menu-item" id="change-file-upload-size" data-limit="{{fileSizeLimit}}"><a
-											href="javascript:changeFileUploadSize()">Change file upload size from
-											{{fileSizeLimitText}}</a></li>
+											href="javascript:changeFileUploadSize()">File maximum upload size({{fileSizeLimitText}}) ...</a></li>
 									<li class="menu-item" id="change-list-description-max-length"
 										data-maxlength="{{listDescriptionMaxLength}}"><a
-											href="javascript:changeListDescriptionMaxLength()">Change maximum part
-											description
-											length in a list from {{listDescriptionMaxLength}}</a></li>
+											href="javascript:changeListDescriptionMaxLength()">Description in lists maximum length ({{listDescriptionMaxLength}}) ...</a></li>
+									<li class="menu-item"><a
+											href="/files/orphans">Examin files, check for orphans</a>
+									</li>
 								</ul>
 							</li>
 
@@ -361,7 +361,7 @@
 		</footer>
 
 	</div> <!-- /container -->
-	<div id="config" data-settings='{"serverUrl":"http://www.guttih.com:3000"}' />
+	<div id="config" data-settings='{"serverUrl":"http://www.guttih.com:3000"}'></div>
 	<script src="/js/main.js"></script>
 
 </body>

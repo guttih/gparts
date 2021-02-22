@@ -7,17 +7,17 @@ var expressValidator = require('express-validator');
 var flash = require('connect-flash');
 var session = require('express-session');
 var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
 var lib = require('./utils/glib');
-var addresses = lib.getAddresses(true);
-var subnets = lib.getSubnets(true);
 var config = lib.getConfig();
 
 
 ///////////////////// start mongo /////////////////////////
 var mongo = require('mongodb');
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/gparts')
+mongoose.connect('mongodb://localhost/gparts', {
+        useCreateIndex: true,
+        useNewUrlParser: true
+    })
     .then(function(db) { // <- db as first argument
         console.log('Connected to gparts');
     })

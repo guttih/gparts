@@ -1,0 +1,22 @@
+<div class="row">
+	<h3 class="page-header" align="right">{{title}}</h3>
+</div>
+{{#if errors}}
+<div class="error-container">
+	{{#each errors}}
+	<div class="alert alert-danger">{{msg}}</div>
+	{{/each}}
+</div>
+{{/if}}
+
+{{#if listBy}}
+<div class="listby" data-collection="{{listBy.collection}}" data-collection-id="{{listBy.collectionId}}">
+	<div class="filter">Filtered by</div>
+	<div >
+		<span rel="tooltip" data-placement="bottom" title="{{listBy.tooltip}}">
+			{{listBy.title}}:
+			<span class="name" id="{{listBy.collectionId}}">{{listBy.name}}</span>
+		</span>
+	</div>
+</div>
+{{/if}}

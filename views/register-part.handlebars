@@ -1,20 +1,20 @@
-
 <link rel="stylesheet" href="/css/row-buttons.css" />
 
-{{#if item}} <!-- if you want to modify -->
-    <h2 class="page-header" align="right">Modify Part</h2>
-            <script type="text/javascript">
-            var item = {{{item}}};
-        </script>
+{{#if item}}
+<!-- if you want to modify -->
+<h2 class="page-header" align="right">Modify Part</h2>
+<script type="text/javascript">
+    var item = {{{ item }}};
+</script>
 {{else}}
-    <h2 class="page-header" align="right">Register a new Part</h2>
+<h2 class="page-header" align="right">Register a new Part</h2>
 {{/if}}
 {{#if errors}}
-    <div class="error-container"> 
+<div class="error-container">
     {{#each errors}}
-        <div class="alert alert-danger">{{msg}}</div>
+    <div class="alert alert-danger">{{msg}}</div>
     {{/each}}
-    </div>
+</div>
 {{/if}}
 <div id="image-values" class="part-additional-values hidden">
     {{> partial_register_image_form }}
@@ -23,30 +23,46 @@
     {{> partial_register_file_form }}
 </div>
 <div id="part-values">
-    <form method="post" id="register-form" action ="/parts/register" class="part-form" >
-    <input type="hidden" id="imageId" name="image" form="register-form" value="">
-    <input type="hidden" id="urlsId" name="urls" form="register-form" value="">
+    <form method="post" id="register-form" action="/parts/register" class="part-form">
+        <input type="hidden" id="imageId" name="image" form="register-form" value="">
+        <input type="hidden" id="urlsId" name="urls" form="register-form" value="">
         <div class="row row-padd">
             <div class=" col-xs-5 col-sm-3 col-md-3 col-lg-3 col-xl-1 image-container" id="part-image-container">
-                <img src="/images/part-image.jpg" style="max-width:160px;max-height:160px;min-height:160px;margin-top:20px;" class="center-block temp-image">
+                <img src="/images/part-image.jpg"
+                    style="max-width:160px;max-height:160px;min-height:160px;margin-top:20px;"
+                    class="center-block temp-image">
                 <div class="commands item center-block hidden" align="center" style="min-width:100%;">
-                    <span class="list-command-view btn btn-default glyphicon glyphicon-eye-open" title="View image"></span>
-                    <span class="list-command-edit btn btn-default glyphicon glyphicon-pencil" title="Change image"></span>
-                    <span class="list-command-delete btn btn-default glyphicon glyphicon-remove" title="Delete image"></span>
+                    <span class="list-command-view btn btn-default glyphicon glyphicon-eye-open"
+                        title="View image"></span>
+                    <span class="list-command-edit btn btn-default glyphicon glyphicon-pencil"
+                        title="Change image"></span>
+                    <span class="list-command-delete btn btn-default glyphicon glyphicon-remove"
+                        title="Delete image"></span>
                 </div>
             </div>
 
             <div class="col-xs-7 col-sm-9 col-md-9 col-lg-9 col-xl-11 name-description">
                 <label for="name">Part name</label>
-                <input type="text"   id="name"     name="name" form="register-form" class="form-control" value="" placeholder="Type name">
+                <input type="text" id="name" name="name" form="register-form" class="form-control" value=""
+                    placeholder="Type name">
                 <div class="form-horizontal">
                     <label for="description">Description</label>
                     <div class="form-group">
-                    <div class="col-md-12">
-                    <textarea id="description" name="description" form="register-form" class="form-control" rows="3" placeholder="Describe this part."></textarea>
+                        <div class="col-md-12">
+                            <textarea id="description" name="description" form="register-form" class="form-control"
+                                rows="3" placeholder="Describe this part."></textarea>
+                        </div>
+                    </div>
+                    <div class="pull-right" style="margin-top:-12px">
+                        <a  target="_blank" 
+                            href="https://marked.js.org/demo/?text=Marked%20-%20Markdown%20Parser%0A%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%3D%0A%0A%5BMarked%5D%20lets%20you%20convert%20%5BMarkdown%5D%20into%20HTML.%20%20Markdown%20is%20a%20simple%20text%20format%20whose%20goal%20is%20to%20be%20very%20easy%20to%20read%20and%20write%2C%20even%20when%20not%20converted%20to%20HTML.%20%20This%20demo%20page%20will%20let%20you%20type%20anything%20you%20like%20and%20see%20how%20it%20gets%20converted.%20%20Live.%20%20No%20more%20waiting%20around.%0A%0AHow%20To%20Use%20The%20Demo%0A-------------------%0A%0A1.%20Type%20in%20stuff%20on%20the%20left.%0A2.%20See%20the%20live%20updates%20on%20the%20right.%0A%0AThat%27s%20it.%20%20Pretty%20simple.%20%20There%27s%20also%20a%20drop-down%20option%20in%20the%20upper%20right%20to%20switch%20between%20various%20views%3A%0A%0A-%20**Preview%3A**%20%20A%20live%20display%20of%20the%20generated%20HTML%20as%20it%20would%20render%20in%20a%20browser.%0A-%20**HTML%20Source%3A**%20%20The%20generated%20HTML%20before%20your%20browser%20makes%20it%20pretty.%0A-%20**Lexer%20Data%3A**%20%20What%20%5Bmarked%5D%20uses%20internally%2C%20in%20case%20you%20like%20gory%20stuff%20like%20this.%0A-%20**Quick%20Reference%3A**%20%20A%20brief%20run-down%20of%20how%20to%20format%20things%20using%20markdown.%0A%0AWhy%20Markdown%3F%0A-------------%0A%0AIt%27s%20easy.%20%20It%27s%20not%20overly%20bloated%2C%20unlike%20HTML.%20%20Also%2C%20as%20the%20creator%20of%20%5Bmarkdown%5D%20says%2C%0A%0A%3E%20The%20overriding%20design%20goal%20for%20Markdown%27s%0A%3E%20formatting%20syntax%20is%20to%20make%20it%20as%20readable%0A%3E%20as%20possible.%20The%20idea%20is%20that%20a%0A%3E%20Markdown-formatted%20document%20should%20be%0A%3E%20publishable%20as-is%2C%20as%20plain%20text%2C%20without%0A%3E%20looking%20like%20it%27s%20been%20marked%20up%20with%20tags%0A%3E%20or%20formatting%20instructions.%0A%0AReady%20to%20start%20writing%3F%20%20Either%20start%20changing%20stuff%20on%20the%20left%20or%0A%5Bclear%20everything%5D(%2Fdemo%2F%3Ftext%3D)%20with%20a%20simple%20click.%0A%0A%5BMarked%5D%3A%20https%3A%2F%2Fgithub.com%2Fmarkedjs%2Fmarked%2F%0A%5BMarkdown%5D%3A%20http%3A%2F%2Fdaringfireball.net%2Fprojects%2Fmarkdown%2F%0A&options=&version=master"
+                            rel="tooltip" data-placement="bottom" 
+                            title="The description will be displayed as markdown.  To help with writing the markdown text, click this link to open a live editor where you can write your description and view instantly how it will look.  When you are satisfied just copy the text and paste it into the description box above."
+                        >
+                        Help writing markdown.
+                    </a>
                     </div>
                 </div>
-    </div>
             </div>
         </div>
 
@@ -55,13 +71,13 @@
                 <div class="form-group">
                     <label>Type</label>
                     <div class="dropdown select-dropdown-actions pull-right">
-                            <button class="btn btn-default btn-xs  dropdown-toggle " type="button" data-toggle="dropdown"> 
+                        <button class="btn btn-default btn-xs  dropdown-toggle " type="button" data-toggle="dropdown">
                             <span class="caret"></span></button>
-                            <ul class="dropdown-menu">
-                                <li><a href="#" onclick="refreshPartSelect(this); return false;">Refresh</a></li>
-                                <li><a href="#" onclick="registerPartSelect(this); return false;">New</a></li>
-                                <li><a href="#" onclick="editPartSelect(this); return false;">Edit</a></li>
-                            </ul>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" onclick="refreshPartSelect(this); return false;">Refresh</a></li>
+                            <li><a href="#" onclick="registerPartSelect(this); return false;">New</a></li>
+                            <li><a href="#" onclick="editPartSelect(this); return false;">Edit</a></li>
+                        </ul>
                     </div>
                     <select id="type" name="type" class="form-control" form="register-form" required>
                     </select>
@@ -69,19 +85,20 @@
             </div>
             <div class="col-sm-6 col-md-4 col-lg-4 col-xl-4">
                 <label for="category">Category</label>
-                <input type="text"   id="category" name="category" form="register-form" class="form-control" value="" placeholder="Category this part belongs to">
+                <input type="text" id="category" name="category" form="register-form" class="form-control" value=""
+                    placeholder="Category this part belongs to">
             </div>
             <div class=" col-sm-6 col-md-4 col-lg-4 col-xl-4">
-                <div id ="div-location" class="form-group">
+                <div id="div-location" class="form-group">
                     <label>Location</label>
                     <div class="dropdown select-dropdown-actions pull-right">
-                            <button class="btn btn-default btn-xs  dropdown-toggle " type="button" data-toggle="dropdown"> 
+                        <button class="btn btn-default btn-xs  dropdown-toggle " type="button" data-toggle="dropdown">
                             <span class="caret"></span></button>
-                            <ul class="dropdown-menu">
-                                <li><a href="#" onclick="refreshPartSelect(this); return false;">Refresh</a></li>
-                                <li><a href="#" onclick="registerPartSelect(this); return false;">New</a></li>
-                                <li><a href="#" onclick="editPartSelect(this); return false;">Edit</a></li>
-                            </ul>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" onclick="refreshPartSelect(this); return false;">Refresh</a></li>
+                            <li><a href="#" onclick="registerPartSelect(this); return false;">New</a></li>
+                            <li><a href="#" onclick="editPartSelect(this); return false;">Edit</a></li>
+                        </ul>
                     </div>
                     <select id="location" name="location" class="form-control" form="register-form" required>
                     </select>
@@ -91,82 +108,91 @@
         <div class="row row-padd">
             <div class=" col-sm-6 col-md-4 col-lg-4 col-xl-4">
                 <label for="firstAcquired">Acquired date</label>
-                <input type="date"   id="firstAcquired" name="firstAcquired" form="register-form" class="form-control" value="" placeholder="When did you get this part first">
+                <input type="date" id="firstAcquired" name="firstAcquired" form="register-form" class="form-control"
+                    value="" placeholder="When did you get this part first">
             </div>
             <div class=" col-sm-6 col-md-4 col-lg-4 col-xl-4">
                 <label for="lastModified">Last modified date</label>
-                <input readonly type="date"   id="lastModified" name="lastModified" form="register-form" class="form-control" value="" placeholder="Write Category of this part">
+                <input readonly type="date" id="lastModified" name="lastModified" form="register-form"
+                    class="form-control" value="" placeholder="Write Category of this part">
             </div>
             <div class=" col-sm-6 col-md-4 col-lg-4 col-xl-4">
                 <label for="stockCount">Stock</label>
-                <input type="number"   id="stockCount" name="stockCount" form="register-form" 
-                class="form-control" value="" placeholder="How much is on stock"
-                min="0" step="1"
-                >
+                <input type="number" id="stockCount" name="stockCount" form="register-form" class="form-control"
+                    value="" placeholder="How much is on stock" min="0" step="1">
             </div>
         </div>
         <div class="row row-padd">
             <div class=" col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                <div id ="div-supplier" class="form-group">
+                <div id="div-supplier" class="form-group">
                     <label>Supplier</label>
                     <div class="dropdown select-dropdown-actions pull-right">
-                            <button class="btn btn-default btn-xs  dropdown-toggle " type="button" data-toggle="dropdown"> 
+                        <button class="btn btn-default btn-xs  dropdown-toggle " type="button" data-toggle="dropdown">
                             <span class="caret"></span></button>
-                            <ul class="dropdown-menu">
-                                <li><a href="#" onclick="refreshPartSelect(this); return false;">Refresh</a></li>
-                                <li><a href="#" onclick="registerPartSelect(this); return false;">New</a></li>
-                                <li><a href="#" onclick="editPartSelect(this); return false;">Edit</a></li>
-                            </ul>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" onclick="refreshPartSelect(this); return false;">Refresh</a></li>
+                            <li><a href="#" onclick="registerPartSelect(this); return false;">New</a></li>
+                            <li><a href="#" onclick="editPartSelect(this); return false;">Edit</a></li>
+                        </ul>
                     </div>
                     <select id="supplier" name="supplier" class="form-control" form="register-form">
                     </select>
                 </div>
             </div>
             <div class=" col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                <div id ="div-manufacturer" class="form-group">
+                <div id="div-manufacturer" class="form-group">
                     <label>Manufacturer</label>
                     <div class="dropdown select-dropdown-actions pull-right">
-                            <button class="btn btn-default btn-xs  dropdown-toggle " type="button" data-toggle="dropdown"> 
+                        <button class="btn btn-default btn-xs  dropdown-toggle " type="button" data-toggle="dropdown">
                             <span class="caret"></span></button>
-                            <ul class="dropdown-menu">
-                                <li><a href="#" onclick="refreshPartSelect(this); return false;">Refresh</a></li>
-                                <li><a href="#" onclick="registerPartSelect(this); return false;">New</a></li>
-                                <li><a href="#" onclick="editPartSelect(this); return false;">Edit</a></li>
-                            </ul>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" onclick="refreshPartSelect(this); return false;">Refresh</a></li>
+                            <li><a href="#" onclick="registerPartSelect(this); return false;">New</a></li>
+                            <li><a href="#" onclick="editPartSelect(this); return false;">Edit</a></li>
+                        </ul>
                     </div>
                     <select id="manufacturer" name="manufacturer" class="form-control" form="register-form">
                     </select>
                 </div>
             </div>
         </div>
-        <div class="row files-and-urls"> 
+        <div class="row files-and-urls">
             <div class="files">
                 <label>Files</label>
                 <button type="button" class="btn btn-default btn-add pull-right">+</button>
                 <table id="files" class="row-buttons view edit delete">
-                    <tr><td>Option 1</td></tr>
-                    <tr><td>Option 2</td></tr>
+                    <tr>
+                        <td>Option 1</td>
+                    </tr>
+                    <tr>
+                        <td>Option 2</td>
+                    </tr>
                 </table>
             </div>
             <div class="urls pull-right">
-                
+
                 <label>Urls</label>
                 <button type="button" class="btn btn-default btn-add pull-right">+</button>
                 <table id="urls" class="row-buttons view edit delete">
-                    <tr><td>Option 1</td></tr>
+                    <tr>
+                        <td>Option 1</td>
+                    </tr>
                 </table>
             </div>
         </div>
-{{#if admin}}
+        {{#if admin}}
         <div class="row">
             <div class="col-md-12" style="margin-top:10px">
-            <button id="btnSave" type="button" class="btn btn-success pull-right">Save</button>
-{{#if item}}  
-            <button id="btnDelete" type="button" class="btn btn-danger pull-right">Delete</button>
-{{/if}}
+                <button id="btnSave" type="button" class="btn btn-success pull-right">Save</button>
+                {{#if item}}
+                <a target="_blank" href="/parts/view/{{viewModel.id}}" class="btnView btn btn-default pull-right"> 
+                    <span class="glyphicon glyphicon-glasses"></span>&nbsp;View
+                </a>
+                <button id="btnDelete" type="button" class="btn btn-danger pull-right">Delete</button>
+                {{/if}}
             </div>
         </div>
-{{/if}}
+        {{/if}}
     </form>
 </div>
 <script src="/js/row-buttons.js"></script>

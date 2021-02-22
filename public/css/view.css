@@ -1,0 +1,62 @@
+.view.part .property {
+    font-weight: 700;
+}
+
+.view.part .page-header {
+    margin-bottom: 25px;
+}
+
+.view.part .property-container .name {
+    min-height: 20px;
+}
+
+.view.part .property-container {
+    background: var(--user-menubackground);
+    border-radius: 8px;
+    border-style: solid;
+    border-width: 0.2px;
+    border-color: var(--user-menufont);
+    padding: 8px;
+    font-size: 14px;
+}
+
+.view.part .property-container.lg {
+    margin-bottom: 5px;
+}
+
+.view.part .property-container.lg .description {
+    font-size: 12px;
+}
+
+.view.part .desktop-image-props .sm-left {
+    padding-left: 0px;
+    padding-right: 5px;
+}
+
+.view.part .desktop-image-props .sm-right {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.view.part .image img {
+    max-width: 200px;
+    height: 200px;
+}
+
+.view.part .links a {
+    color: var(--user-menufont);
+    font-weight: unset;
+}
+
+.flex-space-between {
+    display: flex;
+    justify-content: space-between;
+}
+
+.view.part .size {
+    white-space: nowrap;
+}
+
+.file-is-part-image {
+    font-weight: 700;
+}

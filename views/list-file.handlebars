@@ -1,30 +1,28 @@
-<div class="row">
-	<h3 class="page-header" align="right">Files</h3>
-</div>
-{{#if errors}}
-    <div class="error-container"> 
-		{{#each errors}}
-			<div class="alert alert-danger">{{msg}}</div>
-		{{/each}}
-    </div>
-{{/if}}
-<div class="row">
-	<div class="list-by">
-		<p class="col-sm-6 col-md-6 col-lg-6 col-xl-6">Ordered by creation time</p>
-        <button class="btn btn-default btn-xs pull-right" type="button">Order by name</button>
+{{> partial_list_header }}
+
+<div class="row search-inputs" data-name="{{dataName}}" data-url="{{searchUrl}}">
+	<div class="col-xs-12 col-sm-4">
+		<div class="form-group has-feedback">
+			<input type="text" id="searchInput1" name="name" class="form-control search-input"
+				placeholder="Filter list by name" title="Space seperated patterns" class="form-control">
+			<span class="glyphicon glyphicon-search form-control-feedback"></span>
+		</div>
 	</div>
-</div>
-<div class="row">
-	<div id = "list" class="file-list list-group">
-	<!-- listItems will be added here-->
+	<div class="col-xs-12 col-sm-4">
+		<div class="form-group has-feedback">
+			<input type="text" id="searchInput2" name="description" class="form-control search-input"
+				placeholder="Filter list by description" title="Space seperated patterns" class="form-control">
+			<span class="glyphicon glyphicon-search form-control-feedback"></span>
+		</div>
 	</div>
-</div>
-<div class="row">
-	<div class="list-count pull-right" data-name="file">
-		<span class="number"></span>
-		<span class="text"></span>
+	<div class="col-xs-12 col-sm-4">
+		<div class="form-group has-feedback">
+			<input type="text" id="searchInput3" name="size" class="form-control search-input"
+				placeholder="Filter list size" title="Space seperated patterns" class="form-control">
+			<span class="glyphicon glyphicon-search form-control-feedback"></span>
+		</div>
 	</div>
 </div>
 
-<script src="/js/bootstrap.min.js"></script>	
+{{> partial_list_footer }}
 <script src="/js/list-files.js"></script>	
