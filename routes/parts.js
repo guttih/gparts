@@ -36,36 +36,6 @@ router.get('/register/:id', lib.authenticateRequest, function(req, res) {
 const partToMarkdownText = (part) => {
     var ret = '';
     ret += `## Description \n\n ${part.description}`;
-    // ret += `Aquired: ${acquired}\n\n`;
-    // ret += `Last modified: ${modified}\n\n`;
-    // ret += ` Stock count: ${part.stockCount}\n\n`;
-    // if (part.category) ret += ` Category: ${part.category}\n\n`;
-    // if (part.urls && part.urls.length) {
-    //     ret += `\n\n### Links \n\n`;
-    //     part.urls.forEach(l => ret += ` - [${l.name}](${l.url}) \n`);
-    // }
-
-    // if (part.files && part.files.length) {
-    //     ret += `\n\n### Files \n\n`;
-    //     part.files.forEach(l => {
-    //         ret += `#### ${l.name} \n`
-    //         if (l.description) ret += `${l.description} \n\n`
-    //         ret += `[Size ${lib.bytesToUnitString(l.size)}](${l.src})\n\n\n`
-    //     });
-    // }
-
-    // if (part.location) {
-    //     ret += `\n#### Location\n\n [${part.location.name}](/supplier/register/${part.location.id} "${part.location.description}") \n\n`;
-    // }
-
-    // ret += `\n#### Type\n\n\n [${part.type.name}](/types/register/${part.type.id} "${part.type.description}") \n\n`;
-
-    // if (part.supplier) {
-    //     ret += `\n#### Supplier\n\n [${part.supplier.name}](/supplier/register/${part.supplier.id} "${part.supplier.description}") \n\n`;
-    // }
-    // if (part.manufacturer) {
-    //     ret += `\n#### Manufacturer\n\n [${part.manufacturer.name}](/supplier/register/${part.manufacturer.id} "${part.manufacturer.description}") \n\n`;
-    // }
 
     return marked(ret);
 }
@@ -87,8 +57,8 @@ router.get('/view/:id', lib.authenticateRequest, async function(req, res) {
             image: viewObject.image,
             name: viewObject.name,
             markdown: partToMarkdownText(viewObject),
-            firstAcquired: lib.DateToYYYY_MM_DD_String(new Date(viewObject.lastModified), '-'),
-            lastModified: lib.DateToYYYY_MM_DD_String(new Date(viewObject.firstAcquired), '-'),
+            firstAcquired: lib.DateToYYYY_MM_DD_String(new Date(viewObject.firstAcquired), '-'),
+            lastModified: lib.DateToYYYY_MM_DD_String(new Date(viewObject.lastModified), '-'),
             stock: viewObject.stockCount,
             category: viewObject.category,
             type: viewObject.type,
