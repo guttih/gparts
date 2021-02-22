@@ -100,7 +100,6 @@ $(document).ready(function() {
     var $elm = $("#file,#image");
     $elm.change(function() {
         var name = $("#name").val();
-        console.log('changed');
         var selectedFile = jQuery(this).val();
         if (name === undefined || name.length < 1 && selectedFile !== undefined && selectedFile.length > 0) {
             selectedFile = selectedFile.replace(/^.*[\\\/]/, '');
