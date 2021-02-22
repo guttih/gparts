@@ -592,7 +592,6 @@ $(document).ready(function() {
         var formId = this.form.id;
         var $elmName = $('#' + formId + ' [name="name"]');
         var name = $elmName.val();
-        console.log('changed');
         var selectedFile = jQuery(this).val();
         if (name === undefined || name.length < 1 && selectedFile !== undefined && selectedFile.length > 0) {
             selectedFile = selectedFile.replace(/^.*[\\\/]/, '');

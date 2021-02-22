@@ -36,10 +36,7 @@ var listFactory = {
             dropdownList.append(that.makeListSortItem(item.name, capitalize(item.name)));
             dropdownList.append(that.makeListSortItem(item.name, capitalize(item.name), true));
         });
-        // })
-        // <li><a href="#" data-method="name">Name</a></li>
-        // 		<li><a href="#" data-method="nameDesc">Name descending</a></li>
-        console.log('listFactory.init()')
+
         $('.sorting.dropdown  > ul > li a').on('click tap', (event) => {
             var $el = $(event.target);
             var text = $el.text()
@@ -100,7 +97,6 @@ var listFactory = {
         return sendObj;
     },
     postSearch: function(query) {
-        console.log('posting')
         const sendObj = query ? query : {};
         var path = $('.search-inputs').attr('data-url');
         path = path ? decodeURIComponent(path) : `/${$('.search-inputs').attr('data-name')}s/search`;
@@ -109,7 +105,6 @@ var listFactory = {
             var url = listFactory.SERVER + path;
             this.showLoading(true);
             var posting = $.post(url, sendObj);
-            console.log(`postSearch: ${url}: ${JSON.stringify(sendObj, null, 4)}`)
             posting
                 .done(function(data) {
                     listFactory.showLoading(false)
