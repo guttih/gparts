@@ -270,7 +270,7 @@ router.post('/register', lib.authenticateAdminRequest, function(req, res) {
             name: name,
             description: description,
             data: data,
-            action: action
+            action: action ? action : null
         });
         Location.createPromise(newLocation)
             .then(location => {
