@@ -60,3 +60,22 @@
 .file-is-part-image {
     font-weight: 700;
 }
+
+.view.part .top-buttons {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.view.part .top-buttons {
+    margin-top: 5px;
+    min-height: 34px;
+}
+
+.view.part .top-buttons button.locate {
+    margin-right: 77px;
+}
+
+.view.part .top-buttons .btn.btn-default.register {
+    right: 0px;
+    position: absolute;
+}

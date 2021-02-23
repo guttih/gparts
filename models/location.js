@@ -92,6 +92,14 @@ module.exports.getActionUrlByLocationId = function(id, callback) {
     });
 };
 
+module.exports.makeActionUrl = function(actionUrl, locationData) {
+    return Action.makeActionUrl(actionUrl, locationData)
+};
+
+module.exports.getActionById = async function(actionId) {
+    return await Action.findById(actionId);
+};
+
 //get all records
 module.exports.list = function(callback) {
     var query = {};

@@ -353,6 +353,15 @@ module.exports.getByIdAsJson = function(id, countHowManyParts) {
         .then(item => module.exports.toJson(item));
 };
 
+module.exports.makeActionUrl = async function(locationJsonObject) {
+
+    if (!locationJsonObject.action || !locationJsonObject.data)
+        return null;
+
+    const action = await Location.getActionById(locationJsonObject.action);
+    return Location.makeActionUrl(action.url, locationJsonObject.data);
+};
+
 module.exports.fetchViewValuesForPart = async(part) => {
     const ret = {
         id: part.id,
@@ -376,6 +385,7 @@ module.exports.fetchViewValuesForPart = async(part) => {
     ret.location = await Location.getByIdAsJson(part.location);
     ret.manufacturer = await Manufacturer.getByIdAsJson(part.manufacturer);
     ret.supplier = await Supplier.getByIdAsJson(part.supplier);
+    ret.actionUrl = await Part.makeActionUrl(ret.location);
 
     return ret;
 }

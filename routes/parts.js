@@ -4,6 +4,7 @@ var lib = require('../utils/glib');
 var Part = require('../models/part');
 const helper = require('../utils/routeCollectionHelper');
 const marked = require("marked");
+const { request } = require('express');
 
 // Register
 router.get('/register', lib.authenticateRequest, function(req, res) {
@@ -50,7 +51,6 @@ router.get('/view/:id', lib.authenticateRequest, async function(req, res) {
 
     try {
         var part = await Part.getByIdAsJson(req.params.id);
-        var str = JSON.stringify(part);
         var viewObject = await Part.fetchViewValuesForPart(part, false)
         var viewModel = {
             id: viewObject.id,
@@ -65,11 +65,23 @@ router.get('/view/:id', lib.authenticateRequest, async function(req, res) {
             location: viewObject.location,
             manufacturer: viewObject.manufacturer,
             supplier: viewObject.supplier,
+            actionUrl: viewObject.actionUrl,
             files: viewObject.files.map(file => {
                 file.size = lib.bytesToUnitString(file.size);
                 return file;
             }),
             urls: viewObject.urls,
+        }
+        var str = JSON.stringify(viewModel);
+        if (viewModel.actionUrl) {
+            //Running but not waiting for result
+            lib.runRequest('GET', viewModel.actionUrl, '', function(err, result) {
+                if (!err && result) {
+                    console.log(`ran action: ${viewModel.actionUrl}`);
+                } else {
+                    console.warn(`Error running action: ${viewModel.actionUrl}`);
+                }
+            });
         }
         res.render('view-part', { item: str, viewModel: viewModel });
     } catch (err) {

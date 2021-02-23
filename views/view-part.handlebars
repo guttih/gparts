@@ -20,7 +20,7 @@
     {{!-- Image and most properties on the side --}}
     <div class="row desktop-image-props hidden-xs"> {{!-- Desktop --}}
         <div class="col-xs-3"> {{!-- Image --}}
-            <div class="image">
+            <div class="row image">
                 <a href="{{viewModel.image}}" target="_blank">
                     <img src="{{viewModel.image}}" class="center-block temp-image">
                 </a>
@@ -80,10 +80,16 @@
         </div>
     </div>
     <div class="row">
-
-        <a href="/parts/register/{{viewModel.id}}" class="btn btn-xs btn-default pull-right">
-            <span class="glyphicon glyphicon-edit"></span>
-            &nbsp;Edit </a>
+        <div class="col-xs-offset-4 col-xs-8  top-buttons">
+            {{#if viewModel.actionUrl}}
+            <button type="button" class="btn btn-default locate pull-right" aria-label="Left Align">
+                <span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span> Locate
+            </button>
+            {{/if}}            
+            <a href="/parts/register/{{viewModel.id}}" class="btn btn-default register ">
+                <div class="glyphicon glyphicon-edit"></div>
+                &nbsp;Edit </a>
+        </div>
     </div>
 
     {{!-- Links and files --}}
@@ -105,12 +111,9 @@
                 <div class="row property-container lg">
                     <div class="flex-space-between">
                         <div class="name">
-                            <a 
-                                {{#ifCond this.isPartImage true}} 
-                                    class="file-is-part-image" 
-                                    title="This is the part image you see above" rel="tooltip" data-placement="bottom"
-                                {{/ifCond}}
-                                target="_blank" href="{{this.src}}">{{this.name}} 
+                            <a {{#ifCond this.isPartImage true}} class="file-is-part-image"
+                                title="This is the part image you see above" rel="tooltip" data-placement="bottom"
+                                {{/ifCond}} target="_blank" href="{{this.src}}">{{this.name}}
                             </a>
                         </div>
                         <div class="size">{{this.size}} </div>
