@@ -747,3 +747,7 @@ option {
     display: flex;
     align-items: center;
 }
+
+textarea[name=description] {
+    font-family: 'Courier New', Courier, monospace;
+}
