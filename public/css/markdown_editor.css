@@ -1,0 +1,80 @@
+div.markdown-editor {
+    background-color: cadetblue;
+    width: 100%;
+    height: 100%;
+    z-index: 20000;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    justify-content: space-between;
+}
+
+div.markdown-editor .top,
+div.markdown-editor .middle,
+div.markdown-editor .bottom {
+    width: 100%;
+}
+
+div.markdown-editor .top,
+div.markdown-editor .bottom {
+    height: 80px;
+}
+
+div.markdown-editor .top {
+    background: rgb(225, 158, 13);
+}
+
+div.markdown-editor .middle {
+    background: rgb(221, 220, 217);
+    display: flex;
+    justify-content: space-evenly;
+}
+
+div.markdown-editor .bottom {
+    background: rgb(179, 225, 13);
+}
+
+div.markdown-editor .middle {
+    display: flex;
+    flex-grow: 1;
+}
+
+.inputPane {
+    margin-top: 5px;
+    padding: 0.6em;
+    border: 1px solid #ccc;
+    overflow: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
+div.markdown-editor .middle .right {
+    background: rgb(119, 114, 119);
+    flex-basis: 50%;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+div.markdown-editor .middle .left {
+    background: rgb(191, 202, 151);
+    flex-basis: 50%;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+#editor {
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace !important;
+    font-size: 12px;
+    resize: none;
+}
