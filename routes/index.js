@@ -9,6 +9,7 @@ const Supplier = require('../models/supplier');
 const Manufacturer = require('../models/manufacturer');
 const User = require('../models/user');
 const File = require('../models/file');
+const marked = require("marked");
 // Get Homepage
 router.get('/', lib.authenticateUrl, async function(req, res) {
     try {
@@ -45,6 +46,19 @@ router.get('/about', function(req, res) {
 
 router.get('/result', function(req, res) {
     res.render('result');
+});
+
+router.post('/convert/markdown', lib.authenticateUrl, function(req, res) {
+    req.checkBody('text', 'text is required').notEmpty();
+
+    var errors = req.validationErrors();
+
+    if (errors) {
+        res.send(`<pre>${errors[0].msg}</pre>`);
+        return;
+    };
+
+    res.send(marked(req.body.text));
 });
 
 module.exports = router;
