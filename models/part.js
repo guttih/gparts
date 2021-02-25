@@ -374,7 +374,7 @@ module.exports.fetchViewValuesForPart = async(part) => {
         lastModified: part.lastModified,
     };
     //Doing this is this order to be able to see where things are failing if they do.
-    if (part.image) ret.image = ret.image ? await File.getByIdAsJson(part.image).then(e => File.getFullFileNameOnDisk(e, true)) : null;
+    ret.image = part.image ? await File.getByIdAsJson(part.image).then(e => File.getFullFileNameOnDisk(e, true)) : null;
 
     ret.files = await File.listByOwnerIdPromise(part.id).then(e => e.map(x => {
         const fileViewModel = File.toJson(x, null, true);

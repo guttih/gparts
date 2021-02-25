@@ -16,9 +16,103 @@
 
 
     <h2 class="page-header">{{viewModel.name}}</h2>
+    <div class="row desktop-image-props visible-xs"> {{!-- Mobile --}}
+        <div class="row">
+            <a href="{{viewModel.image}}" target="_blank">
+                <img src="{{viewModel.image}}" class="center-block temp-image">
+            </a>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 type property">Type</div>
+            <div class="col-xs-12">
+                <div class="name"><a href="/types/register/{{viewModel.type.id}}">{{viewModel.type.name}}</a></div>
+            </div>
+            <div class="col-xs-12">
+                <div class="description">{{viewModel.type.description}}</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="location property">Location</div>
+                <div class="col-xs-12">
+                    <div class="name"><a
+                            href="/locations/register/{{viewModel.location.id}}">{{viewModel.location.name}}</a>
+                    </div>
+                </div>
+                <div class="col-xs-12 values">
 
-    {{!-- Image and most properties on the side --}}
+                    <div class="description">{{viewModel.location.description}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="property category">Category</div>
+            </div>
+            <div class="col-xs-12">
+                <div class="name">{{viewModel.category}}</div>
+            </div>
+            <div class="col-xs-12">
+                <div class="property supplier">Supplier</div>
+            </div>
+            <div class="col-xs-12">
+                <div class="name"><a href="/suppliers/register/{{viewModel.supplier.id}}" rel="tooltip"
+                        data-placement="bottom"
+                        title="{{viewModel.supplier.description}}">{{viewModel.supplier.name}}</a></div>
+            </div>
+            <div class="col-xs-12">
+                <div class="property manufacturer">Manufacturer</div>
+            </div>
+            <div class="col-xs-12">
+                <div class="name"><a href="/manufacturers/register/{{viewModel.manufacturer.id}}" rel="tooltip"
+                        data-placement="bottom"
+                        title="{{viewModel.manufacturer.description}}">{{viewModel.manufacturer.name}}</a>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="property stock">Stock</div>
+            </div>
+            <div class="col-xs-12">
+                <div>{{viewModel.stock}}</div>
+            </div>
+            <div class="col-xs-12">
+                <div class="property acquired">Acquired</div>
+            </div>
+            <div class="col-xs-12">
+                <div>{{viewModel.firstAcquired}}</div>
+            </div>
+            <div class="col-xs-12">
+                <div class="property modified">Modified</div>
+            </div>
+            <div class="col-xs-12">
+                <div>{{viewModel.lastModified}}</div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12"></div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12"></div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12"></div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12"></div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12"></div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12"></div>
+        </div>
+    </div>
     <div class="row desktop-image-props hidden-xs"> {{!-- Desktop --}}
+
+        {{!-- Image and most properties on the side --}}
         <div class="col-xs-3"> {{!-- Image --}}
             <div class="row image">
                 <a href="{{viewModel.image}}" target="_blank">
@@ -73,7 +167,8 @@
                         <div class="property manufacturer">Manufacturer</div>
                         <div class="name"><a href="/manufacturers/register/{{viewModel.manufacturer.id}}" rel="tooltip"
                                 data-placement="bottom"
-                                title="{{viewModel.manufacturer.description}}">{{viewModel.manufacturer.name}}</a></div>
+                                title="{{viewModel.manufacturer.description}}">{{viewModel.manufacturer.name}}</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -85,10 +180,11 @@
             <button type="button" class="btn btn-default locate pull-right" aria-label="Left Align">
                 <span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span> Locate
             </button>
-            {{/if}}            
+            {{/if}}
             <a href="/parts/register/{{viewModel.id}}" class="btn btn-default register ">
                 <div class="glyphicon glyphicon-edit"></div>
-                &nbsp;Edit </a>
+                &nbsp;Edit
+            </a>
         </div>
     </div>
 
