@@ -377,7 +377,7 @@ function setupImageFunctionsAndButtons() {
             deleteItem('files/part/' + partId, image, function(data) {
                 //Now, when we have deleted the image, let's remove it from the form and view
                 $('#register-form [name="image"]').val("");
-                $('#part-image-container img').attr('src', '/images/part-image.jpg');
+                $('#part-image-container img').attr('src', '/images/part-image.png');
             });
         } else {
             showModalErrorText("Image not found for this part", "No image is selected.");
