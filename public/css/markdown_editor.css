@@ -1,0 +1,96 @@
+div.markdown-editor {
+    background-color: var(--user-background);
+    width: 100%;
+    height: 100%;
+    z-index: 20000;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    justify-content: space-between;
+}
+
+div.markdown-editor .top,
+div.markdown-editor .middle,
+div.markdown-editor .bottom {
+    width: 100%;
+}
+
+div.markdown-editor .top,
+div.markdown-editor .bottom {
+    height: 80px;
+    background: var(--user-menubackground);
+}
+
+div.markdown-editor .top {
+    border-radius: 20px 20px 0px 0px;
+}
+
+div.markdown-editor .middle {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+div.markdown-editor .bottom {
+    border-radius: 0px 0px 20px 20px;
+}
+
+.inputPane {
+    margin-top: 5px;
+    padding: 0.6em;
+    /* border: 1px solid #ccc; */
+    overflow: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+    background: var(--user-menubackground);
+}
+
+div.markdown-editor .middle {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+div.markdown-editor .middle .left {
+    display: flex;
+    overflow: auto;
+    flex-direction: column;
+    justify-content: stretch;
+    align-items: stretch;
+    width: 48%;
+    padding: 1px;
+}
+
+div.markdown-editor .middle .right {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    justify-content: stretch;
+    align-items: stretch;
+    width: 48%;
+}
+
+#md-editor {
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace !important;
+    font-size: 12px;
+    resize: none;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+div.markdown-editor .bottom {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding: 20px;
+}
+
+#parsed-markdown {
+    height: 100%;
+}

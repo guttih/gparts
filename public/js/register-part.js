@@ -1,6 +1,8 @@
 var tempValues = {
     urls: [],
-    files: []
+    files: [],
+    timerMdEditorKey: null,
+    mdEditorLastSentText: null
 };
 
 var selectedFile = {};
@@ -576,6 +578,42 @@ function setupFilesAndUrls() {
     urlsToView();
 }
 
+const noChangeTextKeyCodes = [37, 38, 39, 40, 35, 36, 34, 33, 46];
+const setHtml = (data) => {
+    console.log('got data');
+    $('#parsed-markdown').empty();
+    $('#parsed-markdown').html(data);
+}
+const fetchUpdatedHtml = () => {
+
+    if (tempValues.timerMdEditorKey) {
+        clearTimeout(tempValues.timerMdEditorKey);
+    }
+
+    tempValues.timerMdEditorKey = setTimeout(() => {
+        var url = '/convert/markdown';
+        //this.showLoading(true);
+        var sendObj = {
+            text: $('#md-editor').val()
+        };
+        if (sendObj.text && sendObj.text !== tempValues.mdEditorLastSentText) {
+            tempValues.mdEditorLastSentText = sendObj.text;
+            var posting = $.post(url, sendObj);
+            posting
+                .done(function(data) {
+                    //listFactory.showLoading(false)
+                    setHtml(data)
+                        //resolve(data)
+                })
+                .fail(function(err) {
+                    //listFactory.showLoading(false)
+                    console.log(`Failed ${JSON.stringify(err, null, 4)}`)
+                    setHtml('<h3>Error retriving parsed markdown</h3>')
+                });
+        }
+    }, 1000);
+};
+
 $(document).ready(function() {
     rowButtons.initItems();
     initParts();
@@ -642,6 +680,36 @@ $(document).ready(function() {
             console.log("todo");
         }
     });
+
+    //- - - - - - - - - - - - - - - - - - - - - - - - - -
+    // - - - - -    markdown editor (start of)    - - - - 
+    //- - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    $('.btnShowMarkdown').on('click tap', (event) => {
+        $('.markdown-editor').removeClass('hidden');
+        $('#md-editor').val($('#description').val());
+        fetchUpdatedHtml();
+    })
+    $('.btnGetMarkdown').on('click tap', (event) => {
+        $('.markdown-editor').addClass('hidden');
+        $('#description').val($('#md-editor').val());
+    })
+    $('.btnHideMarkdown').on('click tap', (event) => {
+        console.log('hiding')
+        $('.markdown-editor').addClass('hidden')
+    })
+
+
+    $('#md-editor').on('keyup', (event) => {
+
+        if (noChangeTextKeyCodes.includes(event.keyCode))
+            return; //no text change is do nothing on arrow buttons, end, home page up....
+
+        fetchUpdatedHtml();
+    });
+    //- - - - - - - - - - - - - - - - - - - - - - - - - -
+    // - - - - -    markdown editor (end   of)    - - - - 
+    //- - - - - - - - - - - - - - - - - - - - - - - - - -
 
     //validate for the first time
     validatePartImageOrFile('image');
