@@ -11,107 +11,12 @@
     {{/each}}
 </div>
 {{/if}}
-
+<span id="top"></span>
 <div class="view part">
-
-
-    <h2 class="page-header">{{viewModel.name}}</h2>
-    <div class="row desktop-image-props visible-xs"> {{!-- Mobile --}}
-        <div class="row">
-            <a href="{{viewModel.image}}" target="_blank">
-                <img src="{{viewModel.image}}" class="center-block temp-image">
-            </a>
-        </div>
-        <div class="row">
-            <div class="col-xs-12 type property">Type</div>
-            <div class="col-xs-12">
-                <div class="name"><a href="/types/register/{{viewModel.type.id}}">{{viewModel.type.name}}</a></div>
-            </div>
-            <div class="col-xs-12">
-                <div class="description">{{viewModel.type.description}}</div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="location property">Location</div>
-                <div class="col-xs-12">
-                    <div class="name"><a
-                            href="/locations/register/{{viewModel.location.id}}">{{viewModel.location.name}}</a>
-                    </div>
-                </div>
-                <div class="col-xs-12 values">
-
-                    <div class="description">{{viewModel.location.description}}</div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="property category">Category</div>
-            </div>
-            <div class="col-xs-12">
-                <div class="name">{{viewModel.category}}</div>
-            </div>
-            <div class="col-xs-12">
-                <div class="property supplier">Supplier</div>
-            </div>
-            <div class="col-xs-12">
-                <div class="name"><a href="/suppliers/register/{{viewModel.supplier.id}}" rel="tooltip"
-                        data-placement="bottom"
-                        title="{{viewModel.supplier.description}}">{{viewModel.supplier.name}}</a></div>
-            </div>
-            <div class="col-xs-12">
-                <div class="property manufacturer">Manufacturer</div>
-            </div>
-            <div class="col-xs-12">
-                <div class="name"><a href="/manufacturers/register/{{viewModel.manufacturer.id}}" rel="tooltip"
-                        data-placement="bottom"
-                        title="{{viewModel.manufacturer.description}}">{{viewModel.manufacturer.name}}</a>
-                </div>
-            </div>
-
-        </div>
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="property stock">Stock</div>
-            </div>
-            <div class="col-xs-12">
-                <div>{{viewModel.stock}}</div>
-            </div>
-            <div class="col-xs-12">
-                <div class="property acquired">Acquired</div>
-            </div>
-            <div class="col-xs-12">
-                <div>{{viewModel.firstAcquired}}</div>
-            </div>
-            <div class="col-xs-12">
-                <div class="property modified">Modified</div>
-            </div>
-            <div class="col-xs-12">
-                <div>{{viewModel.lastModified}}</div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12"></div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12"></div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12"></div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12"></div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12"></div>
-        </div>
-        <div class="row">
-            <div class="col-xs-12"></div>
-        </div>
-    </div>
     <div class="row desktop-image-props hidden-xs"> {{!-- Desktop --}}
-
+        <div class="col-xs-12">
+            <h2 class="page-header">{{viewModel.name}}</h2>
+        </div>
         {{!-- Image and most properties on the side --}}
         <div class="col-xs-3"> {{!-- Image --}}
             <div class="row image">
@@ -173,9 +78,7 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-offset-4 col-xs-8  top-buttons">
+        <div class="col-xs-12  top-buttons">
             {{#if viewModel.actionUrl}}
             <button type="button" class="btn btn-default locate pull-right" aria-label="Left Align">
                 <span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span> Locate
@@ -186,45 +89,123 @@
                 &nbsp;Edit
             </a>
         </div>
+        <div class="col-xs-12">
+            {{!-- Links and files --}}
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="links">
+                        <div class="property ">Links:</div>
+                        <div>
+                            {{#each viewModel.urls}}
+                            <div><a href="{{this.url}}"><span class="name">{{this.name}}</span></a> </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <div class="files">
+                        Files:
+                        {{#each viewModel.files}}
+                        <div class="row property-container lg">
+                            <div class="flex-space-between">
+                                <div class="name">
+                                    <a {{#ifCond this.isPartImage true}} class="file-is-part-image"
+                                        title="This is the part image you see above" rel="tooltip"
+                                        data-placement="bottom" {{/ifCond}} target="_blank"
+                                        href="{{this.src}}">{{this.name}}
+                                    </a>
+                                </div>
+                                <div class="size">{{this.size}} </div>
+                            </div>
+                            <div class="description">{{this.description}}</div>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
-    {{!-- Links and files --}}
-    <div class="row">
-        <div class="col-xs-4">
-            <div class="links">
-                <div class="property ">Links:</div>
-                <div>
-                    {{#each viewModel.urls}}
-                    <div><a href="{{this.url}}"><span class="name">{{this.name}}</span></a> </div>
+    <div class="row mobile visible-xs"> {{!-- Mobile --}}
+
+        <div class="col-xs-12">
+            <h4 class="text-left">{{viewModel.name}}</h4>
+        </div>
+        <div class="col-xs-12">
+            <a href="{{viewModel.image}}" target="_blank">
+                <img src="{{viewModel.image}}" class="xcenter-block">
+            </a>
+        </div>
+
+        <div class="col-xs-12 properties">
+            <div class="row">
+                <div class="col-xs-6">
+                    <div class="col-xs-12 type property">Type</div>
+                    <div class="col-xs-12">
+                        <div class="name">
+                            <a href="/types/register/{{viewModel.type.id}}">{{viewModel.type.name}}</a>
+                        </div>
+                    </div>
+                    {{#if viewModel.category}}
+                    <div class="col-xs-12">
+                        <div class="property category">Category</div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="name">{{viewModel.category}}</div>
+                    </div>
+                    {{/if}}
+                    <div class="col-xs-12">
+                        <div class="property stock">Stock</div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div>{{viewModel.stock}}</div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="property acquired">Acquired</div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div>{{viewModel.firstAcquired}}</div>
+                    </div>
+                </div>
+                {{#if viewModel.urls}}
+                <div class="col-xs-6">
+                    <div class="links">
+                        <div class="property ">Links:</div>
+                        <div>
+                            {{#each viewModel.urls}}
+                            <div><a href="{{this.url}}"><span class="name">{{this.name}}</span></a> </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+                {{/if}}
+            </div>
+            {{#if viewModel.files}}
+            <div class="col-xs-12">
+                <div class="row ">
+                    <div class="col-xs-12">
+                        <div class="col-xs-12 property">Files:</div>
+                    </div>
+                    {{#each viewModel.files}}
+                    <div class="col-xs-12">
+                        <ul class="name">
+                            <li><a {{#ifCond this.isPartImage true}} class="file-is-part-image"
+                                    title="This is the part image you see above" rel="tooltip" data-placement="bottom"
+                                    {{/ifCond}} target="_blank" href="{{this.src}}">{{this.name}}
+                                </a></li>
+                        </ul>
+                    </div>
                     {{/each}}
                 </div>
             </div>
-        </div>
-        <div class="col-xs-8">
-            <div class="files">
-                Files:
-                {{#each viewModel.files}}
-                <div class="row property-container lg">
-                    <div class="flex-space-between">
-                        <div class="name">
-                            <a {{#ifCond this.isPartImage true}} class="file-is-part-image"
-                                title="This is the part image you see above" rel="tooltip" data-placement="bottom"
-                                {{/ifCond}} target="_blank" href="{{this.src}}">{{this.name}}
-                            </a>
-                        </div>
-                        <div class="size">{{this.size}} </div>
-                    </div>
-                    <div class="description">{{this.description}}</div>
-                </div>
-                {{/each}}
-            </div>
+            {{/if}}
         </div>
     </div>
-
-
     <div class="markdown document description">
         {{{viewModel.markdown}}}
     </div>
+    <a href="#top">Bach to top</a>
 </div>
 
 <script src="/js/row-buttons.js"></script>

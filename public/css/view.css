@@ -79,3 +79,23 @@
     right: 0px;
     position: absolute;
 }
+
+.view.part .mobile img {
+    /* max-height: 300px; */
+    width: 100%;
+}
+
+.view.part .mobile .property {
+    padding-top: 12px;
+}
+
+.view.part .mobile h4 {
+    padding-bottom: 24px;
+}
+
+.view.part .mobile .properties {
+    margin-top: 20px;
+    margin-top: 20px;
+    border-bottom-style: solid;
+    border-bottom-color: var(--user-menubackground);
+}
