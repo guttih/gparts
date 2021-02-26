@@ -373,7 +373,7 @@ router.post('/register/part/image', lib.authenticateAdminRequest, function(req, 
             res.statusCode = 400;
             return res.json({ text: (errors.length > 0) ? errors[0].msg : "Could not upload image!" });
         } else {
-            File.addOrUpdateOwnerAndSize(id, ownerId, null, function(err, item) {
+            File.addOrUpdateOwnerAndSize(id, ownerId, req.file.size, function(err, item) {
                 if (err !== null) {
                     res.statusCode = 404;
                     var obj = { text: 'Error 404: Could not add owner!' };

@@ -707,7 +707,7 @@ $(document).ready(function() {
         fetchUpdatedHtml();
     });
     //- - - - - - - - - - - - - - - - - - - - - - - - - -
-    // - - - - -    markdown editor (end   of)    - - - - 
+    // - - - - -    markdown editor ( end of )    - - - - 
     //- - - - - - - - - - - - - - - - - - - - - - - - - -
 
     //validate for the first time

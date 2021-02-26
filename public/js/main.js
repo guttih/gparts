@@ -68,6 +68,7 @@ function logger(str) {
 $('#btnSetStarted').click(function() {
     getWhenServerStarted();
 });
+
 $('#btnGetDevices').click(function() {
     getUserDeviceList();
 });
@@ -121,7 +122,6 @@ function setServerStartedValue(date) {
     updateServerRunningtime();
 
 }
-
 
 function getUserDeviceList() {
     var url = SERVER + '/devices/device-list';
@@ -359,7 +359,6 @@ function showModal(title, message) {
     $('#myModal').modal('show');
 }
 
-
 function showModalConfirm(title, message, confirmButtonText, confirmCallback) {
     $(".modal-title").text(title);
     $(".modal-body").text(message);
@@ -387,7 +386,6 @@ function showModalConfirm(title, message, confirmButtonText, confirmCallback) {
 }
 
 // 	--Ask for user input, Example
-
 function showModalInputHelperHideInputs() {
     $('#modal-input1').addClass('hidden');
     //$('.modal-body2').addClass('hidden');
@@ -529,14 +527,10 @@ function changeHref(from, to) {
     window.location.href = window.location.href.replace(from, to);
 }
 
-
-
-
 function getServerUrl() {
     var serverUrl = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
     return serverUrl;
 }
-
 
 function changeServerSettingsUsersCanRegister() {
     var $elm = $('#allow-user-registration');
@@ -622,12 +616,10 @@ function changeServerSettingsListDescriptionMaxLength(newValue) {
     //window.location.href = asdf
 }
 
-
 function getUserUserList(callback) {
     var url = '/users/user-list';
     requestData(url, callback);
 }
-
 
 // makes a call to the API requesting data
 // the subUrl should not contain the protocol, hostname nor port number
@@ -859,6 +851,10 @@ function RegisterViewButtonClick(listPath) {
     });
 }
 
+var isAdvancedUpload = function() {
+    var div = document.createElement('div');
+    return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
+}();
 
 $(function() {
     /* this is the $( document ).ready(function( $ ) but jshint does not like that*/
@@ -869,4 +865,57 @@ $(function() {
     $('#myModal > div > div > div.modal-footer > button.btn.btn-default').click(function() {
         showModalInputHelperHideInputs();
     });
+
+
+
+
+
+    if (isAdvancedUpload) {
+
+        var $form = $('.register-file');
+        $form.addClass('has-advanced-upload');
+        var droppedFiles = false;
+
+
+        $form.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            })
+            .on('dragover dragenter', function() {
+                $form.addClass('is-dragover');
+            })
+            .on('dragleave dragend drop', function() {
+                $form.removeClass('is-dragover');
+            })
+            .on('drop', function(e) {
+
+                console.log('drop');
+                droppedFiles = e.originalEvent.dataTransfer.files;
+                if ($(this).find("input[name='name']").val()) {
+                    console.log('yess')
+                }
+                var $name = $(this).find("input[name='name']");
+                var $file = $(this).find("input[type='file']");
+
+                if ($file) {
+                    console.log('got files')
+                    $file.prop("files", droppedFiles); //only want one file
+
+                    if ($name && !$name.val()) {
+                        console.log(`no value`);
+                        $name.val($file.val().replace(/^.*[\\\/]/, ''))
+                    }
+
+
+                    if (typeof validatePartImageOrFile === "function") {
+                        // id of the form is 'register-file' or 'register-image'
+                        var formToValidate = $(this).attr('id').substr(9);
+                        validatePartImageOrFile(formToValidate);
+                    }
+
+
+                }
+            });
+
+    }
 });

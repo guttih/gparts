@@ -751,3 +751,9 @@ option {
 textarea[name=description] {
     font-family: 'Courier New', Courier, monospace;
 }
+
+.register-file.has-advanced-upload.is-dragover {
+    /* display: inline; */
+    cursor: cell;
+    background: rgb(255 255 255 / 10%);
+}
