@@ -99,3 +99,8 @@
     border-bottom-style: solid;
     border-bottom-color: var(--user-menubackground);
 }
+
+.view.part img {
+    vertical-align: middle;
+    max-width: 100%;
+}

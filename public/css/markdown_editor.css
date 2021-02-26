@@ -40,9 +40,6 @@ div.markdown-editor .bottom {
 }
 
 .inputPane {
-    margin-top: 5px;
-    padding: 0.6em;
-    /* border: 1px solid #ccc; */
     overflow: auto;
     flex-grow: 1;
     flex-shrink: 1;
@@ -63,8 +60,7 @@ div.markdown-editor .middle .left {
     flex-direction: column;
     justify-content: stretch;
     align-items: stretch;
-    width: 48%;
-    padding: 1px;
+    width: 50%;
 }
 
 div.markdown-editor .middle .right {
@@ -73,7 +69,8 @@ div.markdown-editor .middle .right {
     overflow: auto;
     justify-content: stretch;
     align-items: stretch;
-    width: 48%;
+    width: 50%;
+    padding: 2px;
 }
 
 #md-editor {
@@ -82,6 +79,7 @@ div.markdown-editor .middle .right {
     resize: none;
     overflow-y: auto;
     overflow-x: auto;
+    padding: 5px;
 }
 
 div.markdown-editor .bottom {
@@ -93,4 +91,9 @@ div.markdown-editor .bottom {
 
 #parsed-markdown {
     height: 100%;
+}
+
+.right img {
+    vertical-align: middle;
+    max-width: 100%;
 }
