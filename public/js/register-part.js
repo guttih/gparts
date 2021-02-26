@@ -578,7 +578,7 @@ function setupFilesAndUrls() {
     urlsToView();
 }
 
-const noChangeTextKeyCodes = [37, 38, 39, 40, 35, 36, 34, 33, 46];
+const noChangeTextKeyCodes = [37, 38, 39, 40, 35, 36, 34, 33];
 const setHtml = (data) => {
     console.log('got data');
     $('#parsed-markdown').empty();
@@ -701,7 +701,6 @@ $(document).ready(function() {
 
 
     $('#md-editor').on('keyup', (event) => {
-
         if (noChangeTextKeyCodes.includes(event.keyCode))
             return; //no text change is do nothing on arrow buttons, end, home page up....
 
