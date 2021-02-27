@@ -1,5 +1,5 @@
 table.row-buttons {
-    overflow-y: scroll;
+    overflow-y: auto;
     height: 91px;
     display: block;
     width: 100%;
@@ -12,7 +12,12 @@ table.row-buttons {
 table.row-buttons .list-command-view,
 table.row-buttons .list-command-edit,
 table.row-buttons .list-command-delete {
-    margin-right: 2px;
+    margin-right: 4px;
+    margin-top: 3px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 7px;
+    padding-right: 7px;
 }
 
 table.row-buttons td.commands {
@@ -48,12 +53,3 @@ table.row-buttons td.item {
 table.row-buttons tr:hover {
     background: #46a1470f
 }
-
-
-/*
-table.row-buttons tr:hover td.item { 
-	text-decoration:underline;
-}
-table.row-buttons tr:hover td.item:after { 
-	content:" -";
-}*/
