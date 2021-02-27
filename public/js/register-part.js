@@ -720,34 +720,39 @@ $(document).ready(function() {
         var $box = $('.want-file');
         $box.addClass('has-advanced-upload');
         var droppedFiles = false;
+
         $box.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            })
-            .on('dragover dragenter', function() {
-                $box.addClass('is-dragover');
+            e.preventDefault();
+            e.stopPropagation();
+        })
+
+        .on('dragover dragenter', function(e) {
+                $elm = $(this);
+                $elm.addClass('is-dragover');
             })
             .on('dragleave dragend drop', function() {
-                $box.removeClass('is-dragover');
+                $box.removeClass('is-dragover'); //remove from all elements with want-file class
             })
             .on('drop', function(e) {
-                var $fromToAddFilesTo = $('#register-file')
-                console.log('drop');
+                var isImageForm = e.target.nodeName === 'IMG' ? true : $elm.hasClass('image-container');
+                var $formToAddFilesTo = isImageForm ? $('#register-image') : $('#register-file');
+                var $formContainer = isImageForm ? $('#image-values') : $('#file-values');
                 droppedFiles = e.originalEvent.dataTransfer.files;
-                var $name = $fromToAddFilesTo.find("input[name='name']");
-                var $file = $fromToAddFilesTo.find("input[type='file']");
-                if ($file) {
+                if (droppedFiles.length > 1) {
+                    showModalErrorText('Only one file allowed', "You can only select one file at a time.");
+                    return;
+                }
+                var $name = $formToAddFilesTo.find("input[name='name']");
+                var $file = $formToAddFilesTo.find("input[type='file']");
+                if ($file.length) {
                     $('#part-values').addClass("hidden");
-                    $('#file-values').removeClass('hidden');
-                    console.log(`got files ${JSON.stringify($file.val(), null, 4)}`)
+                    $formContainer.removeClass('hidden');
                     $file.prop("files", droppedFiles); //only want one file
                     if ($name && !$name.val()) {
-                        console.log(`no value`);
                         $name.val($file.val().replace(/^.*[\\\/]/, ''))
                     }
                     if (typeof validatePartImageOrFile === "function") {
-                        // id of the form is 'register-file' or 'register-image'
-                        validatePartImageOrFile('file');
+                        validatePartImageOrFile($file.attr('id'));
                     }
                 }
             });

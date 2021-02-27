@@ -886,9 +886,14 @@ $(function() {
             .on('drop', function(e) {
 
                 droppedFiles = e.originalEvent.dataTransfer.files;
+                if (droppedFiles.length > 1) {
+                    showModalErrorText('Only one file allowed', "You can only select one file at a time.");
+                    return;
+                }
                 var $name = $(this).find("input[name='name']");
                 var $file = $(this).find("input[type='file']");
-                if ($file) {
+
+                if ($file.length) {
                     var oldNameValue = $name.val();
                     var canSetName = $name && !$name.val() || $file.val().endsWith(oldNameValue);
 
@@ -897,9 +902,7 @@ $(function() {
                         $name.val($file.val().replace(/^.*[\\\/]/, ''))
                     }
                     if (typeof validatePartImageOrFile === "function") {
-                        // id of the form is 'register-file' or 'register-image'
-                        var formToValidate = $(this).attr('id').substr(9);
-                        validatePartImageOrFile(formToValidate);
+                        validatePartImageOrFile($file.attr('id'));
                     }
                 }
             });
