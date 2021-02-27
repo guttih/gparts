@@ -866,10 +866,6 @@ $(function() {
         showModalInputHelperHideInputs();
     });
 
-
-
-
-
     if (isAdvancedUpload) {
 
         var $form = $('.register-file');
@@ -889,33 +885,23 @@ $(function() {
             })
             .on('drop', function(e) {
 
-                console.log('drop');
                 droppedFiles = e.originalEvent.dataTransfer.files;
-                if ($(this).find("input[name='name']").val()) {
-                    console.log('yess')
-                }
                 var $name = $(this).find("input[name='name']");
                 var $file = $(this).find("input[type='file']");
-
                 if ($file) {
-                    console.log('got files')
-                    $file.prop("files", droppedFiles); //only want one file
+                    var oldNameValue = $name.val();
+                    var canSetName = $name && !$name.val() || $file.val().endsWith(oldNameValue);
 
-                    if ($name && !$name.val()) {
-                        console.log(`no value`);
+                    $file.prop("files", droppedFiles); //only want one file
+                    if (canSetName) {
                         $name.val($file.val().replace(/^.*[\\\/]/, ''))
                     }
-
-
                     if (typeof validatePartImageOrFile === "function") {
                         // id of the form is 'register-file' or 'register-image'
                         var formToValidate = $(this).attr('id').substr(9);
                         validatePartImageOrFile(formToValidate);
                     }
-
-
                 }
             });
-
     }
 });

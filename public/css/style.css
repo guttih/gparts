@@ -753,7 +753,9 @@ textarea[name=description] {
 }
 
 .register-file.has-advanced-upload.is-dragover {
-    /* display: inline; */
-    cursor: cell;
+    background: rgb(255 255 255 / 10%);
+}
+
+.want-file.has-advanced-upload.is-dragover {
     background: rgb(255 255 255 / 10%);
 }
