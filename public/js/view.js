@@ -20,4 +20,13 @@ $(document).ready(function() {
         runLocationActionUrl()
     });
 
+
+    $(".hide-if-small-height").each(function() {
+        var testHeight = document.body.scrollHeight * 1.4;
+        var windowInnerHeight = Number(window.innerHeight) * 2;
+        if (testHeight < windowInnerHeight) {
+            $(this).addClass('hidden');
+        }
+    });
+
 });
