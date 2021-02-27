@@ -242,7 +242,25 @@ module.exports.deleteByOwnerIdFindOnlyOne = function(ownerId, callback) {
             $size: 1
         }
     };
-    File.remove(query, callback);
+    //
+    File.find(query)
+        .then((files) => {
+            //foreach file we should delete it
+            files.forEach(file => {
+                var fileName = File.getFullFileNameOnDisk(file);
+                if (validator.fileExists(fileName)) {
+                    //The file exists so lets delete it, but not wait for it
+                    fs.unlink(fileName, (err) => {
+                        if (err) {
+                            console.log('Unable to delete the file "' + fileName + '" from disk.', err);
+                        }
+                    });
+                }
+            })
+            File.remove(query, callback);
+        })
+        .catch(e => callback(e, null))
+
 };
 /**
  *	Finds all files that have more than one owner and one of them is is ownerId
