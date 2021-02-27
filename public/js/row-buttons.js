@@ -23,13 +23,13 @@ var rowButtons = {
         //check if view class is on table
         var $table = $row.parent().parent();
         if ($table.hasClass('view')) {
-            $tdCommands.append('<span class="list-command-view btn btn-default glyphicon glyphicon-eye-open"></span>');
+            $tdCommands.append('<span class="list-command-view btn-xs btn-default glyphicon glyphicon-eye-open"></span>');
         }
         if ($table.hasClass('edit')) {
-            $tdCommands.append('<span class="list-command-edit btn btn-default glyphicon glyphicon-pencil"></span>');
+            $tdCommands.append('<span class="list-command-edit btn-xs btn-default glyphicon glyphicon-pencil"></span>');
         }
         if ($table.hasClass('delete')) {
-            $tdCommands.append('<span class="list-command-delete btn btn-default glyphicon glyphicon-remove"></span>');
+            $tdCommands.append('<span class="list-command-delete btn-xs btn-default glyphicon glyphicon-remove"></span>');
         }
         $row.append($tdCommands);
     },
@@ -54,19 +54,19 @@ var rowButtons = {
         $table = $('table.row-buttons.view');
         $table.find('tr').each(function(index) {
             if ($(this).find('td.commands span.list-command-view').length < 1) {
-                $(this).find('td.commands').append('<span class="list-command-view btn btn-default glyphicon glyphicon-eye-open"></span>');
+                $(this).find('td.commands').append('<span class="list-command-view btn-xs btn-default glyphicon glyphicon-eye-open"></span>');
             }
         });
         $table = $('table.row-buttons.edit');
         $table.find('tr').each(function(index) {
             if ($(this).find('td.commands span.list-command-edit').length < 1) {
-                $(this).find('td.commands').append('<span class="list-command-edit btn btn-default glyphicon glyphicon-pencil"></span>');
+                $(this).find('td.commands').append('<span class="list-command-edit btn-xs btn-default glyphicon glyphicon-pencil"></span>');
             }
         });
         $table = $('table.row-buttons.delete');
         $table.find('tr').each(function(index) {
             if ($(this).find('td.commands span.list-command-delete').length < 1) {
-                $(this).find('td.commands').append('<span class="list-command-delete btn btn-default glyphicon glyphicon-remove"></span>');
+                $(this).find('td.commands').append('<span class="list-command-delete btn-xs btn-default glyphicon glyphicon-remove"></span>');
             }
         });
     },

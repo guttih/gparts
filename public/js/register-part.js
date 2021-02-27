@@ -410,8 +410,9 @@ function setupImageFunctionsAndButtons() {
 function setupUrlCommands() {
 
     // View button for url item
-    $('#urls td.commands .list-command-view.btn').unbind();
-    $('#urls td.commands .list-command-view.btn').bind('click tap', function() {
+    var $btn = $('#urls td.commands .list-command-view.btn-xs');
+    $btn.unbind();
+    $btn.bind('click tap', function() {
         $elm = $(this).parent().parent();
         //var elmData = $elm.data("elm");
         var url = $elm.data("elm").url;
@@ -419,8 +420,9 @@ function setupUrlCommands() {
     });
 
     // Edit button for url item
-    $('#urls td.commands .list-command-edit.btn').unbind();
-    $('#urls td.commands .list-command-edit.btn').bind('click tap', function() {
+    $btn = $('#urls td.commands .list-command-edit.btn-xs');
+    $btn.unbind();
+    $btn.bind('click tap', function() {
         $elm = $(this).parent().parent();
         var index = new Number($elm.attr("data-index"));
         var urlObject = tempValues.urls[index];
@@ -438,9 +440,10 @@ function setupUrlCommands() {
         );
     });
 
-    // View button for url item
-    $('#urls td.commands .list-command-delete.btn').unbind();
-    $('#urls td.commands .list-command-delete.btn').bind('click tap', function() {
+    // Delete button for url item
+    $btn = $('#urls td.commands .list-command-delete.btn-xs')
+    $btn.unbind();
+    $btn.bind('click tap', function() {
         $elm = $(this).parent().parent();
         var index = new Number($elm.attr("data-index"));
         tempValues.urls.splice(index, 1);
@@ -451,8 +454,8 @@ function setupUrlCommands() {
 function setupFileCommands() {
 
     // View button for url item
-    $('#files td.commands .list-command-view.btn').unbind();
-    $('#files td.commands .list-command-view.btn').bind('click tap', function() {
+    $('#files td.commands .list-command-view').unbind();
+    $('#files td.commands .list-command-view').bind('click tap', function() {
         $elm = $(this).parent().parent();
         //var elmData = $elm.data("elm");
         var fileName = extractFileNameFromObject($elm.data("elm"));
@@ -460,8 +463,8 @@ function setupFileCommands() {
     });
 
     // Edit button for url item
-    $('#files td.commands .list-command-edit.btn').unbind();
-    $('#files td.commands .list-command-edit.btn').bind('click tap', function() {
+    $('#files td.commands .list-command-edit').unbind();
+    $('#files td.commands .list-command-edit').bind('click tap', function() {
         $elm = $(this).parent().parent();
         $('#part-values').addClass("hidden");
         $('#file-values').removeClass('hidden');
@@ -469,8 +472,8 @@ function setupFileCommands() {
     });
 
     // View button for url item
-    $('#files td.commands .list-command-delete.btn').unbind();
-    $('#files td.commands .list-command-delete.btn').bind('click tap', function() {
+    $('#files td.commands .list-command-delete').unbind();
+    $('#files td.commands .list-command-delete').bind('click tap', function() {
         $elm = $(this).parent().parent();
         //var elmData = $elm.data("elm");
         var xdata = $elm.data("elm");
