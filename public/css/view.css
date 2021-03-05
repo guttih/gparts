@@ -103,3 +103,8 @@
     vertical-align: middle;
     max-width: 100%;
 }
+
+.view.part pre {
+    color: var(--user-menufont);
+    background-color: var(--user-menubackground);
+}

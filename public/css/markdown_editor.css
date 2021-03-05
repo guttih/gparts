@@ -97,3 +97,8 @@ div.markdown-editor .bottom {
     vertical-align: middle;
     max-width: 100%;
 }
+
+.markdown-editor pre {
+    color: var(--user-menufont);
+    background-color: var(--user-menubackground);
+}
