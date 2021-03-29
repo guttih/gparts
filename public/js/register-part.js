@@ -242,7 +242,6 @@ function initParts() {
     }
     filesToView();
     runLocationActionUrl();
-    locationsToView();
 }
 
 function validateNormalInput(id) {
@@ -709,7 +708,7 @@ $(document).ready(function() {
         rowButtons.deleteItem($item);
     });
     initRegister();
-
+    $('#locations .commands.item > span.list-command-view').addClass('hidden');
     var $elm = $('.part-additional-values > form input.btn-file');
     $elm.change(function() {
         var id = $(this)[0].id;
@@ -849,4 +848,5 @@ $(document).ready(function() {
     setupImageFunctionsAndButtons();
     setupAddButtons();
     deleteButtonClickRegister('parts');
+    locationsToView();
 });
