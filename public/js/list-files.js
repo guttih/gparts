@@ -17,7 +17,6 @@ function createListItemFiles(id, name, description, owners, topLeft, routeText, 
         '<span class="list-group-item-text">' + description + '</span>' +
         '<div class="list-group-item-owner">' + strOwners + '</div>' +
         '<span class="pull-right">';
-    //window.location.href = '/cards/useraccess/'+ card.id;
     if (bAddRunButton) {
         strElm += '<button onclick="runItem(\'' + id + '\');" class="btn btn-xs btn-success"> <span class="glyphicon glyphicon-play"></span>&nbsp;Run </button>';
     }

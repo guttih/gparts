@@ -10,6 +10,11 @@
     min-height: 20px;
 }
 
+.view.part .property-container .name.action:before {
+    content: "→";
+    margin-right: 3px;
+}
+
 .view.part .property-container {
     background: var(--user-menubackground);
     border-radius: 8px;
@@ -26,6 +31,7 @@
 
 .view.part .property-container.lg .description {
     font-size: 12px;
+    font-style: italic;
 }
 
 .view.part .desktop-image-props .sm-left {
@@ -102,4 +108,9 @@
 .view.part img {
     vertical-align: middle;
     max-width: 100%;
+}
+
+.view.part pre {
+    color: var(--user-menufont);
+    background-color: var(--user-menubackground);
 }

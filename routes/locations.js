@@ -70,7 +70,7 @@ router.get('/register/:ID', lib.authenticateRequest, function(req, res) {
 
 
                 //get the count
-                Part.count({ location: id })
+                Part.countDocuments({ locations: { $regex: helper.makeRegExFromSpaceDelimitedString(id, false) } })
                     .then(count => {
                         obj.partCount = count;
                         var str = JSON.stringify(obj);
@@ -121,7 +121,6 @@ router.get('/location-list', lib.authenticateRequest, function(req, res) {
     Location.list(function(err, list) {
 
         var arr = [];
-        var isOwner;
         var item;
         for (var i = 0; i < list.length; i++) {
             item = list[i];

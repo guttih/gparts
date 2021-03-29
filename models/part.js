@@ -18,7 +18,7 @@ const PartSchema = mongoose.Schema({
     firstAcquired: Date,
     lastModified: Date,
     type: ObjectId,
-    location: ObjectId,
+    locations: { type: String },
     manufacturer: ObjectId,
     supplier: ObjectId
 });
@@ -43,7 +43,7 @@ function errorToUser(msg, statusCode) {
 }
 
 module.exports.Utils = require('./modelUtility');
-module.exports.validSearchCollections = ['type', 'location', 'manufacturer', 'supplier']
+module.exports.validSearchCollections = ['type', 'location', 'manufacturer', 'supplier'];
 
 module.exports.delete = function(id, callback) {
     Part.findById(id, function(err, part) {
@@ -159,7 +159,7 @@ module.exports.toJson = function(item) {
         firstAcquired: item.firstAcquired,
         lastModified: item.lastModified,
         type: (item.type !== undefined && item.type !== null) ? item.type.toString() : null,
-        location: (item.location !== undefined && item.location !== null) ? item.location.toString() : null,
+        locations: item.locations ? item.locations : null,
         manufacturer: (item.manufacturer !== undefined && item.manufacturer !== null) ? item.manufacturer.toString() : null,
         supplier: (item.supplier !== undefined && item.supplier !== null) ? item.supplier.toString() : null,
         image: (item.image !== undefined && item.image !== null) ? item.image.toString() : null
@@ -197,7 +197,30 @@ module.exports.toJsonCallback = function(item, callback) {
                 owners: owners
             });
         }
-        callback(err, ret);
+        //we files processed, now locations
+        if (item.locations && item.locations.length > 27) {
+            var locIds = JSON.parse(item.locations);
+            Location.find({ '_id': { $in: locIds } }, function(err, locationList) {
+                if (err) { callback(err); return; }
+                if (locationList && locationList.length > 0) {
+                    ret.locations = [];
+                    locationList.forEach(e => {
+                        ret.locations.push({
+                            id: e._id.toString(),
+                            name: e.name,
+                            description: e.description,
+                            action: e.action,
+                            data: e.data
+                        })
+                    });
+
+                }
+                callback(err, ret);
+            });
+        } else {
+
+            callback(err, ret);
+        }
     });
 };
 
@@ -225,17 +248,9 @@ module.exports.TypeToJson = function(item, descriptionMaxLength) {
 };
 
 
-
-
-//Location
-module.exports.queryLocation = function(query, callback) {
-    Location.find(query, callback);
-};
 module.exports.listByLocation = function(locationId, maxDescriptionLength, callback) {
     Part.list({ location: locationId }, maxDescriptionLength, callback);
 };
-
-
 
 module.exports.LocationToJson = function(item) {
 
@@ -369,6 +384,7 @@ module.exports.fetchViewValuesForPart = async(part) => {
         description: part.description,
         category: part.category,
         urls: JSON.parse(part.urls),
+        locations: JSON.parse(part.locations),
         stockCount: part.stockCount,
         firstAcquired: part.firstAcquired,
         lastModified: part.lastModified,
@@ -382,10 +398,19 @@ module.exports.fetchViewValuesForPart = async(part) => {
         return fileViewModel;
     }));
     ret.type = await Type.getByIdAsJson(part.type);
-    ret.location = await Location.getByIdAsJson(part.location);
     ret.manufacturer = await Manufacturer.getByIdAsJson(part.manufacturer);
     ret.supplier = await Supplier.getByIdAsJson(part.supplier);
-    ret.actionUrl = await Part.makeActionUrl(ret.location);
+    ret.locations = await Part.populateLocations(ret.locations);
 
     return ret;
+}
+
+module.exports.populateLocations = async(locationArray) => {
+    if (!locationArray)
+        return null;
+    let locations = [];
+    for (var i = 0; i < locationArray.length; i++) {
+        locations.push(await Location.getByIdAsJson(locationArray[i]));
+    }
+    return locations;
 }
