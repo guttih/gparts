@@ -42,10 +42,18 @@
                         <div class="location property">Location</div>
                     </div>
                     <div class="col-xs-10 values">
-                        <div class="name"><a
-                                href="/locations/register/{{viewModel.location.id}}">{{viewModel.location.name}}</a>
+                        {{#each viewModel.locations}}
+                        <div 
+                        {{#if this.action}}
+                            class="name action"
+                        {{else}}
+                            class="name"
+                        {{/if}}
+                        >
+                            <a href="/locations/register/{{this.id}}">{{this.name}}</a>
                         </div>
-                        <div class="description">{{viewModel.location.description}}</div>
+                        <div class="description">{{this.description}}</div>
+                         {{/each}}
                     </div>
                 </div>
             </div>

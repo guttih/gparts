@@ -43,7 +43,21 @@ var rowButtons = {
             callback($item);
         });
     },
-    initItems: function create() {
+    initItems: function initItems(bAddView, bAddEdit, bAddDelete) {
+        var addView = false;
+        var addEdit = false;
+        var addDelete = false;
+        if (bAddView === undefined) {
+            addView = addEdit = addDelete = true;
+        } else {
+            addView = bAddView;
+            if (bAddEdit === undefined) {
+                addEdit = addDelete = true;
+            } else {
+                addEdit = bAddEdit;
+                addDelete = bAddDelete === undefined || bAddDelete === true ? true : false;
+            }
+        }
         var $table = $('table.row-buttons');
         $table.find('tr').each(function(index) {
             $(this).find('td').addClass('item');
@@ -51,24 +65,30 @@ var rowButtons = {
                 $(this).append('<td class="commands"></td>');
             }
         });
-        $table = $('table.row-buttons.view');
-        $table.find('tr').each(function(index) {
-            if ($(this).find('td.commands span.list-command-view').length < 1) {
-                $(this).find('td.commands').append('<span class="list-command-view btn-xs btn-default glyphicon glyphicon-eye-open"></span>');
-            }
-        });
-        $table = $('table.row-buttons.edit');
-        $table.find('tr').each(function(index) {
-            if ($(this).find('td.commands span.list-command-edit').length < 1) {
-                $(this).find('td.commands').append('<span class="list-command-edit btn-xs btn-default glyphicon glyphicon-pencil"></span>');
-            }
-        });
-        $table = $('table.row-buttons.delete');
-        $table.find('tr').each(function(index) {
-            if ($(this).find('td.commands span.list-command-delete').length < 1) {
-                $(this).find('td.commands').append('<span class="list-command-delete btn-xs btn-default glyphicon glyphicon-remove"></span>');
-            }
-        });
+        if (addView) {
+            $table = $('table.row-buttons.view');
+            $table.find('tr').each(function(index) {
+                if ($(this).find('td.commands span.list-command-view').length < 1) {
+                    $(this).find('td.commands').append('<span class="list-command-view btn-xs btn-default glyphicon glyphicon-eye-open"></span>');
+                }
+            });
+        }
+        if (addEdit) {
+            $table = $('table.row-buttons.edit');
+            $table.find('tr').each(function(index) {
+                if ($(this).find('td.commands span.list-command-edit').length < 1) {
+                    $(this).find('td.commands').append('<span class="list-command-edit btn-xs btn-default glyphicon glyphicon-pencil"></span>');
+                }
+            });
+        }
+        if (addDelete) {
+            $table = $('table.row-buttons.delete');
+            $table.find('tr').each(function(index) {
+                if ($(this).find('td.commands span.list-command-delete').length < 1) {
+                    $(this).find('td.commands').append('<span class="list-command-delete btn-xs btn-default glyphicon glyphicon-remove"></span>');
+                }
+            });
+        }
     },
     addItem: function addItem($table, textToAdd, dataToSave) {
         var $elm;

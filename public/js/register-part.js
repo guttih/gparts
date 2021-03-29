@@ -1,4 +1,5 @@
 var tempValues = {
+    locations: [],
     urls: [],
     files: [],
     timerMdEditorKey: null,
@@ -19,6 +20,11 @@ function setFormValues(fetchPartImage) {
                         val = val.substr(0, 10);
                         break;
 
+                    case 'locations':
+                        tempValues[key] = val;
+
+                        val = JSON.stringify(val.map(e => e.id));
+                        break;
                     case 'urls':
                         try {
                             tempValues[key] = JSON.parse(val);
@@ -66,7 +72,6 @@ function setSelectOptionsFromArray(id, list) {
 
     list.sort(compareNames);
     var select = $("#" + id);
-    var selected = select.find('option:selected');
     var required = select.attr('required') === 'required';
     select.find('option').remove();
 
@@ -159,17 +164,25 @@ function validateFormValues() {
 
     var prop = $('#name').val();
     if (prop === undefined || prop.length < 1) {
-        return showPartModalErrorText('name');
+        showPartModalErrorText('name');
+        return false;
     }
 
     prop = $('#firstAcquired').val();
     if (prop === undefined || prop.length < 1) {
-        return showPartModalErrorText('acquired date', 'You must specify the date when you acquired this part.');
+        showPartModalErrorText('acquired date', 'You must specify the date when you acquired this part.');
+        return false;
     }
 
     prop = $('#stockCount').val();
     if (prop === undefined || prop.length < 1) {
-        return showPartModalErrorText('stock count');
+        showPartModalErrorText('stock count');
+        return false;
+    }
+    prop = $('#locationIds').val();
+    if (prop === undefined || prop.length < 28) {
+        console.log(prop);
+        showPartModalErrorText('You must select a location');
         return false;
     }
 
@@ -202,16 +215,18 @@ function validateFormValues() {
 
 function runLocationActionUrl() {
     if (typeof item === 'undefined' || item === 'undefined' ||
-        item.location === undefined || item.location === "") {
+        item.locations === undefined || item.locations === "") {
         return;
     }
-    requestData('/locations/run-action/' + item.location, function(data) {
-        console.log("got data", data);
-    }, function(data) {
-        console.log("Unable to get data", data);
-    });
-    console.log(item.location);
-
+    actionLocations = tempValues.locations.filter(e => e.action);
+    var delay = 3000;
+    actionLocations.forEach((e, index) => {
+        setTimeout(() => {
+            requestData('/locations/run-action/' + e.id, function(data) {}, function(data) {
+                console.log("Unable to get data", data);
+            });
+        }, delay * index);
+    })
 }
 
 function initParts() {
@@ -224,10 +239,10 @@ function initParts() {
         // hide
         $('.part-form .name-description').attr("class", ".name-description")
         $('#part-image-container').hide();
-        $('.files-and-urls').addClass('hidden');
     }
     filesToView();
     runLocationActionUrl();
+    locationsToView();
 }
 
 function validateNormalInput(id) {
@@ -503,6 +518,32 @@ function setupFileCommands() {
     });
 }
 
+function setupLocationCommands() {
+
+    // Edit button for url item
+    $('#locations td.commands .list-command-edit').unbind();
+    $('#locations td.commands .list-command-edit').bind('click tap', function() {
+        $elm = $(this).parent().parent();
+        var item = $elm.data("elm");
+
+        openUrlInNewTab(`${SERVER}/locations/register/${item.id}`);
+    });
+
+    // View button for url item
+    $('#locations td.commands .list-command-delete').unbind();
+    $('#locations td.commands .list-command-delete').bind('click tap', function() {
+        $elm = $(this).parent().parent();
+        //var elmData = $elm.data("elm");
+        var location = $elm.data("elm");
+
+
+        tempValues.locations = tempValues.locations.filter(e => e.id !== location.id);
+        $(`#location option[value="${location.id}"]`).removeClass('hidden');
+        locationsToView();
+
+    });
+}
+
 function urlsToView() {
     var $table = $('#urls');
     $table.empty();
@@ -536,6 +577,26 @@ function filesToView() {
     $('#register-form [name="urls"]').val(strUrls);
 }
 
+function locationsToView() {
+    var $table = $('#locations');
+    $table.empty();
+    var $select = $('#location');
+    if (typeof tempValues.locations.length < 1) {
+        return;
+    }
+    tempValues.locations.forEach(function(element, index) {
+        $table.append("<tr data-index='" + index + "' data-elm='" + JSON.stringify(element) + "'><td>" + element.name + "</td></tr>");
+        var elm = $select.find(`option[value="${element.id}"]`)
+        elm.addClass('hidden');
+
+    });
+
+    rowButtons.initItems(false, true, true);
+    setupLocationCommands();
+    var locationIds = tempValues.locations.map(e => e.id);
+    $('#register-form [name="locations"]').val(JSON.stringify(locationIds));
+}
+
 function setFileFormValues(values) {
     var formId = 'register-file';
     $('#' + formId).trigger("reset");
@@ -551,11 +612,10 @@ function setFileFormValues(values) {
         $form.find('[name="description"]').val(values.description);
         $form.find('[name="file-fileName"]').val(values.fileName);
         $form.find('.file-input-gruppan').addClass('hidden');
-        //$('#'+formId+' div > label > span').addClass('disabled');
     }
 }
 
-function setupFilesAndUrls() {
+function setupAddButtons() {
 
     $('.files-and-urls .urls .btn-add').bind('click tap', function() {
         showModalInputTwo("Adding a Url", "Please provide the name",
@@ -577,6 +637,29 @@ function setupFilesAndUrls() {
         $('#part-values').addClass("hidden");
         $('#file-values').removeClass('hidden');
         setFileFormValues();
+    });
+
+    $('.files-and-urls .locations .btn-add').bind('click tap', function() {
+        var locationtoAdd = $('#location').val();
+        if (!locationtoAdd)
+            return;
+
+        requestData(`/locations/item/${locationtoAdd}`, function(location) {
+
+            tempValues.locations.push({
+                id: location._id,
+                name: location.name,
+                description: location.description,
+                action: location.action,
+                data: location.data
+            });
+
+            //remove selected option from available locations
+            $('#location').val("");
+            locationsToView();
+        }, function(data) {
+            console.log("Unable to get data", data);
+        });
     });
     urlsToView();
 }
@@ -764,6 +847,6 @@ $(document).ready(function() {
     //validate for the first time
     validatePartImageOrFile('image');
     setupImageFunctionsAndButtons();
-    setupFilesAndUrls();
+    setupAddButtons();
     deleteButtonClickRegister('parts');
 });

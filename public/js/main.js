@@ -183,7 +183,6 @@ function createListItem(id, name, description, topLeft, routeText, bAddRunButton
     strElm += '<p class="list-group-item-heading">' + name + topLeft + '</p>' +
         '<span class="list-group-item-text">' + description + '</span>' +
         '<span class="pull-right">';
-    //window.location.href = '/cards/useraccess/'+ card.id;
 
     if (bAddRunButton) {
         strElm += '<button onclick="runItem(\'' + id + '\');" class="btn btn-xs btn-success"> <span class="glyphicon glyphicon-play"></span>&nbsp;Run </button>';
@@ -556,8 +555,6 @@ function changeServerSettingsUsersCanRegister() {
             console.log(data);
             showModalErrorMsg('Error updating settings for user registration', data);
         });
-
-    //window.location.href = asdf
 }
 
 function changeFileUploadSize() {
@@ -612,8 +609,6 @@ function changeServerSettingsListDescriptionMaxLength(newValue) {
             console.log(data);
             showModalErrorMsg('Error updating settings for user registration', data);
         });
-
-    //window.location.href = asdf
 }
 
 function getUserUserList(callback) {
