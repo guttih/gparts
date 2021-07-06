@@ -248,10 +248,10 @@ router.post('/register', lib.authenticateAdminRequest, function(req, res) {
 
     if (errors) {
         var obj = {
-            name: location.name,
-            description: location.description,
-            data: location.data,
-            action: location.action
+            name: name,
+            description: description,
+            data: data,
+            action: action
         };
         var str = JSON.stringify(obj);
         Action.listAsJson(function(err, list) {
@@ -300,7 +300,7 @@ router.post('/register/:ID', lib.authenticateAdminRequest, function(req, res) {
             name: req.body.name,
             description: req.body.description,
             data: req.body.data,
-            action: req.body.item_action
+            action: req.body.item_action ? req.body.item_action : null
         };
 
 
