@@ -767,3 +767,24 @@ textarea[name=description] {
 .want-file.has-advanced-upload.is-dragover {
     background: rgb(255 255 255 / 10%);
 }
+
+.markdown-editor table td,
+.view.part table td {
+    border-style: solid;
+    border: 1px solid var(--user-menubackground);
+}
+
+.markdown-editor table,
+.view.part table {
+    border-spacing: 0px 0px !important;
+    border-collapse: unset;
+    border: 1px solid var(--user-font);
+}
+
+.markdown-editor table th,
+.markdown-editor td,
+.view.part table th,
+.view.part table td {
+    padding-left: 3px;
+    padding-right: 3px;
+}

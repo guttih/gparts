@@ -102,8 +102,3 @@ div.markdown-editor .bottom {
     color: var(--user-menufont);
     background-color: var(--user-menubackground);
 }
-
-.markdown-editor table {
-    border-spacing: 5px 5px !important;
-    border-collapse: unset;
-}
