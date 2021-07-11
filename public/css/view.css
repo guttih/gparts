@@ -34,6 +34,11 @@
     font-style: italic;
 }
 
+.view.part table {
+    border-spacing: 5px 5px !important;
+    border-collapse: unset;
+}
+
 .view.part .desktop-image-props .sm-left {
     padding-left: 0px;
     padding-right: 5px;
