@@ -1,5 +1,28 @@
-function setFormValues(item) {
+function findActionById(actionId) {
+    // return actions.find(action => action.id === id);
+    var actionFiltered = (typeof actions !== 'undefined' && actions !== 'undefined' && actions.length > 0) ?
+    actions.filter(item => item.id === actionId) : [];
+    if (actionFiltered.length > 0) {
+        return actionFiltered[0];
+    }
+}
 
+function enableDataInput(dataInputId) {
+    var enableId, disableId;
+    if (dataInputId === 'dataInputGroupPost') {
+        enableId = 'dataInputGroupPost';
+        disableId = 'dataInputGroupGet';
+    } else {
+        enableId = 'dataInputGroupGet';
+        disableId = 'dataInputGroupPost';
+    }
+    $('#' + disableId).hide();
+    $('#' + enableId).show();
+    $('#' + disableId).attr('name', '');
+    $('#' + enableId).attr('name', 'data');
+}
+
+function setFormValues(item) {
     if (typeof item !== 'undefined' && item !== 'undefined') {
 
         if (item.action !== undefined && item.action !== null && item.action.length > 0) {
@@ -9,9 +32,19 @@ function setFormValues(item) {
         if (item.name !== undefined) {
             $("#name").val(item.name);
         }
+        var currAction = findActionById(item.action);
+
+        if (currAction.type === 'HTTP_POST') {
+            enableDataInput('dataInputGroupPost');
+        }
+        else {
+            enableDataInput('dataInputGroupGet');
+        }
 
         if (item.data !== undefined) {
-            $("#data").val(item.data);
+            if (currAction) {
+                $('form [name="data"]').val(item.data)
+            }
         }
 
         if (item.description !== undefined) {
@@ -50,14 +83,21 @@ function validateFormValues() {
 var onDataChange = function onDataChange() {
     var url = "";
     var actionId = $('#item_action').val();
-    var data = $('#data').val();
-    if (data === undefined) { data = ""; }
-    var actionFiltered = (typeof actions !== 'undefined' && actions !== 'undefined' && actions.length > 0) ?
-        actions.filter(item => item.id === actionId) : [];
-
-    if (actionFiltered.length > 0 && actionId.length > 0) {
-        url = actionFiltered[0].url.replace("<<DATA>>", data);
+    var data = $('form [name="data"]').val();
+    var currAction = findActionById(actionId);
+    if (data ) { 
+        url = currAction.url.replace("<<DATA>>", data); 
     }
+
+    if (currAction) {
+        if (currAction.type === 'HTTP_POST') {
+            enableDataInput('dataInputGroupPost');
+        }
+        else {
+            enableDataInput('dataInputGroupGet');
+        }
+    }
+    
     $('#url').text(url);
 };
 
@@ -69,11 +109,13 @@ var onSelectActionChange = function onSelectActionChange() {
     } else {
         $('.url').show();
     }
+    var data = $('form [name="data"]').val();
     onDataChange();
+    $('form [name="data"]').val(data);
 };
 
 function setFormActionOptions() {
-
+    
     if (typeof actions !== 'undefined' && actions !== 'undefined' && actions.length > 0) {
         //There are some actions
         actions.forEach(function(element) {
@@ -107,7 +149,7 @@ $(document).ready(function() {
     $('#item_action').on('change', function() {
         onSelectActionChange();
     });
-    $('#data').on('keyup change', function() {
+    $('#dataInputGroupGet, #dataInputGroupPost').on('keyup change', function() {
         onDataChange();
     });
 });

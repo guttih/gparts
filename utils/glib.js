@@ -931,7 +931,8 @@ module.exports.makeRequestPostBodyOptions = function makeRequestPostBodyOptions(
     if (ContentType === undefined) {
         ContentType = 'application/json';
     }
-    var body = JSON.stringify(payload);
+    // var body = JSON.stringify(payload);
+    var body = payload;
     var options = {
         url: url,
         method: method,
@@ -948,6 +949,7 @@ module.exports.makeRequestPostBodyOptions = function makeRequestPostBodyOptions(
 
 module.exports.runRequest = function runRequest(method, url, body, callback) {
     var requestOptions = module.exports.makeRequestPostBodyOptions(url, body, method);
+    // console.log(JSON.stringify(requestOptions, null, 4));
     request(requestOptions, function(err, result) {
         if (err) {
             console.log('Error when calling request. Url : ' + url);

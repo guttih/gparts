@@ -201,22 +201,36 @@ router.post('/search', lib.authenticateRequest, async function(req, res) {
 
 
 
-router.get('/run-action/:ID', lib.authenticateRequest, function(req, res) {
+router.get('/run-action/:ID', lib.authenticateRequest, function (req, res) {
     var id = req.params.ID;
     if (id !== undefined) {
-        Location.getActionUrlByLocationId(id, function(err, actionUrl) {
+        Location.getActionUrlByLocationId(id, function (err, actionUrl, location, action) {
             if (err || actionUrl === null) {
                 res.status(404).json({ error: 'No action to run!' });
             } else {
-                lib.runRequest('GET', actionUrl, '', function(err, result) {
-                    if (!err && result) {
-                        console.log('ran action');
-                        res.status(200).json(result);
-                    } else {
-                        res.status(400).json(result);
-                        console.error(`Unable to run action: ${actionUrl}`);
-                    }
-                });
+                if (action.type === 'HTTP_POST') {
+                    console.log("post action");
+                    lib.runRequest('POST', actionUrl, location.data, function (err, result) {
+                        if (!err && result) {
+                            console.log(`ran POST action ${actionUrl} | ${location.data}`);
+                            res.status(200).json(result);
+                        } else {
+                            res.status(400).json(result);
+                            console.error(`Unable to run action: ${actionUrl}`);
+                        }
+                    });
+                } else {
+                    lib.runRequest('GET', actionUrl, '', function (err, result) {
+                        if (!err && result) {
+                            console.log(`ran GET action ${actionUrl}`);
+                            res.status(200).json(result);
+                        } else {
+                            res.status(400).json(result);
+                            console.error(`Unable to run action: ${actionUrl}`);
+                        }
+                    });
+
+                }
             }
         });
     }

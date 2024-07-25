@@ -647,6 +647,11 @@ option {
     justify-content: center;
 }
 
+.container-index {
+    margin: auto;
+    max-width: 700px;
+}
+
 .dashboard .summary {
     border-style: solid;
     border-width: 1px;
