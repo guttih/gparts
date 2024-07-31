@@ -10,6 +10,10 @@ var passport = require('passport');
 var lib = require('./utils/glib');
 var config = lib.getConfig();
 
+var http = require('http');
+var https = require('https');
+var fs = require('fs');
+
 
 ///////////////////// start mongo /////////////////////////
 var mongo = require('mongodb');
@@ -173,9 +177,29 @@ lib.createFolderIfNotExists('files/images', function(err, path) {
 });
 
 
-// Set Port
-app.set('port', config.port);
+// HTTP Port
+app.set('http_port', config.http_port);
 
-app.listen(app.get('port'), function() {
-    console.log('Server started on port ' + app.get('port'));
+// app.listen(app.get('http_port'), function() {
+//     console.log('Server started on port ' + app.get('http_port'));
+// });
+
+var httpServer = http.createServer(app);
+httpServer.listen(app.get('http_port'), function() {
+    console.log('HTTP Server started on port ' + app.get('http_port'));
+});
+
+// HTTPS Port
+app.set('https_port', config.https_port);
+
+const certDir = '/etc/letsencrypt/live/parts.guttih.com'
+var httpsOptions = {
+    key: fs.readFileSync(certDir + '/privkey.pem', 'utf8'),
+    cert: fs.readFileSync(certDir + '/cert.pem', 'utf8'),
+    ca: fs.readFileSync(certDir + '/chain.pem', 'utf8')
+};
+
+var httpsServer = https.createServer(httpsOptions, app);
+httpsServer.listen(app.get('https_port'), function() {
+    console.log('HTTPS Server started on port ' + app.get('https_port'));
 });
