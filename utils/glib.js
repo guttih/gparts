@@ -264,7 +264,8 @@ module.exports.getConfig = function getConfig() {
     }
     if (makeNewFile === true) {
         conf = {
-            port: 6100,
+            http_port: 6100,
+            https_port:8445,
             allowUserRegistration: true,
             fileSizeLimit: 3915728,
             listDescriptionMaxLength: 1024
