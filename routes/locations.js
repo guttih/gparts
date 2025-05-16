@@ -205,7 +205,7 @@ router.get('/run-action/:ID', lib.authenticateRequest, function (req, res) {
     var id = req.params.ID;
     if (id !== undefined) {
         Location.getActionUrlByLocationId(id, function (err, actionUrl, location, action) {
-            if (err || actionUrl === null) {
+            if (err || actionUrl === null || !action  ) {
                 res.status(404).json({ error: 'No action to run!' });
             } else {
                 if (action.type === 'HTTP_POST') {

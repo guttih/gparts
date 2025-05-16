@@ -34,7 +34,7 @@ function setFormValues(item) {
         }
         var currAction = findActionById(item.action);
 
-        if (currAction.type === 'HTTP_POST') {
+        if (currAction && currAction.type === 'HTTP_POST') {
             enableDataInput('dataInputGroupPost');
         }
         else {
